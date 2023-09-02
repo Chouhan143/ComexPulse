@@ -1,12 +1,12 @@
 import React from 'react';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Home from '../../screens/bottomTab/Home';
 import LiveTrade from '../../screens/bottomTab/LiveTrade';
 import PendingOrder from '../../screens/bottomTab/PendingOrder';
 import WatchList from '../../screens/bottomTab/WatchList';
 import Account from '../../screens/bottomTab/Account';
 import Icon from 'react-native-vector-icons/AntDesign';
-import {Image,View} from 'react-native';
+import { Image, View } from 'react-native';
 import {
   responsiveFontSize,
   responsiveHeight,
@@ -18,22 +18,22 @@ const Tab = createBottomTabNavigator();
 function BottomTabNavigator() {
   return (
     <Tab.Navigator
-      screenOptions={({route}) => ({
-      tabBarShowLabel:false,
+      screenOptions={({ route }) => ({
+        tabBarShowLabel: false,
         tabBarStyle: {
           backgroundColor: '#3949ab',
           width: '90%',
           height: responsiveHeight(8),
-          position:'absolute',
+          position: 'absolute',
           // borderWidth:responsiveWidth(0.1),
           // borderTopLeftRadius:responsiveWidth(15),
-          borderRadius:responsiveWidth(50),
-          bottom:responsiveHeight(1),
-        // marginHorizontal:responsiveWidth(20),
-        alignSelf:'center',
-        justifyContent:'center',
-        left:responsiveWidth(5)
-          
+          borderRadius: responsiveWidth(50),
+          bottom: responsiveHeight(1),
+          // marginHorizontal:responsiveWidth(20),
+          alignSelf: 'center',
+          justifyContent: 'center',
+          left: responsiveWidth(5)
+
         },
         tabBarLabelStyle: {
           fontSize: responsiveFontSize(1.8),
@@ -41,8 +41,8 @@ function BottomTabNavigator() {
         },
         tabBarInactiveTintColor: '#000 ',
         tabBarActiveTintColor: '#fff',
-      
-        tabBarIcon: ({focused, color, size}) => {
+
+        tabBarIcon: ({ focused, color, size }) => {
           let iconName;
           // let backgroundColor;
           if (route.name === 'Home') {

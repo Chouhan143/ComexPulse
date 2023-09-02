@@ -232,7 +232,7 @@ const SearchData = () => {
         renderItem={renderItem}
         keyExtractor={item => item.id.toString()}
       />
-
+   
       {/* model---------------- */}
 
       <Modal visible={modalVisible} animationType="slide" transparent={true}>
