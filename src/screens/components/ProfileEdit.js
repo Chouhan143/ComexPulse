@@ -1,136 +1,116 @@
-// import { View, Text,StyleSheet } from 'react-native'
-// import React from 'react'
+import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native'
+import React from 'react'
+import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Font5 from 'react-native-vector-icons/FontAwesome5';
 import Font6 from 'react-native-vector-icons/FontAwesome6';
 import Iconic from 'react-native-vector-icons/Ionicons';
 import Material from 'react-native-vector-icons/MaterialIcons';
-// import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
-
-// const Edit = () => {
-//     return (
-//         <>
-//             <View style={{ flex: 1, backgroundColor: "rgba(200,200,200,0.8)",padding:10 }}>
-//                 <View style={{ width: responsiveWidth(95), height: responsiveHeight(30), backgroundColor: "white",borderRadius:10 }}>
-//                     <View style={{ justifyContent: 'center', alignItems: "center" }}>
-//                         <View style={styles.main}>
-//                             <View style={{ alignItems: "center", padding: 10 }} >
-//                                 <Icon name="user-circle" size={responsiveWidth(30)} color="blue" />
-//                             </View>
-//                             <View >
-//                                 <Text style={{ fontSize: 25, color: "black", fontWeight: "700" }}>Name - Ashish Yadav</Text>
-//                                 <Text style={{ fontSize: 18, color: "black", fontWeight: "400" }}>Account - ashishyadav@gmail.com</Text>
-//                                 <Text style={{ fontSize: 18, color: "black", fontWeight: "400" }}>Pan Card - 9730592488</Text>
-//                             </View>
-//                         </View>
-//                     </View>
-//                 </View>
-//             </View>
-//         </>
-//     )
-// }
-
-// const styles = StyleSheet.create({
-//     main: {
-//         width: responsiveWidth(95),
-//         borderRadius: 10,
-//         backgroundColor: "white",
-//         marginTop: 10,
-//         margin: 5,
-//         padding: 10
-//       },
-// })
-// export default Edit
-
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { responsiveWidth, responsiveHeight } from 'react-native-responsive-dimensions';
+import { ScrollView, TextInput } from 'react-native-gesture-handler';
+import LinearGradient from 'react-native-linear-gradient';
+import { useNavigation } from '@react-navigation/native';
 
 const ProfileEdit = () => {
+    const navigation = useNavigation()
+    const goBack = () => {
+        navigation.navigate("Account")
+
+    }
     return (
-        <View style={styles.container}>
-      
-            <View style={styles.profileBox}>
-                <View style={{alignSelf:"center"}}>
-                <Icon name="user-circle" size={responsiveWidth(30)} color="blue" />
-                <Text style={styles.title}>Ashish Yadav</Text>
+        <ScrollView>
+            <Image source={require("../../../assets/images/topBg.jpg")} height={responsiveHeight(40)} width={responsiveWidth(100)} style={{ position: "absolute" }} resizeMode='contain' />
+            <View>
+                <View style={styles.top}>
+                    <TouchableOpacity onPress={goBack}>
+                        <Iconic name="arrow-back" size={25} color={"white"} />
+                    </TouchableOpacity>
+                    <View style={styles.top_txt_container}>
+                        <Text style={styles.top_txt}>Edit Profile</Text>
+                    </View>
                 </View>
-                <Text style={styles.label}>Name:</Text>
-                <Text style={styles.value}>Ashish Yadav</Text>
+                <View style={styles.bottom_main}>
+                    <View style={styles.bottom_main_top}>
+                        <View style={styles.bottom_main_top_img}>
 
-                <Text style={styles.label}>Bank Name:</Text>
-                <Text style={styles.value}>Axis Bank </Text>
-
-                <Text style={styles.label}>Account Number:</Text>
-                <Text style={styles.value}>12345678952</Text>
-
-                <Text style={styles.label}>IFSC Code :</Text>
-                <Text style={styles.value}>AXIS0092000</Text>
-
-                <Text style={styles.label}>PAN Number :</Text>
-                <Text style={styles.value}>BRNPC0014</Text>
-
-                {/* <TouchableOpacity style={styles.editButton}>
-                    <Text style={styles.buttonText}>Edit Profile</Text>
-                </TouchableOpacity> */}
+                        </View>
+                    </View>
+                    <View style={{ padding: responsiveWidth(2) }}>
+                        <View>
+                            <Text style={styles.bottom_lable}>Name</Text>
+                            <View style={styles.input_view}>
+                                <TextInput style={{ borderRadius: responsiveWidth(2), paddingLeft: 20, shadowColor: "black", elevation: 5, backgroundColor: "white" }} placeholder='Name' />
+                            </View>
+                        </View>
+                        <View>
+                            <Text style={styles.bottom_lable}>Email</Text>
+                            <View style={styles.input_view}>
+                                <TextInput style={styles.input_field} placeholder='Email-id' />
+                            </View>
+                        </View>
+                        <View>
+                            <Text style={styles.bottom_lable}>Mobile</Text>
+                            <View style={styles.input_view}>
+                                <TextInput style={styles.input_field} placeholder='Mobile Number' />
+                            </View>
+                        </View>
+                        <View>
+                            <Text style={styles.bottom_lable}>Password</Text>
+                            <View style={styles.input_view}>
+                                <TextInput style={styles.input_field} placeholder='Password' />
+                            </View>
+                        </View>
+                    </View>
+                    <View style={styles.button_container}>
+                        <TouchableOpacity onPress={()=>navigation.navigate("Account")}>
+                            <LinearGradient colors={["#4D5DFB", "#08C8F6"]} start={{ x: -0.1, y: 0 }} end={{ x: 1, y: 1 }} style={styles.button}>
+                                <Text style={{ fontSize: 18, color: "white", fontWeight: "bold" }}>Update</Text>
+                            </LinearGradient>
+                        </TouchableOpacity>
+                    </View>
+                </View>
             </View>
-        </View>
-    );
-};
+        </ScrollView>
+    )
+}
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'rgba(200, 200, 200, 0.8)',
+    top: {
+        flex: 1, alignItems: "center", flexDirection: "row", padding: responsiveWidth(5)
     },
-    profileBox: {
-        backgroundColor: 'white',
-        borderRadius: 10,
-        padding: 20,
-        width: '80%',
-        shadowColor:"black",
-        elevation:10
+    top_txt_container: {
+        padding: responsiveWidth(2), marginLeft: responsiveWidth(3)
     },
-    title: {
-        fontSize: 24,
-        color:"black",
-        fontWeight: 'bold',
-        marginBottom: 20,
+    top_txt: {
+        color: "white", fontSize: responsiveFontSize(2.5), fontWeight: "bold"
     },
-    label: {
-        fontSize: 16,
-        color:"black",
-        fontWeight: 'bold',
-        marginTop: 10,
+    bottom_main: {
+        flex: 3, backgroundColor: "#fff", borderTopLeftRadius: responsiveWidth(8),
+        borderTopRightRadius: responsiveWidth(8), marginTop: responsiveHeight(4)
     },
-    value: {
-        fontSize: 16,
-        color:"black",
-        marginBottom: 10,
+    bottom_main_top: {
+        justifyContent: "center", alignItems: "center", padding: responsiveWidth(3.5)
     },
-    editButton: {
-        backgroundColor: '#007AFF',
-        borderRadius: 5,
-        paddingVertical: 10,
-        paddingHorizontal: 15,
-        marginTop: 20,
-        alignItems: 'center',
+    bottom_main_top_img: {
+        width: responsiveWidth(45), height: responsiveWidth(45), borderRadius: responsiveWidth(22.5),
+        backgroundColor: "gray"
     },
-    buttonText: {
-        color: 'white',
-        fontSize: 16,
-        fontWeight: 'bold',
+    bottom_lable: {
+        fontSize: responsiveFontSize(2), color: "black"
     },
-    main: {
-        width: responsiveWidth(95),
-        borderRadius: 10,
-        backgroundColor: "white",
-        marginTop: 10,
-        margin: 5,
-        padding: 10
+    input_view: {
+        paddingTop: responsiveWidth(2), paddingBottom: responsiveWidth(2)
     },
-});
+    input_field: {
+        borderRadius: responsiveWidth(2), paddingLeft: responsiveWidth(5), shadowColor: "black",
+        elevation: 5, backgroundColor: "white"
+    },
+    button_container: {
+        marginTop: responsiveWidth(14), justifyContent: "center", alignItems: "center"
+    },
+    button: {
+        width: responsiveWidth(95), paddingVertical: responsiveWidth(3), justifyContent: "center",
+        alignItems: "center", borderRadius: responsiveWidth(2)
+    }
+})
 
-export default ProfileEdit;
+export default ProfileEdit
