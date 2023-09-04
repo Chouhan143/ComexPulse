@@ -7,12 +7,13 @@ import {
   ScrollView,
   FlatList,
   Modal,
+  Image,
 } from 'react-native';
 import React, {useEffect, useState, useRef} from 'react';
 import Icon from 'react-native-vector-icons/AntDesign';
 import Icon2 from 'react-native-vector-icons/Feather';
 import Icon3 from 'react-native-vector-icons/AntDesign';
-import Icon4 from 'react-native-vector-icons/MaterialIcons';
+import Icon4 from 'react-native-vector-icons/AntDesign';
 import Icon5 from 'react-native-vector-icons/FontAwesome';
 import Icon6 from 'react-native-vector-icons/AntDesign';
 
@@ -72,16 +73,20 @@ const SearchData = () => {
     const isAddedToWatchlist = watchlistData.some(
       watchlistItem => watchlistItem.id === item.id,
     );
- 
+
     return (
       <TouchableOpacity
         style={{
-          width: responsiveWidth(100),
-          height: responsiveWidth(18),
-          backgroundColor: COLORS.secondary,
+          width: responsiveWidth(97),
+          height: responsiveWidth(15),
+          backgroundColor: COLORS.white,
           marginVertical: responsiveHeight(0.2),
           justifyContent: 'center',
           paddingHorizontal: responsiveWidth(5),
+          alignSelf: 'center',
+          borderRadius: responsiveWidth(2),
+          shadowColor: '#000',
+          elevation: 5,
         }}>
         <View
           style={{
@@ -101,19 +106,21 @@ const SearchData = () => {
               style={{
                 width: responsiveWidth(10),
                 height: responsiveWidth(10),
-                backgroundColor: COLORS.BottomTab,
+                borderRadius: responsiveWidth(5),
+                backgroundColor: COLORS.primary,
                 justifyContent: 'center',
                 alignItems: 'center',
                 borderRadius: responsiveWidth(1),
                 marginRight: responsiveWidth(3),
               }}>
-              <Text style={{color: COLORS.white,fontSize:responsiveFontSize(2)}}>
+              <Text
+                style={{color: COLORS.white, fontSize: responsiveFontSize(2)}}>
                 {item.trade_name.charAt(0)}
               </Text>
             </View>
             <Text
               style={{
-                color: COLORS.textColor,
+                color: COLORS.black,
                 fontSize: responsiveFontSize(1.8),
                 fontWeight: '400',
               }}>
@@ -131,7 +138,7 @@ const SearchData = () => {
             <Text
               style={{
                 paddingRight: responsiveWidth(10),
-                color: COLORS.textColor,
+                color: COLORS.black,
                 fontSize: responsiveFontSize(1.8),
                 fontWeight: '400',
               }}>
@@ -144,9 +151,17 @@ const SearchData = () => {
               style={{paddingLeft: responsiveWidth(5)}}
               onPress={() => handleAddToWatchlist(item)}>
               {isAddedToWatchlist ? (
-                <Icon4 name="favorite" size={responsiveFontSize(2.6)} color="green" />
+                <Icon4
+                  name="star"
+                  size={responsiveFontSize(2.6)}
+                  color="green"
+                />
               ) : (
-                <Icon4 name="favorite" size={responsiveFontSize(2.6)} color="#1B1A1A" />
+                <Icon4
+                  name="star"
+                  size={responsiveFontSize(2.6)}
+                  color="#1B1A1A"
+                />
               )}
             </TouchableOpacity>
           </View>
@@ -156,10 +171,16 @@ const SearchData = () => {
   };
 
   return (
-    <View style={{flex: 1, backgroundColor: COLORS.white}}>
+    <View style={{flex: 1}}>
+      <View style={{display: 'flex', position: 'absolute'}}>
+        <Image
+          source={require('../../../assets/images/topBg.jpg')}
+          style={{width: responsiveWidth(100), height: responsiveHeight(30)}}
+        />
+      </View>
       <View style={styles.searchContainer}>
         <TouchableOpacity onPress={() => navigation.navigate('WatchList')}>
-          <Icon name="arrowleft" size={responsiveFontSize(3)} color="#000" />
+          <Icon name="arrowleft" size={responsiveFontSize(3)} color="#fff" />
         </TouchableOpacity>
 
         <View style={styles.searchInputContainer}>
@@ -172,7 +193,7 @@ const SearchData = () => {
               width: '100%',
               alignSelf: 'center',
               color: '#000',
-              fontSize:responsiveFontSize(1.8)
+              fontSize: responsiveFontSize(1.8),
             }}
             placeholder="Search"
             placeholderTextColor="#000"
@@ -191,85 +212,106 @@ const SearchData = () => {
             alignItems: 'center',
           }}
           onPress={openModal}>
-          <Icon3 name="filter" size={responsiveFontSize(2.5)} color="#000" />
+          <Icon3 name="filter" size={responsiveFontSize(2.5)} color="#fff" />
         </TouchableOpacity>
       </View>
+
+      {/* header ending here */}
+
       <View
         style={{
-          marginHorizontal: responsiveWidth(2),
-          marginVertical: responsiveHeight(1),
-          width: responsiveWidth(30),
-          height: responsiveWidth(10),
-          backgroundColor: COLORS.bgColor,
-          alignItems: 'flex-start',
-          justifyContent: 'center',
-          borderRadius: responsiveWidth(1),
+          height: responsiveHeight(100),
+          width: responsiveWidth(100),
+          borderTopRightRadius: responsiveWidth(8),
+          borderTopLeftRadius: responsiveWidth(8),
+          position: 'absolute',
+          backgroundColor: '#fff',
+          marginTop: responsiveHeight(15),
+          shadowColor: '#000',
+          elevation: 5,
         }}>
-        <Text
+        <View
           style={{
-            color: "#000",
-            fontWeight: '700',
-            fontSize: responsiveFontSize(2),
-            paddingLeft:responsiveWidth(2),
+            marginHorizontal: responsiveWidth(3),
+            marginVertical: responsiveHeight(3),
+
+            backgroundColor: COLORS.bgColor,
+            alignItems: 'flex-start',
+            justifyContent: 'center',
+            borderRadius: responsiveWidth(1),
           }}>
-          Commodity
-        </Text>
-      </View>
-      <View style={styles.topContainer}>
-        <View style={styles.topMiddle}>
-          <View>
-            <Text style={styles.topText1}>Stock Name</Text>
-          </View>
-          <View style={styles.topLast}>
-            <Text style={[styles.topText1, {paddingRight: 20}]}>Price</Text>
-            <Text style={styles.topText1}>Change / Vol</Text>
-          </View>
+          <Text
+            style={{
+              color: '#000',
+              fontWeight: '700',
+              fontSize: responsiveFontSize(3),
+              paddingLeft: responsiveWidth(5),
+            }}>
+            Commodity
+          </Text>
         </View>
-      </View>
 
-      <FlatList
-        data={filterData}
-        renderItem={renderItem}
-        keyExtractor={item => item.id.toString()}
-      />
-   
-      {/* model---------------- */}
+        {/* commodity end here */}
 
-      <Modal visible={modalVisible} animationType="slide" transparent={true}>
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <View
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <TouchableOpacity
-                style={styles.modalInner}
-                onPress={() => {
-                  let tempList = filterData.sort((a, b) =>
-                    a.trade_name > b.trade_name ? 1 : -1,
-                  );
-                  setFilterData(tempList);
-                }}>
-                <Text style={styles.modalText}>Sort By Trade_name</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.modalInner}>
-                <Text style={styles.modalText}>Low to High Price</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.modalInner}>
-                <Text style={styles.modalText}>High to Low Price</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity style={styles.closIcon} onPress={closeModal}>
-                <Icon6 name="closesquare" size={25} color="#1B1A1A" />
-              </TouchableOpacity>
+        <View style={styles.topContainer}>
+          <View style={styles.topMiddle}>
+            <View>
+              <Text style={styles.topText1}>Stock Name</Text>
+            </View>
+            <View style={styles.topLast}>
+              <Text style={[styles.topText1, {paddingRight: 20}]}>Price</Text>
+              <Text style={styles.topText1}>Change / Vol</Text>
             </View>
           </View>
         </View>
-      </Modal>
 
-      {/* modal end -------------------------- */}
+        {/* stock Heading end here  */}
+        <View style={{marginBottom: responsiveHeight(30)}}>
+          <FlatList
+            data={filterData}
+            renderItem={renderItem}
+            keyExtractor={item => item.id.toString()}
+          />
+        </View>
+
+        {/* model---------------- */}
+
+        <Modal visible={modalVisible} animationType="slide" transparent={true}>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <View
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <TouchableOpacity
+                  style={styles.modalInner}
+                  onPress={() => {
+                    let tempList = filterData.sort((a, b) =>
+                      a.trade_name > b.trade_name ? 1 : -1,
+                    );
+                    setFilterData(tempList);
+                  }}>
+                  <Text style={styles.modalText}>Sort By Trade_name</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.modalInner}>
+                  <Text style={styles.modalText}>Low to High Price</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.modalInner}>
+                  <Text style={styles.modalText}>High to Low Price</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.closIcon} onPress={closeModal}>
+                  <Icon6 name="closesquare" size={25} color="#1B1A1A" />
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+
+        {/* modal end -------------------------- */}
+      </View>
     </View>
   );
 };
@@ -282,27 +324,27 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     flexDirection: 'row',
-    // marginVertical: responsiveHeight(1),
-    backgroundColor:COLORS.secondary,
-    paddingVertical:responsiveHeight(3)
+    paddingVertical: responsiveHeight(3),
   },
   searchInputContainer: {
     width: responsiveWidth(60),
     height: responsiveWidth(10),
-    backgroundColor: 'rgba(200,200,200,0.7)',
+    // backgroundColor: 'rgba(200,200,200,0.7)',
+    backgroundColor: '#fff',
     borderRadius: responsiveWidth(5),
     flexDirection: 'row',
     alignItems: 'center',
     paddingLeft: responsiveWidth(5),
-    marginLeft: responsiveWidth(6)
+    marginLeft: responsiveWidth(6),
   },
   topContainer: {
-    width: responsiveWidth(100),
-    height: responsiveWidth(10),
+    width: responsiveWidth(97),
+    height: responsiveWidth(20),
+    borderRadius: responsiveWidth(4),
     backgroundColor: '#323860',
     justifyContent: 'center',
     alignSelf: 'center',
-    paddingHorizontal:responsiveWidth(5),
+    paddingHorizontal: responsiveWidth(5),
   },
   topMiddle: {
     display: 'flex',
@@ -319,8 +361,8 @@ const styles = StyleSheet.create({
   },
   topText1: {
     color: COLORS.textColor,
-    fontSize: responsiveFontSize(1.8),
-    fontWeight: '500',
+    fontSize: responsiveFontSize(2),
+    fontWeight: '700',
   },
   topText: {
     color: COLORS.textColor,
@@ -334,7 +376,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
-    backgroundColor: COLORS.bgColor,
+    backgroundColor: COLORS.primary,
     padding: 20,
     borderRadius: 5,
     width: '80%',

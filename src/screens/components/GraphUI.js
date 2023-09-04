@@ -7,7 +7,7 @@ import Icon3 from 'react-native-vector-icons/AntDesign';
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 import BuySellButton from './BuySellButton';
 import { useNavigation } from '@react-navigation/native';
-
+import LinearGradient from 'react-native-linear-gradient';
 
 import { useRoute } from '@react-navigation/native';
 import { LineChart } from "react-native-gifted-charts"
@@ -112,30 +112,25 @@ const GraphUI = () => {
     ];
 
 
-
-
-
-
     return (
         <View style={{ flex: 1, backgroundColor: "rgba(200,200,200,0.8)" }}>
 
-
             <View >
-                <Image source={require("../../../assets/images/topBg.jpg")} style={{ width: responsiveWidth(100), height: responsiveHeight(20), position: 'absolute' }} />
+                <Image source={require("../../../assets/images/topBg.jpg")} style={{ width: responsiveWidth(100), height: responsiveHeight(40), position: 'absolute', }} />
                 <View style={styles.searchContainer}>
                     <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'row', gap: 40 }}>
                         <View >
                             <TouchableOpacity onPress={handleGoBack} style={styles.backIcon}>
                                 <Icon
                                     name="left"
-                                    size={responsiveFontSize(2)}
-                                    color={COLORS.white}
+                                    size={responsiveFontSize(3)}
+                                    color={COLORS.black}
                                 />
                             </TouchableOpacity>
                         </View>
                         <View style={{ justifyContent: "center", alignItems: "center" }}>
                             <Text style={{ fontSize: responsiveFontSize(2.5), fontWeight: '700', color: COLORS.white }}>{selectedItem.trade_name}</Text>
-                            <Text style={styles.headingText}>₹ {selectedItem.price}</Text>
+                            <Text style={{ color: '#fff', fontSize: responsiveFontSize(2.2) }}>₹ {selectedItem.price}</Text>
                         </View>
                     </View>
                     <TouchableOpacity onPress={() => console.log("notification")}>
@@ -148,103 +143,101 @@ const GraphUI = () => {
 
                 </View>
             </View>
+            {/* header Ui end here */}
 
+            <View style={{ width: responsiveWidth(100), height: responsiveHeight(100), backgroundColor: '#fff', alignSelf: 'center', borderTopLeftRadius: responsiveWidth(15), borderTopRightRadius: responsiveWidth(15) }}>
 
+                <View style={styles.lowHigh}>
+                    <View style={{ borderRightWidth: 2, borderColor: COLORS.primary, paddingVertical: 15 }}>
+                        <View style={{ paddingRight: 10, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                            <View style={{ width: responsiveWidth(8), height: responsiveHeight(4), backgroundColor: "rgba(104,195,163,0.5)", justifyContent: 'center', alignItems: 'center', borderRadius: responsiveWidth(6), marginRight: responsiveWidth(1) }}>
+                                <Icon
+                                    name="arrowup"
+                                    size={responsiveFontSize(3)}
+                                    color={'green'}
+                                />
+                            </View>
 
-            {/* <View style={styles.searchContainer}> */}
+                            <Text style={[styles.headingText, { fontSize: responsiveFontSize(2.5), color: '#000' }]}>
+                                {selectedItem.price}
+                            </Text>
+                        </View>
 
-
-            {/* </View> */}
-
-
-
-            <View style={styles.lowHigh}>
-
-                <View style={{ borderRightWidth: 2, borderColor: COLORS.primary, paddingVertical: 15 }}>
-                    <View style={{ paddingRight: 10, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                        <View style={{ width: responsiveWidth(8), height: responsiveHeight(4), backgroundColor: "rgba(104,195,163,0.5)", justifyContent: 'center', alignItems: 'center', borderRadius: responsiveWidth(6), marginRight: responsiveWidth(1) }}>
-                            <Icon
-                                name="arrowup"
-                                size={responsiveFontSize(3)}
-                                color={'green'}
-                            />
+                    </View>
+                    {/* main View */}
+                    <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        <View style={{ flexDirection: 'row', gap: 10, paddingVertical: 10 }}>
+                            <Text style={styles.headingText}>
+                                <Text style={{ color: '#A9A9A9' }}>  Open: </Text>{selectedItem.open}
+                            </Text>
+                            <Text style={styles.headingText}>
+                                <Text style={{ color: '#A9A9A9' }}>  High: </Text>{selectedItem.high}
+                            </Text>
+                        </View>
+                        <View style={{ flexDirection: 'row', alignSelf: 'flex-start' }}>
+                            <Text style={styles.headingText}>
+                                <Text style={{ color: '#A9A9A9' }}>  Low: </Text> {selectedItem.low}
+                            </Text>
                         </View>
 
 
-
-
-
-                        <Text style={[styles.headingText, { fontSize: responsiveFontSize(2.5), color: '#ffff' }]}>
-                            {selectedItem.price}
-                        </Text>
-                    </View>
-
-                </View>
-                {/* main View */}
-                <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    <View style={{ flexDirection: 'row', gap: 10, paddingVertical: 10 }}>
-                        <Text style={styles.headingText}>
-                            <Text style={{ color: '#A9A9A9' }}>  Open: </Text>{selectedItem.open}
-                        </Text>
-                        <Text style={styles.headingText}>
-                            <Text style={{ color: '#A9A9A9' }}>  High: </Text>{selectedItem.high}
-                        </Text>
-                    </View>
-                    <View style={{ flexDirection: 'row', alignSelf: 'flex-start' }}>
-                        <Text style={styles.headingText}>
-                            <Text style={{ color: '#A9A9A9' }}>  Low: </Text> {selectedItem.low}
-                        </Text>
                     </View>
 
 
                 </View>
 
+                {/* Graph Ui Here */}
+
+                <LinearGradient start={{ x: -0.1, y: 0.8 }} end={{ x: 1, y: 1 }} colors={["#4D5DFB", "#08C8F6"]} style={{
+                    marginTop: responsiveHeight(3),
+                    paddingVertical: 50,
+                    width: responsiveWidth(100),
+                    height: responsiveHeight(50),
+                    alignSelf: 'center',
+                    borderRadius: responsiveWidth(3),
+                    shadowColor: '#000',
+                    elevation: 5,
+
+                }}>
+                    <LineChart
+                        thickness={6}
+                        color="#07BAD1"
+                        maxValue={600}
+                        noOfSections={3}
+                        areaChart
+                        yAxisTextStyle={{ color: 'lightgray' }}
+                        data={data}
+                        curved
+                        startFillColor={'rgb(84,219,234)'}
+                        endFillColor={'rgb(84,219,234)'}
+                        startOpacity={0.4}
+                        endOpacity={0.4}
+                        spacing={38}
+                        // backgroundColor='#616DBC'
+                        rulesColor="gray"
+                        rulesType="solid"
+                        initialSpacing={10}
+                        yAxisColor="lightgray"
+                        xAxisColor="lightgray"
+                        dataPointsHeight={20}
+                        dataPointsWidth={20}
+                    />
+                </LinearGradient>
+
+                {/* Buy & Sell Button  */}
+                <View style={styles.buttonContainer}>
+                    <TouchableOpacity onPress={() => navigation.navigate('BottomSheet')}>
+                        <BuySellButton label='Buy' backgroundColor='green' />
+                    </TouchableOpacity>
+                    <TouchableOpacity>
+
+                        <BuySellButton label='Sell' backgroundColor="red" />
+                    </TouchableOpacity>
+                </View>
 
             </View>
 
-            {/* Graph Ui Here */}
-            <View style={{
-                marginTop: 70,
-                paddingVertical: 50,
-                backgroundColor: '#616DBC',
-                width: responsiveWidth(95),
-                alignSelf: 'center',
-                borderRadius: responsiveWidth(5)
-            }}>
-                <LineChart
-                    thickness={6}
-                    color="#07BAD1"
-                    maxValue={600}
-                    noOfSections={3}
-                    areaChart
-                    yAxisTextStyle={{ color: 'lightgray' }}
-                    data={data}
-                    curved
-                    startFillColor={'rgb(84,219,234)'}
-                    endFillColor={'rgb(84,219,234)'}
-                    startOpacity={0.4}
-                    endOpacity={0.4}
-                    spacing={38}
-                    // backgroundColor='#616DBC'
-                    rulesColor="gray"
-                    rulesType="solid"
-                    initialSpacing={10}
-                    yAxisColor="lightgray"
-                    xAxisColor="lightgray"
-                    dataPointsHeight={20}
-                    dataPointsWidth={20}
-                />
-            </View>
-            {/* Buy & Sell Button  */}
-            <View style={styles.buttonContainer}>
-                <TouchableOpacity onPress={() => navigation.navigate('BottomSheet')}>
-                    <BuySellButton label='Buy' backgroundColor='#4BBEC2' />
-                </TouchableOpacity>
-                <TouchableOpacity>
 
-                    <BuySellButton label='Sell' backgroundColor="#D36363" />
-                </TouchableOpacity>
-            </View>
 
         </View>
     )
@@ -258,12 +251,14 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
         paddingHorizontal: responsiveWidth(5),
         paddingVertical: responsiveWidth(3),
-        height: responsiveHeight(20)
+        height: responsiveHeight(20),
+        paddingTop: responsiveHeight(5)
+
     },
     headingText: {
         fontSize: responsiveFontSize(2),
         fontWeight: '500',
-        color: COLORS.white,
+        color: COLORS.black,
     },
     upDown: {
         width: responsiveWidth(18),
@@ -277,18 +272,16 @@ const styles = StyleSheet.create({
 
     lowHigh: {
         display: "flex",
-        position: 'absolute',
-        top: responsiveHeight(14),
         width: responsiveWidth(95),
         height: responsiveHeight(12),
-        backgroundColor: "rgba(57,73,171,1)",
+        backgroundColor: '#fff',
         justifyContent: 'center',
         alignItems: 'center',
         alignSelf: 'center',
         borderWidth: 1,
         borderColor: "rgba(200,200,200,0.5)",
-
-
+        shadowColor: 'black',
+        elevation: '10',
         flexDirection: 'row',
         gap: 20,
         borderRadius: responsiveWidth(2),
@@ -310,8 +303,7 @@ const styles = StyleSheet.create({
         color: COLORS.white,
     },
     buttonContainer: {
-        position: 'absolute',
-        bottom: 0,
+
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'flex-end',
@@ -319,15 +311,16 @@ const styles = StyleSheet.create({
         paddingHorizontal: responsiveWidth(5),
         paddingVertical: responsiveHeight(4),
         borderTopLeftRadius: responsiveWidth(10),
-        // backgroundColor: COLORS.secondary,
+
 
     },
     backIcon: {
         justifyContent: 'center',
         alignItems: 'center',
-        width: responsiveWidth(8),
-        height: responsiveWidth(8),
-        borderRadius: responsiveWidth(4),
-        backgroundColor: "#616DBC",
+        width: responsiveWidth(9),
+        height: responsiveWidth(9),
+        borderRadius: responsiveWidth(4.4),
+        // backgroundColor: "#616DBC",
+        backgroundColor: '#fff'
     }
 })
