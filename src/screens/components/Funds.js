@@ -15,7 +15,7 @@ import DocumentPicker from 'react-native-document-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 // import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import {useNavigation} from '@react-navigation/native';
-
+import Icon from 'react-native-vector-icons/Entypo';
 // import {COLORS, icons, SIZES} from '../../constants';
 import {postData, postData3} from '../../constants/hooks/ApiHelper';
 import {
@@ -24,7 +24,8 @@ import {
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 import axios from 'axios';
-import { COLORS } from '../../constants/theme';
+import {COLORS} from '../../constants/theme';
+import LinearGradient from 'react-native-linear-gradient';
 
 const Funds = () => {
   const [showQRCode, setShowQRCode] = useState(false);
@@ -59,8 +60,7 @@ const Funds = () => {
         'https://scripts.bulleyetrade.com/api/mobile/balance',
         config,
       );
-      setUserFund(res.data.balance)
-
+      setUserFund(res.data.balance);
     } catch (error) {
       console.log(error);
     }
@@ -73,8 +73,6 @@ const Funds = () => {
 
     return () => clearInterval(interval);
   }, []);
-
-
 
   const depositeUi = ({item}) => {
     return (
@@ -301,120 +299,168 @@ const Funds = () => {
   return (
     <ScrollView
       style={{
-        backgroundColor: COLORS.mainBgColor,
+        backgroundColor: COLORS.primary,
         flex: 1,
       }}>
       <View
         style={{
-          position: 'relative',
-          width: responsiveWidth(94),
-          height: responsiveHeight(12),
-          backgroundColor: COLORS.bgColor,
-          marginTop: responsiveHeight(2),
-          marginLeft: 5,
-          borderRadius: 5,
-          display: 'flex',
+          flex: 1,
           justifyContent: 'center',
-          alignItems: 'center',
+          width: responsiveWidth(100),
+          backgroundColor: '#fff',
+          marginTop: responsiveHeight(2),
+          borderTopLeftRadius: responsiveWidth(8),
+          borderTopRightRadius: responsiveWidth(8),
         }}>
-        <View
+        <LinearGradient
+          colors={['#fff', '#cccccc']} // Define your gradient colors here
+          start={{x: 0, y: 1}} // Start point of the gradient
+          end={{x: 1, y: 0}}
           style={{
-            marginTop: 10,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <Text style={{fontSize: responsiveFontSize(2), color: '#000'}}>
-            Trading Balance
-          </Text>
-          <Text
-            style={{
-              fontSize: responsiveFontSize(2.5),
-              color: 'blue',
-              fontWeight: '600',
-              paddingTop: responsiveHeight(1),
-            }}>
-            ₹ {userFund}
-          </Text>
-        </View>
-      </View>
-
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-evenly',
-          alignItems: 'center',
-          marginTop: responsiveWidth(6),
-        }}>
-        <TouchableOpacity
-          style={{
-            width: responsiveWidth(35),
-            height: responsiveHeight(6),
-            backgroundColor: '#52AD2D',
-            borderRadius: responsiveWidth(2),
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexDirection: 'row',
-            marginRight: responsiveWidth(5),
-          }}
-          onPress={handleAddFunds}>
-          <Image
-            // source={icons.plus}
-            style={{
-              width: responsiveWidth(4),
-              height: responsiveHeight(2),
-              tintColor: '#fff',
-            }}
-          />
-          <Text
-            style={{
-              marginLeft: responsiveWidth(4),
-              color: COLORS.white,
-              fontSize: responsiveFontSize(2),
-            }}>
-            Add Funds
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={{
-            width: responsiveWidth(35),
-            height: responsiveHeight(6),
-            backgroundColor: '#4D6BD5',
-            borderRadius: responsiveWidth(2),
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexDirection: 'row',
-          }}
-          onPress={handleWithdraw}>
-          <Image
-            // source={icons.withdraw}
-            style={{
-              width: responsiveWidth(4),
-              height: responsiveHeight(2),
-              tintColor: '#fff',
-            }}
-          />
-          <Text
-            style={{
-              marginLeft: responsiveWidth(4),
-              color: COLORS.white,
-              fontSize: responsiveFontSize(2),
-            }}>
-            Withdraw
-          </Text>
-        </TouchableOpacity>
-      </View>
-
-      {showQRCode ? (
-        <View
-          style={{
+            position: 'relative',
+            width: responsiveWidth(90),
+            height: responsiveHeight(20),
+            backgroundColor: COLORS.white,
+            marginTop: responsiveHeight(2),
+            marginLeft: 5,
+            borderRadius: responsiveWidth(4),
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            marginTop: responsiveHeight(2),
+            marginTop: responsiveHeight(7),
+            alignSelf: 'center',
+            shadowColor: '#000',
+            elevation: 5,
           }}>
-          {/* Render QR code image here */}
-          {/* <Text
+          <View
+            style={{
+              width: responsiveWidth(25),
+              height: responsiveWidth(25),
+              borderRadius: responsiveWidth(12.5),
+              backgroundColor: '#7CB9E8',
+              position: 'absolute',
+              top: responsiveHeight(-5.3),
+            }}>
+            <View
+              style={{
+                width: responsiveWidth(20),
+                height: responsiveWidth(20),
+                borderRadius: responsiveWidth(10),
+                backgroundColor: '#0066b2',
+                justifyContent: 'center',
+                alignItems: 'center',
+                alignSelf: 'center',
+                marginTop: responsiveHeight(1.2),
+                // position: 'absolute',
+                // top: responsiveHeight(-5.3),
+              }}>
+              <Icon name="wallet" size={35} color={'white'} />
+            </View>
+          </View>
+
+          <View
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              paddingTop: responsiveHeight(4),
+            }}>
+            <Text
+              style={{
+                fontSize: responsiveFontSize(2.5),
+                color: '#000',
+                fontWeight: '700',
+              }}>
+              Total Balance
+            </Text>
+            <Text
+              style={{
+                fontSize: responsiveFontSize(2.2),
+                color: 'blue',
+                fontWeight: '700',
+                paddingTop: responsiveHeight(1),
+              }}>
+              ₹ 7,50,000
+            </Text>
+          </View>
+        </LinearGradient>
+        {/* </LinearGradient> */}
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-evenly',
+            alignItems: 'center',
+            marginTop: responsiveWidth(6),
+          }}>
+          <TouchableOpacity
+            style={{
+              width: responsiveWidth(35),
+              height: responsiveHeight(6),
+              backgroundColor: '#52AD2D',
+              borderRadius: responsiveWidth(2),
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexDirection: 'row',
+              marginRight: responsiveWidth(5),
+            }}
+            onPress={handleAddFunds}>
+            <Image
+              // source={icons.plus}
+              style={{
+                width: responsiveWidth(4),
+                height: responsiveHeight(2),
+                tintColor: '#fff',
+              }}
+            />
+            <Text
+              style={{
+                marginLeft: responsiveWidth(4),
+                color: COLORS.white,
+                fontSize: responsiveFontSize(2),
+              }}>
+              Add Funds
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={{
+              width: responsiveWidth(35),
+              height: responsiveHeight(6),
+              backgroundColor: '#4D6BD5',
+              borderRadius: responsiveWidth(2),
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexDirection: 'row',
+            }}
+            onPress={handleWithdraw}>
+            <Image
+              // source={icons.withdraw}
+              style={{
+                width: responsiveWidth(4),
+                height: responsiveHeight(2),
+                tintColor: '#fff',
+              }}
+            />
+            <Text
+              style={{
+                marginLeft: responsiveWidth(4),
+                color: COLORS.white,
+                fontSize: responsiveFontSize(2),
+              }}>
+              Withdraw
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {showQRCode ? (
+          <View
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginTop: responsiveHeight(2),
+            }}>
+            {/* Render QR code image here */}
+            {/* <Text
             style={{
               color: '#000',
               fontSize: responsiveFontSize(2),
@@ -422,7 +468,7 @@ const Funds = () => {
             }}>
             Scan QR For Add Fund
           </Text> */}
-          {/* <Image
+            {/* <Image
             source={require('../../assets/Image/QR.png')}
             style={{
               width: responsiveWidth(30),
@@ -432,8 +478,8 @@ const Funds = () => {
             }}
           /> */}
 
-          <View style={{marginVertical: responsiveHeight(1)}}>
-            {/* <View
+            <View style={{marginVertical: responsiveHeight(1)}}>
+              {/* <View
               style={{
                 backgroundColor: COLORS.bgColor,
                 display: 'flex',
@@ -444,16 +490,35 @@ const Funds = () => {
                 marginHorizontal: responsiveWidth(2),
               }}
             > */}
-            <View >
-              <View style={{marginLeft: responsiveWidth(5),display:'flex',justifyContent:'center'}}>
-                <Text style={{fontSize: responsiveFontSize(3), color: '#000'}}>
-                 Scan & Deposit 
-                </Text> 
-                <LottieView source={require('../../../assets/downLotie.json')} autoPlay loop />
-              </View>
-              <Image source={require("../../../assets/images/CarouselImage/Carousel01.jpg")} 
-              style={{width:responsiveWidth(50),height:responsiveHeight(40),alignSelf:'center',marginVertical:responsiveHeight(1),borderWidth:responsiveWidth(0.2),borderRadius:responsiveWidth(2)}}/>
-              {/* <View
+              <View>
+                <View
+                  style={{
+                    marginLeft: responsiveWidth(5),
+                    display: 'flex',
+                    justifyContent: 'center',
+                  }}>
+                  <Text
+                    style={{fontSize: responsiveFontSize(3), color: '#000'}}>
+                    Scan & Deposit
+                  </Text>
+                  <LottieView
+                    source={require('../../../assets/downLotie.json')}
+                    autoPlay
+                    loop
+                  />
+                </View>
+                <Image
+                  source={require('../../../assets/images/CarouselImage/Carousel01.jpg')}
+                  style={{
+                    width: responsiveWidth(50),
+                    height: responsiveHeight(40),
+                    alignSelf: 'center',
+                    marginVertical: responsiveHeight(1),
+                    borderWidth: responsiveWidth(0.2),
+                    borderRadius: responsiveWidth(2),
+                  }}
+                />
+                {/* <View
                 style={{
                   marginTop: responsiveHeight(1),
                   marginLeft: responsiveWidth(0.5),
@@ -504,129 +569,130 @@ const Funds = () => {
                   </Text>
                 </View>
               </View> */}
-            </View>
-            
-            <View
-              style={{
-                width: responsiveWidth(15),
-                height: responsiveWidth(6),
-                backgroundColor: 'blue',
-                borderRadius: responsiveWidth(10),
-                paddingTop: responsiveHeight(0),
-                marginTop: responsiveHeight(1.4),
-                justifyContent: 'center',
-                alignItems: 'center',
-                alignSelf: 'center',
-              }}>
-              <Text
-                style={{
-                  fontSize: responsiveFontSize(2.3),
-                  color: '#fff',
-                  fontWeight: '400',
-                }}>
-                OR
-              </Text>
-            </View>
-            <View style={{marginLeft: responsiveWidth(5)}}>
-              <View style={{marginTop: responsiveHeight(1.2)}}>
-                <Text style={{fontSize: responsiveFontSize(3), color: '#000'}}>
-                  Deposit By UPI ID :-
-                </Text>
               </View>
+
               <View
                 style={{
-                  marginTop: responsiveHeight(1),
-                  marginLeft: responsiveWidth(0.5),
+                  width: responsiveWidth(15),
+                  height: responsiveWidth(6),
+                  backgroundColor: 'blue',
+                  borderRadius: responsiveWidth(10),
+                  paddingTop: responsiveHeight(0),
+                  marginTop: responsiveHeight(1.4),
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  alignSelf: 'center',
                 }}>
+                <Text
+                  style={{
+                    fontSize: responsiveFontSize(2.3),
+                    color: '#fff',
+                    fontWeight: '400',
+                  }}>
+                  OR
+                </Text>
+              </View>
+              <View style={{marginLeft: responsiveWidth(5)}}>
+                <View style={{marginTop: responsiveHeight(1.2)}}>
+                  <Text
+                    style={{fontSize: responsiveFontSize(3), color: '#000'}}>
+                    Deposit By UPI ID :-
+                  </Text>
+                </View>
                 <View
                   style={{
-                    width: responsiveWidth(90),
-                    height: responsiveWidth(10),
-                    backgroundColor: COLORS.bgColor,
-                    paddingLeft: responsiveWidth(5),
-                    borderRadius: responsiveWidth(2),
-                    paddingTop: responsiveHeight(1),
+                    marginTop: responsiveHeight(1),
+                    marginLeft: responsiveWidth(0.5),
                   }}>
-                  <Text
+                  <View
                     style={{
-                      fontSize: responsiveFontSize(2),
-                      color: '#000',
-                      paddingVertical: responsiveHeight(0.2),
+                      width: responsiveWidth(90),
+                      height: responsiveWidth(10),
+                      backgroundColor: COLORS.bgColor,
+                      paddingLeft: responsiveWidth(5),
+                      borderRadius: responsiveWidth(2),
+                      paddingTop: responsiveHeight(1),
                     }}>
-                    UPI ID Address : bullseye.ltd@axl
-                  </Text>
+                    <Text
+                      style={{
+                        fontSize: responsiveFontSize(2),
+                        color: '#000',
+                        paddingVertical: responsiveHeight(0.2),
+                      }}>
+                      UPI ID Address : bullseye.ltd@axl
+                    </Text>
+                  </View>
                 </View>
               </View>
-            </View>
-            <Text
-              style={{
-                color: '#000',
-                fontSize: responsiveFontSize(1.7),
-                fontWeight: '700',
-                marginHorizontal: responsiveWidth(4),
-                marginTop: responsiveHeight(3),
-              }}>
-              Upload Screenshot
-            </Text>
-            {/* </View> */}
-            <View
-              style={{
-                width: responsiveWidth(95),
-                height: responsiveHeight(6),
-                borderRadius: responsiveWidth(1),
-                borderWidth: 0.5,
-                borderColor: '#757575',
-                marginTop: responsiveHeight(2),
-                marginHorizontal: 10,
-                display: 'flex',
-                alignItems: 'center',
-                flexDirection: 'row',
-                alignSelf: 'center',
-              }}>
-              <TouchableOpacity onPress={SelectDOC}>
-                <View
-                  style={{
-                    width: responsiveWidth(18),
-                    height: responsiveWidth(7),
-                    borderRadius: responsiveWidth(1),
-                    borderWidth: 0.5,
-                    borderColor: '#757575',
-                    marginLeft: responsiveWidth(1.5),
-                    marginTop: responsiveHeight(0.6),
-                    backgroundColor: '#ACC8E5',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    alignSelf: 'center',
-                  }}>
-                  <Text
-                    style={{color: '#000', fontSize: responsiveFontSize(2)}}>
-                    Select
-                  </Text>
-                </View>
-              </TouchableOpacity>
-              <View style={{paddingHorizontal: 5}}>
-                <TextInput
-                  value={doc ? doc.name : ''}
-                  onChangeText={handleDocInputChange}
-                  numberOfLines={2}
-                  maxLength={15}
-                  multiline={true}
-                  style={{color: doc ? 'black' : 'red'}}
-                />
-              </View>
-            </View>
-            {error ? (
               <Text
                 style={{
-                  fontSize: responsiveFontSize(1.6),
-                  color: 'red',
-                  margin: responsiveWidth(3),
+                  color: '#000',
+                  fontSize: responsiveFontSize(1.7),
+                  fontWeight: '700',
+                  marginHorizontal: responsiveWidth(4),
+                  marginTop: responsiveHeight(3),
                 }}>
-                {error}
+                Upload Screenshot
               </Text>
-            ) : null}
+              {/* </View> */}
+              <View
+                style={{
+                  width: responsiveWidth(95),
+                  height: responsiveHeight(6),
+                  borderRadius: responsiveWidth(1),
+                  borderWidth: 0.5,
+                  borderColor: '#757575',
+                  marginTop: responsiveHeight(2),
+                  marginHorizontal: 10,
+                  display: 'flex',
+                  alignItems: 'center',
+                  flexDirection: 'row',
+                  alignSelf: 'center',
+                }}>
+                <TouchableOpacity onPress={SelectDOC}>
+                  <View
+                    style={{
+                      width: responsiveWidth(18),
+                      height: responsiveWidth(7),
+                      borderRadius: responsiveWidth(1),
+                      borderWidth: 0.5,
+                      borderColor: '#757575',
+                      marginLeft: responsiveWidth(1.5),
+                      marginTop: responsiveHeight(0.6),
+                      backgroundColor: '#ACC8E5',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      alignSelf: 'center',
+                    }}>
+                    <Text
+                      style={{color: '#000', fontSize: responsiveFontSize(2)}}>
+                      Select
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+                <View style={{paddingHorizontal: 5}}>
+                  <TextInput
+                    value={doc ? doc.name : ''}
+                    onChangeText={handleDocInputChange}
+                    numberOfLines={2}
+                    maxLength={15}
+                    multiline={true}
+                    style={{color: doc ? 'black' : 'red'}}
+                  />
+                </View>
+              </View>
+              {error ? (
+                <Text
+                  style={{
+                    fontSize: responsiveFontSize(1.6),
+                    color: 'red',
+                    margin: responsiveWidth(3),
+                  }}>
+                  {error}
+                </Text>
+              ) : null}
 
-            {/* <View
+              {/* <View
               style={{
                 backgroundColor: COLORS.bgColor,
                 display: 'flex',
@@ -638,27 +704,132 @@ const Funds = () => {
                 marginTop: responsiveHeight(2),
               }}
             > */}
+              <Text
+                style={{
+                  color: '#000',
+                  fontSize: responsiveFontSize(1.7),
+                  paddingHorizontal: responsiveWidth(4),
+                  marginTop: responsiveHeight(2),
+                  fontWeight: '700',
+                }}>
+                Enter Amount Here
+              </Text>
+              {/* </View> */}
+
+              <TextInput
+                placeholder="Enter Amount"
+                value={amount}
+                onChangeText={setAmount}
+                keyboardType="numeric"
+                placeholderTextColor={'gray'}
+                style={{
+                  backgroundColor: COLORS.bgColor,
+                  width: responsiveWidth(95),
+                  borderRadius: responsiveWidth(1.2),
+                  marginTop: responsiveHeight(1.5),
+                  marginHorizontal: responsiveWidth(2),
+                  fontSize: responsiveFontSize(2.2),
+                  paddingLeft: responsiveWidth(3),
+                  color: '#000',
+                }}
+              />
+            </View>
+
+            <TouchableOpacity
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: responsiveWidth(40),
+                height: responsiveHeight(6),
+                backgroundColor: 'blue',
+                borderRadius: responsiveWidth(10),
+                marginTop: responsiveHeight(1),
+              }}
+              onPress={handleDocumentSubmit}>
+              <Text
+                style={{
+                  color: '#fff',
+                  fontSize: responsiveFontSize(2.2),
+                  fontWeight: '700',
+                }}>
+                Submit
+              </Text>
+            </TouchableOpacity>
+            <View
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                flexDirection: 'row',
+                backgroundColor: COLORS.bgColor,
+                width: responsiveWidth(100),
+                height: responsiveHeight(4),
+                paddingHorizontal: responsiveWidth(7),
+                marginTop: responsiveHeight(4),
+              }}>
+              <Text
+                style={{
+                  color: COLORS.black,
+                  alignSelf: 'center',
+                  fontWeight: '600',
+                  fontSize: responsiveFontSize(2),
+                }}>
+                Date
+              </Text>
+              <Text
+                style={{
+                  color: COLORS.black,
+                  alignSelf: 'center',
+                  fontWeight: '600',
+                  fontSize: responsiveFontSize(2),
+                }}>
+                Amount
+              </Text>
+              <Text
+                style={{
+                  color: COLORS.black,
+                  alignSelf: 'center',
+                  fontWeight: '600',
+                  fontSize: responsiveFontSize(2),
+                }}>
+                Status
+              </Text>
+            </View>
+            <FlatList
+              data={depositResponse}
+              renderItem={depositeUi}
+              keyExtractor={item => item.id.toString()}
+            />
+          </View>
+        ) : withdraw ? (
+          <View
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginTop: responsiveHeight(5),
+            }}>
             <Text
               style={{
+                fontSize: responsiveFontSize(2.5),
+                fontWeight: '500',
                 color: '#000',
-                fontSize: responsiveFontSize(1.7),
-                paddingHorizontal: responsiveWidth(4),
-                marginTop: responsiveHeight(2),
-                fontWeight: '700',
+                marginVertical: responsiveHeight(2),
               }}>
               Enter Amount Here
             </Text>
+
             {/* </View> */}
 
             <TextInput
               placeholder="Enter Amount"
-              value={amount}
-              onChangeText={setAmount}
+              value={withdrawAmount}
+              onChangeText={withdrawHandle}
               keyboardType="numeric"
               placeholderTextColor={'gray'}
               style={{
                 backgroundColor: COLORS.bgColor,
-                width: responsiveWidth(95),
+                width: responsiveWidth(70),
                 borderRadius: responsiveWidth(1.2),
                 marginTop: responsiveHeight(1.5),
                 marginHorizontal: responsiveWidth(2),
@@ -667,206 +838,102 @@ const Funds = () => {
                 color: '#000',
               }}
             />
-          </View>
 
-          <TouchableOpacity
+            <TouchableOpacity
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: responsiveWidth(50),
+                height: responsiveHeight(6),
+                backgroundColor: 'blue',
+                borderRadius: responsiveWidth(10),
+                marginTop: responsiveHeight(4),
+              }}
+              onPress={withdrawApi}>
+              <Text
+                style={{
+                  color: '#fff',
+                  fontSize: responsiveFontSize(1.7),
+                  fontWeight: '700',
+                }}>
+                Withdraw Request
+              </Text>
+            </TouchableOpacity>
+            <View
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                flexDirection: 'row',
+                backgroundColor: COLORS.bgColor,
+                width: responsiveWidth(100),
+                height: responsiveHeight(4),
+                paddingHorizontal: responsiveWidth(7),
+                marginTop: responsiveHeight(4),
+              }}>
+              <Text
+                style={{
+                  color: COLORS.black,
+                  alignSelf: 'center',
+                  fontWeight: '600',
+                  fontSize: responsiveFontSize(2),
+                }}>
+                Date
+              </Text>
+              <Text
+                style={{
+                  color: COLORS.black,
+                  alignSelf: 'center',
+                  fontWeight: '600',
+                  fontSize: responsiveFontSize(2),
+                }}>
+                Amount
+              </Text>
+              <Text
+                style={{
+                  color: COLORS.black,
+                  alignSelf: 'center',
+                  fontWeight: '600',
+                  fontSize: responsiveFontSize(2),
+                }}>
+                Status
+              </Text>
+            </View>
+            <FlatList
+              data={withdrawResponse}
+              renderItem={depositeUi}
+              keyExtractor={item => item.id.toString()}
+            />
+          </View>
+        ) : (
+          <View
             style={{
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
-              width: responsiveWidth(40),
-              height: responsiveHeight(6),
-              backgroundColor: 'blue',
-              borderRadius: responsiveWidth(10),
-              marginTop: responsiveHeight(1),
-            }}
-            onPress={handleDocumentSubmit}>
-            <Text
-              style={{
-                color: '#fff',
-                fontSize: responsiveFontSize(2.2),
-                fontWeight: '700',
-              }}>
-              Submit
-            </Text>
-          </TouchableOpacity>
-          <View
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              flexDirection: 'row',
-              backgroundColor: COLORS.bgColor,
-              width: responsiveWidth(100),
-              height: responsiveHeight(4),
-              paddingHorizontal: responsiveWidth(7),
-              marginTop: responsiveHeight(4),
+              marginTop: responsiveHeight(12),
             }}>
             <Text
               style={{
-                color: COLORS.black,
-                alignSelf: 'center',
-                fontWeight: '600',
-                fontSize: responsiveFontSize(2),
+                fontSize: responsiveFontSize(2.5),
+                fontWeight: '500',
+                color: '#000',
+                marginVertical: responsiveHeight(2),
               }}>
-              Date
+              Please Add Fund
             </Text>
-            <Text
+            <Image
+              source={require('../../../assets/images/arrow.png')}
               style={{
-                color: COLORS.black,
-                alignSelf: 'center',
-                fontWeight: '600',
-                fontSize: responsiveFontSize(2),
-              }}>
-              Amount
-            </Text>
-            <Text
-              style={{
-                color: COLORS.black,
-                alignSelf: 'center',
-                fontWeight: '600',
-                fontSize: responsiveFontSize(2),
-              }}>
-              Status
-            </Text>
+                width: responsiveWidth(60),
+                height: responsiveHeight(30),
+                borderRadius: responsiveHeight(2),
+                // tintColor: '#fff',
+              }}
+            />
           </View>
-          <FlatList
-            data={depositResponse}
-            renderItem={depositeUi}
-            keyExtractor={item => item.id.toString()}
-          />
-        </View>
-      ) : withdraw ? (
-        <View
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            marginTop: responsiveHeight(5),
-          }}>
-          <Text
-            style={{
-              fontSize: responsiveFontSize(2.5),
-              fontWeight: '500',
-              color: '#000',
-              marginVertical: responsiveHeight(2),
-            }}>
-            Enter Amount Here
-          </Text>
-
-          {/* </View> */}
-
-          <TextInput
-            placeholder="Enter Amount"
-            value={withdrawAmount}
-            onChangeText={withdrawHandle}
-            keyboardType="numeric"
-            placeholderTextColor={'gray'}
-            style={{
-              backgroundColor: COLORS.bgColor,
-              width: responsiveWidth(70),
-              borderRadius: responsiveWidth(1.2),
-              marginTop: responsiveHeight(1.5),
-              marginHorizontal: responsiveWidth(2),
-              fontSize: responsiveFontSize(2.2),
-              paddingLeft: responsiveWidth(3),
-              color: '#000',
-            }}
-          />
-
-          <TouchableOpacity
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              width: responsiveWidth(50),
-              height: responsiveHeight(6),
-              backgroundColor: 'blue',
-              borderRadius: responsiveWidth(10),
-              marginTop: responsiveHeight(4),
-            }}
-            onPress={withdrawApi}>
-            <Text
-              style={{
-                color: '#fff',
-                fontSize: responsiveFontSize(1.7),
-                fontWeight: '700',
-              }}>
-              Withdraw Request
-            </Text>
-          </TouchableOpacity>
-          <View
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              flexDirection: 'row',
-              backgroundColor: COLORS.bgColor,
-              width: responsiveWidth(100),
-              height: responsiveHeight(4),
-              paddingHorizontal: responsiveWidth(7),
-              marginTop: responsiveHeight(4),
-            }}>
-            <Text
-              style={{
-                color: COLORS.black,
-                alignSelf: 'center',
-                fontWeight: '600',
-                fontSize: responsiveFontSize(2),
-              }}>
-              Date
-            </Text>
-            <Text
-              style={{
-                color: COLORS.black,
-                alignSelf: 'center',
-                fontWeight: '600',
-                fontSize: responsiveFontSize(2),
-              }}>
-              Amount
-            </Text>
-            <Text
-              style={{
-                color: COLORS.black,
-                alignSelf: 'center',
-                fontWeight: '600',
-                fontSize: responsiveFontSize(2),
-              }}>
-              Status
-            </Text>
-          </View>
-          <FlatList
-            data={withdrawResponse}
-            renderItem={depositeUi}
-            keyExtractor={item => item.id.toString()}
-          />
-        </View>
-      ) : (
-        <View
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            marginTop: responsiveHeight(12),
-          }}>
-          <Text
-            style={{
-              fontSize: responsiveFontSize(2.5),
-              fontWeight: '500',
-              color: '#000',
-              marginVertical: responsiveHeight(2),
-            }}>
-            Please Add Fund
-          </Text>
-          <Image
-            source={require('../../../assets/images/arrow.png')}
-            style={{
-              width: responsiveWidth(60),
-              height: responsiveHeight(30),
-              borderRadius: responsiveHeight(2),
-              // tintColor: '#fff',
-            }}
-          />
-        </View>
-      )}
+        )}
+      </View>
     </ScrollView>
   );
 };

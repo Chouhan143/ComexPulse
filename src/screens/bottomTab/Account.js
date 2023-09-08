@@ -13,6 +13,7 @@ import {
   responsiveFontSize,
 } from 'react-native-responsive-dimensions';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon1 from 'react-native-vector-icons/MaterialCommunityIcons';
 import Font5 from 'react-native-vector-icons/FontAwesome5';
 import Font6 from 'react-native-vector-icons/FontAwesome6';
 import Iconic from 'react-native-vector-icons/Ionicons';
@@ -83,10 +84,12 @@ const Account = () => {
 
           <View style={styles.item}>
             <TouchableOpacity style={styles.item_icon}>
-              <Icon name="star" size={25} color={'black'} />
+              <Icon1 name="cash-refund" size={25} color={'black'} />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.item_content}>
-              <Text style={styles.item_text}>Watchlist</Text>
+            <TouchableOpacity
+              style={styles.item_content}
+              onPress={() => navigation.navigate('Funds')}>
+              <Text style={styles.item_text}>Funds</Text>
             </TouchableOpacity>
           </View>
 

@@ -5,6 +5,7 @@ import { useFlipper } from '@react-navigation/devtools';
 import { Provider } from 'react-redux';
 import { store } from './src/redux/store';
 import { PaperProvider } from 'react-native-paper';
+
 export default function App() {
   const navigationRef = useNavigationContainerRef();
 
