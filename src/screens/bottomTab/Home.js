@@ -16,42 +16,36 @@ import {useNavigation} from '@react-navigation/native';
 import Carousel from '../components/Carousel';
 import {useSelector, useDispatch} from 'react-redux';
 import {fetchCoinData} from '../../redux/market/coinSlice';
-import { COLORS } from '../../constants/theme';
+import {COLORS} from '../../constants/theme';
 import axios from 'axios';
 const Home = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const StocksData = useSelector(state => state.coin.data);
-// const [data,setData]=useState('')
+  // const [data,setData]=useState('')
 
+  //  const commodityData =  async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         'https://scripts.bulleyetrade.com/api/getMarket',
+  //       );
+  //       const result = response.data.Data;
+  //       setData(result)
+  //       console.log("test api",result);
 
-//  const commodityData =  async () => {
-//     try {
-//       const response = await axios.get(
-//         'https://scripts.bulleyetrade.com/api/getMarket',
-//       );
-//       const result = response.data.Data;
-//       setData(result)
-//       console.log("test api",result);
-     
-      
-//     } catch (error) {
-//       console.log('error test Api', error);
-//       throw error;
-//     }
-//   };
+  //     } catch (error) {
+  //       console.log('error test Api', error);
+  //       throw error;
+  //     }
+  //   };
 
-// useEffect(()=>{
-//   commodityData();
-// },[])
+  // useEffect(()=>{
+  //   commodityData();
+  // },[])
 
-
-
- 
   // Data fetch from the redux
 
   useEffect(() => {
-
     if (!StocksData) {
       dispatch(fetchCoinData());
     }
@@ -66,45 +60,78 @@ const Home = () => {
     return null; // or return a loading indicator
   }
 
-    // Breack data ui 
+  // Breack data ui
 
-    const Part1 = StocksData.slice(0,StocksData.length/4);
-    const part2 = StocksData.slice(StocksData.length / 4, StocksData.length / 2);
-    const part3 = StocksData.slice(StocksData.length / 2, (3 * StocksData.length) / 4);
-    const part4 = StocksData.slice((3 * StocksData.length) / 4);
+  const Part1 = StocksData.slice(0, StocksData.length / 4);
+  const part2 = StocksData.slice(StocksData.length / 4, StocksData.length / 2);
+  const part3 = StocksData.slice(
+    StocksData.length / 2,
+    (3 * StocksData.length) / 4,
+  );
+  const part4 = StocksData.slice((3 * StocksData.length) / 4);
 
-
-    // const Part1 = data.slice(0,data.length/4);
-    // const part2 = data.slice(data.length / 4, data.length / 2);
-    // const part3 = data.slice(data.length / 2, (3 * data.length) / 4);
-    // const part4 = data.slice((3 * StocksData.length) / 4);
-
+  // const Part1 = data.slice(0,data.length/4);
+  // const part2 = data.slice(data.length / 4, data.length / 2);
+  // const part3 = data.slice(data.length / 2, (3 * data.length) / 4);
+  // const part4 = data.slice((3 * StocksData.length) / 4);
 
   // stocksApiDataUi
 
-  const GraphUi = (item) =>{
-    navigation.navigate('GraphUI',{selectedItem:item,});
-  }
-
+  const GraphUi = item => {
+    navigation.navigate('GraphUI', {selectedItem: item});
+  };
 
   const stocksApiDataUi = ({item}) => {
     return (
-      <TouchableOpacity style={[styles.container, styles.searchCommodityBox]} onPress={() => GraphUi(item)} >
-      <View
-        style={[
-          styles.sideLine,
-          {
-            backgroundColor: item.percent_chg < 1 ? 'red' : 'green',
-          },
-        ]}
-      ></View>
-      <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 3 }}>
-        <Text style={{ color: COLORS.headingTextColor, fontSize: responsiveFontSize(1.8), fontWeight: '500' }}>{item.trade_name}</Text>
-        <Text style={{ color: COLORS.textColor, fontSize: responsiveFontSize(1.5) }}>{item.expiry_date}</Text>
-        <Text style={{ color: COLORS.textColor, fontSize: responsiveFontSize(1.4), fontWeight: '500' }}>{item.price}</Text>
-        <Text style={{ color: item.percent_chg < 1 ? 'red' : 'green', fontSize: responsiveFontSize(1.4) }}>{item.percent_chg}%</Text>
-      </View>
-    </TouchableOpacity>
+      <TouchableOpacity
+        style={[styles.container, styles.searchCommodityBox]}
+        onPress={() => GraphUi(item)}>
+        <View
+          style={[
+            styles.sideLine,
+            {
+              backgroundColor: item.percent_chg < 1 ? 'red' : 'green',
+            },
+          ]}></View>
+        <View
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: 3,
+          }}>
+          <Text
+            style={{
+              color: COLORS.headingTextColor,
+              fontSize: responsiveFontSize(1.8),
+              fontWeight: '500',
+            }}>
+            {item.trade_name}
+          </Text>
+          <Text
+            style={{
+              color: COLORS.textColor,
+              fontSize: responsiveFontSize(1.5),
+            }}>
+            {item.expiry_date}
+          </Text>
+          <Text
+            style={{
+              color: COLORS.textColor,
+              fontSize: responsiveFontSize(1.4),
+              fontWeight: '500',
+            }}>
+            {item.price}
+          </Text>
+          <Text
+            style={{
+              color: item.percent_chg < 1 ? 'red' : 'green',
+              fontSize: responsiveFontSize(1.4),
+            }}>
+            {item.percent_chg}%
+          </Text>
+        </View>
+      </TouchableOpacity>
     );
   };
 
@@ -156,29 +183,29 @@ const Home = () => {
             horizontal
             showsHorizontalScrollIndicator={false}
           />
-            <FlatList
+          <FlatList
             data={part2}
             renderItem={stocksApiDataUi}
             keyExtractor={item => item.id.toString()}
             horizontal
             showsHorizontalScrollIndicator={false}
           />
-           <FlatList
+          <FlatList
             data={part3}
             renderItem={stocksApiDataUi}
             keyExtractor={item => item.id.toString()}
             horizontal
             showsHorizontalScrollIndicator={false}
           />
-             <FlatList
+          <FlatList
             data={Part1}
             renderItem={stocksApiDataUi}
             keyExtractor={item => item.id.toString()}
             horizontal
             showsHorizontalScrollIndicator={false}
           />
- </View>
-   {/* Flatlist View End */}
+        </View>
+        {/* Flatlist View End */}
       </View>
     </View>
   );
@@ -206,7 +233,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginHorizontal: 6,
-    backgroundColor: "#3949ab",
+    backgroundColor: '#3949ab',
     width: responsiveWidth(30),
     height: responsiveHeight(10.5),
     borderRadius: 5,

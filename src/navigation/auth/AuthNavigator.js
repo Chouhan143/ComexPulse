@@ -11,7 +11,8 @@ import ProfileEdit from '../../screens/components/ProfileEdit';
 import Funds from '../../screens/components/Funds';
 import BankDetails from '../../screens/components/BankDetails';
 import Help_Support from '../../screens/components/Help_Support';
-
+import Deposit from '../../screens/components/Deposit';
+import Withdraw from '../../screens/components/Withdraw';
 const Stack = createStackNavigator();
 
 function AuthNavigator() {
@@ -62,6 +63,16 @@ function AuthNavigator() {
         name="Funds"
         options={{headerShown: false}}
         component={Funds}
+      />
+      <Stack.Screen
+        name="Deposit"
+        options={{headerShown: false}}
+        component={Deposit}
+      />
+      <Stack.Screen
+        name="Withdraw"
+        options={{headerShown: false}}
+        component={Withdraw}
       />
       <Stack.Screen
         name="Help_Support"
