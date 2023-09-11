@@ -13,6 +13,9 @@ import BankDetails from '../../screens/components/BankDetails';
 import Help_Support from '../../screens/components/Help_Support';
 import Deposit from '../../screens/components/Deposit';
 import Withdraw from '../../screens/components/Withdraw';
+import MobileRegistration from '../../screens/auth/MobileRegistration';
+import MobileOtp from '../../screens/auth/MobileOtp';
+
 const Stack = createStackNavigator();
 
 function AuthNavigator() {
@@ -27,6 +30,16 @@ function AuthNavigator() {
         name="Signup"
         options={{headerShown: false}}
         component={Signup}
+      />
+      <Stack.Screen
+        name="MobileRegistration"
+        options={{headerShown: false}}
+        component={MobileRegistration}
+      />
+      <Stack.Screen
+        name="MobileOtp"
+        options={{headerShown: false}}
+        component={MobileOtp}
       />
       <Stack.Screen
         name="SplaceScreen"
