@@ -15,7 +15,8 @@ import Deposit from '../../screens/components/Deposit';
 import Withdraw from '../../screens/components/Withdraw';
 import MobileRegistration from '../../screens/auth/MobileRegistration';
 import MobileOtp from '../../screens/auth/MobileOtp';
-
+import EmailRegistration from '../../screens/auth/EmailRegistration';
+import EmailOtp from '../../screens/auth/EmailOtp';
 const Stack = createStackNavigator();
 
 function AuthNavigator() {
@@ -40,6 +41,16 @@ function AuthNavigator() {
         name="MobileOtp"
         options={{headerShown: false}}
         component={MobileOtp}
+      />
+      <Stack.Screen
+        name="EmailRegistration"
+        options={{headerShown: false}}
+        component={EmailRegistration}
+      />
+      <Stack.Screen
+        name="EmailOtp"
+        options={{headerShown: false}}
+        component={EmailOtp}
       />
       <Stack.Screen
         name="SplaceScreen"

@@ -13,7 +13,10 @@ import {darkGreen} from '../../constants/ColorConstants';
 import Field from '../../constants/Field';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome6';
+import Icon1 from 'react-native-vector-icons/MaterialCommunityIcons';
+
 import OtpTextInpute from '../components/OtpTextInpute';
+import {TextInput} from 'react-native-paper';
 
 import {
   responsiveFontSize,
@@ -28,23 +31,12 @@ import Animated, {
 } from 'react-native-reanimated';
 import {COLORS} from '../../constants/theme';
 
-const MobileOtp = () => {
+const EmailOtp = () => {
   const navigation = useNavigation();
   const goBack = () => {
-    // navigation.navigate('MobileRegistration');
-    scale.value = withTiming(0, {duration: 900});
-    animation.value = withTiming(0, {duration: 900});
-    setTimeout(() => {
-      navigation.navigate('MobileRegistration');
-    }, 1000);
+    navigation.goBack();
   };
   const [text, setText] = React.useState('');
-
-  const [otpValue, setOtpValue] = useState('');
-
-  const handleOtpInputChange = value => {
-    setOtpValue(value);
-  };
 
   // Animation code
   const animation = useSharedValue(0);
@@ -86,7 +78,7 @@ const MobileOtp = () => {
               //   marginTop: responsiveHeight(1),
               letterSpacing: responsiveWidth(0.5),
             }}>
-            OTP Verification
+            Email Otp
           </Text>
           <Text
             style={{
@@ -95,7 +87,7 @@ const MobileOtp = () => {
               fontWeight: 'bold',
               marginBottom: responsiveHeight(1.5),
             }}>
-            Otp Send on your number..
+            Send Otp to ex***@gmail.com
           </Text>
         </View>
         {/* main White container */}
@@ -127,20 +119,30 @@ const MobileOtp = () => {
               }}
             />
             <View style={{position: 'absolute', top: responsiveHeight(37)}}>
-              <Text
-                style={{
-                  color: COLORS.black,
-                  fontSize: responsiveFontSize(2.5),
-                  fontWeight: '500',
-                  paddingHorizontal: responsiveWidth(5),
-                  textAlign: 'center',
-                  marginTop: responsiveHeight(3),
-                }}>
-                An authentication code has been sent your number
-              </Text>
-
-              <View style={{marginTop: responsiveHeight(4)}}>
-                <OtpTextInpute onOtpInputChange={handleOtpInputChange} />
+              <View
+                style={{flexDirection: 'row', marginTop: responsiveHeight(2)}}>
+                <Icon1
+                  name="cellphone-message"
+                  size={30}
+                  color={COLORS.secondary}
+                />
+                <Text
+                  style={{
+                    color: COLORS.black,
+                    fontSize: responsiveFontSize(2.5),
+                    fontWeight: '500',
+                    paddingHorizontal: responsiveWidth(1),
+                  }}>
+                  Enter Your Email Address
+                </Text>
+              </View>
+              <View style={{marginTop: responsiveHeight(1)}}>
+                <TextInput
+                  label="Email Otp"
+                  value={text}
+                  onChangeText={text => setText(text)}
+                  mode="outlined"
+                />
               </View>
 
               <View
@@ -153,7 +155,7 @@ const MobileOtp = () => {
                     scale.value = withTiming(0, {duration: 900});
                     animation.value = withTiming(0, {duration: 900});
                     setTimeout(() => {
-                      navigation.navigate('EmailRegistration');
+                      navigation.navigate('Login');
                     }, 1000);
                   }}
                 />
@@ -166,7 +168,7 @@ const MobileOtp = () => {
   );
 };
 
-export default MobileOtp;
+export default EmailOtp;
 const styles = StyleSheet.create({
   containerStyle: {
     width: responsiveWidth(90),

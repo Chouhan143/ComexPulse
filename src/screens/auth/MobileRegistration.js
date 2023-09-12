@@ -15,6 +15,7 @@ import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import {TextInput} from 'react-native-paper';
 import PhoneInput from 'react-native-phone-number-input';
+
 import {
   responsiveFontSize,
   responsiveHeight,

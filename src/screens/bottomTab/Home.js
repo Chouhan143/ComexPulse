@@ -17,6 +17,7 @@ import Carousel from '../components/Carousel';
 import {useSelector, useDispatch} from 'react-redux';
 import {fetchCoinData} from '../../redux/market/coinSlice';
 import {COLORS} from '../../constants/theme';
+import Icon from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
 const Home = () => {
   const navigation = useNavigation();
@@ -139,7 +140,21 @@ const Home = () => {
     <View style={{flex: 1}}>
       <View style={styles.topContiner}>
         <Text style={styles.topContainerText}>ComexPulse</Text>
+        <TouchableOpacity>
+          <Icon name="notifications" size={25} color="#fff" />
+          <View
+            style={{
+              width: responsiveWidth(3),
+              height: responsiveWidth(3),
+              backgroundColor: 'red',
+              borderRadius: responsiveWidth(1.5),
+              position: 'absolute',
+              right: responsiveWidth(0),
+              top: responsiveHeight(0),
+            }}></View>
+        </TouchableOpacity>
       </View>
+
       {/* Top Container*/}
       <View
         style={{
@@ -220,13 +235,16 @@ const styles = StyleSheet.create({
     borderWidth: responsiveWidth(0.1),
     borderBottomRightRadius: responsiveWidth(15),
     display: 'flex',
-    justifyContent: 'center',
+    justifyContent: 'space-around',
     alignItems: 'center',
+    flexDirection: 'row',
   },
   topContainerText: {
     fontSize: responsiveFontSize(2.5),
     fontWeight: '700',
     color: 'white',
+    alignSelf: 'center',
+    paddingLeft: responsiveWidth(16),
   },
   container: {
     display: 'flex',
