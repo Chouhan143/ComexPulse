@@ -15,22 +15,27 @@ const OtpTextInput = ({onOtpInputChange}) => {
   const handleOtpInputChange = () => {
     const otpValue = etValues.join('');
     onOtpInputChange(otpValue);
-    console.log('otpValue type:', typeof otpValue);
+    console.log('otpValue type:', etValues);
   };
 
   const handleInputChange = (text, index) => {
-    const newEtValues = [...etValues];
-    newEtValues[index] = text;
-    setEtValues(newEtValues);
+    if (text.length <= 1) {
+      const newEtValues = [...etValues];
+      newEtValues[index] = text;
+      console.log('sdsd', newEtValues);
 
-    if (text.length >= 1 && index < 5) {
-      etRefs[index + 1].current.focus();
-    } else if (text.length < 1 && index > 0) {
-      etRefs[index - 1].current.focus();
+      // Ensure that you update the state only when it's valid
+      if (newEtValues.join('').length <= 6) {
+        setEtValues(newEtValues);
+      }
+      if (text.length >= 1 && index < 5) {
+        etRefs[index + 1].current.focus();
+      } else if (text.length < 1 && index > 0) {
+        etRefs[index - 1].current.focus();
+      }
     }
-
-    handleOtpInputChange();
   };
+  handleOtpInputChange();
 
   return (
     <View style={styles.container}>

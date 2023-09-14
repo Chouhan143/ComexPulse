@@ -8,13 +8,14 @@ import {
   StyleSheet,
 } from 'react-native';
 import Background from '../../constants/Background';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Btn from '../../constants/Btn';
 import {darkGreen} from '../../constants/ColorConstants';
 import Field from '../../constants/Field';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import OtpTextInpute from '../components/OtpTextInpute';
-
+import axios from 'axios';
 import {
   responsiveFontSize,
   responsiveHeight,
@@ -39,7 +40,7 @@ const MobileOtp = () => {
     }, 1000);
   };
   const [text, setText] = React.useState('');
-
+  const [error, setError] = useState('');
   const [otpValue, setOtpValue] = useState('');
 
   const handleOtpInputChange = value => {
@@ -60,6 +61,30 @@ const MobileOtp = () => {
     animation.value = withTiming(1, {duration: 900});
     scale.value = withTiming(1, {duration: 900});
   }, []);
+
+  // api Call here
+
+  const MobileOtpApi = async () => {
+    try {
+      const access_token = await AsyncStorage.getItem('accessToken');
+      const headers = {
+        Authorization: `Bearer ${access_token}`, // Replace with your authorization token
+      };
+      const response = await axios.post(
+        'https://app.srninfotech.com/bullsScript/api/verify-mobile-otp',
+        {mobile_otp: otpValue},
+        {headers},
+      );
+      const result = response.data.status;
+      if (result == 200) {
+        navigation.navigate('EmailRegistration');
+      } else {
+        setError(response.data.message || 'Registration failed');
+      }
+    } catch (error) {
+      console.log('catch errors', error);
+    }
+  };
 
   return (
     <Background>
@@ -149,13 +174,7 @@ const MobileOtp = () => {
                   textColor="white"
                   bgColor={COLORS.secondary}
                   btnLabel="Submit"
-                  Press={() => {
-                    scale.value = withTiming(0, {duration: 900});
-                    animation.value = withTiming(0, {duration: 900});
-                    setTimeout(() => {
-                      navigation.navigate('EmailRegistration');
-                    }, 1000);
-                  }}
+                  Press={MobileOtpApi}
                 />
               </View>
             </View>

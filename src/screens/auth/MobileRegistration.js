@@ -28,6 +28,8 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import {COLORS} from '../../constants/theme';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const MobileRegistration = () => {
   const navigation = useNavigation();
@@ -60,6 +62,7 @@ const MobileRegistration = () => {
 
   const handleOnChangeText = text => {
     setValue(text);
+    console.log(text);
   };
 
   const handleOnSubmitEditing = () => {
@@ -70,6 +73,36 @@ const MobileRegistration = () => {
     const numberIsValid = phoneInput.current?.isValidNumber(value);
     setValid(numberIsValid);
     setFormattedValue(text); // We'll set the formatted value directly from the event
+  };
+
+  //  api call
+
+  const MobileRegistrationApi = async () => {
+    try {
+      const response = await axios.post(
+        'https://app.srninfotech.com/bullsScript/api/mobile-register',
+        {mobile: value},
+      );
+
+      const result = response.data.result;
+      console.log('res', response.data);
+
+      if (result == true) {
+        const token = response.data.user_details.token;
+        await AsyncStorage.setItem('accessToken', token);
+        // Registration was successful, navigate to the OTP screen
+        scale.value = withTiming(0, {duration: 900});
+        animation.value = withTiming(0, {duration: 900});
+        setTimeout(() => {
+          navigation.navigate('MobileOtp');
+        }, 1000);
+      } else {
+        // Registration failed, set the error message
+        setError(response.data.message || 'Registration failed');
+      }
+    } catch (error) {
+      console.log('catch errors', error);
+    }
   };
 
   return (
@@ -211,13 +244,8 @@ const MobileRegistration = () => {
                   textColor="white"
                   bgColor={COLORS.secondary}
                   btnLabel="Send OTP"
-                  Press={() => {
-                    scale.value = withTiming(0, {duration: 900});
-                    animation.value = withTiming(0, {duration: 900});
-                    setTimeout(() => {
-                      navigation.navigate('MobileOtp');
-                    }, 1000);
-                  }}
+                  Press={MobileRegistrationApi}
+                  // Press={() => navigation.navigate('MobileOtp')}
                 />
               </View>
             </View>

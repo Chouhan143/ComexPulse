@@ -17,6 +17,7 @@ import MobileRegistration from '../../screens/auth/MobileRegistration';
 import MobileOtp from '../../screens/auth/MobileOtp';
 import EmailRegistration from '../../screens/auth/EmailRegistration';
 import EmailOtp from '../../screens/auth/EmailOtp';
+import UserDetails from '../../screens/auth/UserDetails';
 const Stack = createStackNavigator();
 
 function AuthNavigator() {
@@ -51,6 +52,11 @@ function AuthNavigator() {
         name="EmailOtp"
         options={{headerShown: false}}
         component={EmailOtp}
+      />
+      <Stack.Screen
+        name="UserDetails"
+        options={{headerShown: false}}
+        component={UserDetails}
       />
       <Stack.Screen
         name="SplaceScreen"

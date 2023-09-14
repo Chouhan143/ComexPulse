@@ -155,7 +155,7 @@ const EmailOtp = () => {
                     scale.value = withTiming(0, {duration: 900});
                     animation.value = withTiming(0, {duration: 900});
                     setTimeout(() => {
-                      navigation.navigate('Login');
+                      navigation.navigate('UserDetails');
                     }, 1000);
                   }}
                 />
