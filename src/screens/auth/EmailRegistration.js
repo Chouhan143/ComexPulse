@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef} from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -9,14 +9,14 @@ import {
 } from 'react-native';
 import Background from '../../constants/Background';
 import Btn from '../../constants/Btn';
-import {darkGreen} from '../../constants/ColorConstants';
+import { darkGreen } from '../../constants/ColorConstants';
 import Field from '../../constants/Field';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import Icon1 from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import OtpTextInpute from '../components/OtpTextInpute';
-import {TextInput} from 'react-native-paper';
+import { TextInput } from 'react-native-paper';
 
 import {
   responsiveFontSize,
@@ -29,8 +29,9 @@ import Animated, {
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
-import {COLORS} from '../../constants/theme';
-
+import { COLORS } from '../../constants/theme';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 const EmailRegistration = () => {
   const navigation = useNavigation();
   const goBack = () => {
@@ -44,21 +45,51 @@ const EmailRegistration = () => {
   const animatedStyle = useAnimatedStyle(() => {
     return {
       opacity: animation.value,
-      transform: [{scale: scale.value}],
+      transform: [{ scale: scale.value }],
     };
   });
 
   useEffect(() => {
-    animation.value = withTiming(1, {duration: 900});
-    scale.value = withTiming(1, {duration: 900});
+    animation.value = withTiming(1, { duration: 900 });
+    scale.value = withTiming(1, { duration: 900 });
   }, []);
+
+
+
+  const Email_registerApi = async () => {
+    try {
+      console.log(text)
+      const access_token = await AsyncStorage.getItem('accessToken');
+      const headers = {
+        Authorization: `Bearer ${access_token}`, // Replace with your authorization token
+      };
+      const response = await axios.post(
+        'https://app.srninfotech.com/bullsScript/api/email-register',
+        { email: text },
+        { headers },
+      );
+      const result = response.data.status;
+      console.log("email", response.data)
+
+      if (result == 200) {
+        navigation.navigate('EmailOtp');
+      } else {
+        setError(response.data.message || 'Registration failed');
+      }
+    } catch (error) {
+      console.log('catch errors', error);
+    }
+  };
+
+
+
 
   return (
     <Background>
       <Animated.View style={[animatedStyle]}>
         <TouchableOpacity
           onPress={goBack}
-          style={{padding: responsiveWidth(3)}}>
+          style={{ padding: responsiveWidth(3) }}>
           <Icon name="arrow-left-long" size={30} color={COLORS.secondary} />
         </TouchableOpacity>
         <View
@@ -118,9 +149,9 @@ const EmailRegistration = () => {
                 marginTop: responsiveHeight(0),
               }}
             />
-            <View style={{position: 'absolute', top: responsiveHeight(37)}}>
+            <View style={{ position: 'absolute', top: responsiveHeight(37) }}>
               <View
-                style={{flexDirection: 'row', marginTop: responsiveHeight(2)}}>
+                style={{ flexDirection: 'row', marginTop: responsiveHeight(2) }}>
                 <Icon1 name="email" size={30} color={COLORS.secondary} />
                 <Text
                   style={{
@@ -132,7 +163,7 @@ const EmailRegistration = () => {
                   Enter Your Email Address
                 </Text>
               </View>
-              <View style={{marginTop: responsiveHeight(1)}}>
+              <View style={{ marginTop: responsiveHeight(1) }}>
                 <TextInput
                   label="Email"
                   value={text}
@@ -142,18 +173,12 @@ const EmailRegistration = () => {
               </View>
 
               <View
-                style={{marginTop: responsiveHeight(7), alignSelf: 'center'}}>
+                style={{ marginTop: responsiveHeight(7), alignSelf: 'center' }}>
                 <Btn
                   textColor="white"
                   bgColor={COLORS.secondary}
                   btnLabel="Send"
-                  Press={() => {
-                    scale.value = withTiming(0, {duration: 900});
-                    animation.value = withTiming(0, {duration: 900});
-                    setTimeout(() => {
-                      navigation.navigate('EmailOtp');
-                    }, 1000);
-                  }}
+                  Press={Email_registerApi}
                 />
               </View>
             </View>

@@ -1,10 +1,10 @@
 import React from 'react';
-import {View, StyleSheet, Text, Image} from 'react-native';
+import { View, StyleSheet, Text, Image } from 'react-native';
 import Background from '../../constants/Background';
 import Btn from '../../constants/Btn';
-import {darkGreen, green} from '../../constants/ColorConstants';
-import {COLORS} from '../../constants/theme';
-import {useNavigation} from '@react-navigation/native';
+import { darkGreen, green } from '../../constants/ColorConstants';
+import { COLORS } from '../../constants/theme';
+import { useNavigation } from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import {
   responsiveFontSize,
@@ -17,9 +17,14 @@ const SlaceScreen = () => {
   const loginHandler = () => {
     navigation.navigate('Login');
   };
+  // const signUpHandler = () => {
+  //   navigation.navigate('MobileRegistration');
+  // };
+
   const signUpHandler = () => {
-    navigation.navigate('MobileRegistration');
+    navigation.navigate('Document');
   };
+
   return (
     <Background>
       {/* <LinearGradient

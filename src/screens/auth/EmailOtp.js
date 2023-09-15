@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef} from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -9,14 +9,15 @@ import {
 } from 'react-native';
 import Background from '../../constants/Background';
 import Btn from '../../constants/Btn';
-import {darkGreen} from '../../constants/ColorConstants';
+import { darkGreen } from '../../constants/ColorConstants';
 import Field from '../../constants/Field';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import Icon1 from 'react-native-vector-icons/MaterialCommunityIcons';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import OtpTextInpute from '../components/OtpTextInpute';
-import {TextInput} from 'react-native-paper';
+import { TextInput } from 'react-native-paper';
+import axios from 'axios';
 
 import {
   responsiveFontSize,
@@ -29,36 +30,69 @@ import Animated, {
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
-import {COLORS} from '../../constants/theme';
+import { COLORS } from '../../constants/theme';
 
 const EmailOtp = () => {
   const navigation = useNavigation();
   const goBack = () => {
     navigation.goBack();
   };
-  const [text, setText] = React.useState('');
-
+  const [emailOtp, setEmailOtp] = React.useState('');
+  const [error, setError] = React.useState('');
   // Animation code
   const animation = useSharedValue(0);
   const scale = useSharedValue(0);
   const animatedStyle = useAnimatedStyle(() => {
     return {
       opacity: animation.value,
-      transform: [{scale: scale.value}],
+      transform: [{ scale: scale.value }],
     };
   });
 
   useEffect(() => {
-    animation.value = withTiming(1, {duration: 900});
-    scale.value = withTiming(1, {duration: 900});
+    animation.value = withTiming(1, { duration: 900 });
+    scale.value = withTiming(1, { duration: 900 });
   }, []);
+
+
+  const Email_OtpApi = async () => {
+    try {
+      console.log(emailOtp)
+      const access_token = await AsyncStorage.getItem('accessToken');
+      const headers = {
+        Authorization: `Bearer ${access_token}`, // Replace with your authorization token
+      };
+
+      const response = await axios.post(
+        'https://app.srninfotech.com/bullsScript/api/verfiy-email-otp',
+        { email_otp: emailOtp },
+        { headers },
+      );
+      const result = response.data.status;
+      console.log("emailotp", response.data)
+
+      if (result === 200) {
+        navigation.navigate('UserDetails');
+      } else if (result === 422) {
+        const ErrorMsg = response.data.message || 'Registration failed';
+        setError(ErrorMsg);
+      } else {
+        setError('An error occurred. Please try again later.');
+      }
+    } catch (error) {
+      const errrorCatch = error.response.data.errors;
+      console.log('catch errors', errrorCatch);
+    }
+  };
+
+
 
   return (
     <Background>
       <Animated.View style={[animatedStyle]}>
         <TouchableOpacity
           onPress={goBack}
-          style={{padding: responsiveWidth(3)}}>
+          style={{ padding: responsiveWidth(3) }}>
           <Icon name="arrow-left-long" size={30} color={COLORS.secondary} />
         </TouchableOpacity>
         <View
@@ -118,9 +152,9 @@ const EmailOtp = () => {
                 marginTop: responsiveHeight(0),
               }}
             />
-            <View style={{position: 'absolute', top: responsiveHeight(37)}}>
+            <View style={{ position: 'absolute', top: responsiveHeight(37) }}>
               <View
-                style={{flexDirection: 'row', marginTop: responsiveHeight(2)}}>
+                style={{ flexDirection: 'row', marginTop: responsiveHeight(2) }}>
                 <Icon1
                   name="cellphone-message"
                   size={30}
@@ -136,28 +170,22 @@ const EmailOtp = () => {
                   Enter Your Email Address
                 </Text>
               </View>
-              <View style={{marginTop: responsiveHeight(1)}}>
+              <View style={{ marginTop: responsiveHeight(1) }}>
                 <TextInput
                   label="Email Otp"
-                  value={text}
-                  onChangeText={text => setText(text)}
+                  value={emailOtp}
+                  onChangeText={text => setEmailOtp(text)}
                   mode="outlined"
                 />
               </View>
 
               <View
-                style={{marginTop: responsiveHeight(7), alignSelf: 'center'}}>
+                style={{ marginTop: responsiveHeight(7), alignSelf: 'center' }}>
                 <Btn
                   textColor="white"
                   bgColor={COLORS.secondary}
                   btnLabel="Submit"
-                  Press={() => {
-                    scale.value = withTiming(0, {duration: 900});
-                    animation.value = withTiming(0, {duration: 900});
-                    setTimeout(() => {
-                      navigation.navigate('UserDetails');
-                    }, 1000);
-                  }}
+                  Press={Email_OtpApi}
                 />
               </View>
             </View>

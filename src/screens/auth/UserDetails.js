@@ -1,4 +1,5 @@
-import React, {useEffect, useState, useRef} from 'react';
+import React, { useEffect, useState, useRef } from 'react';
+
 import {
   View,
   Text,
@@ -10,13 +11,14 @@ import {
 } from 'react-native';
 import Background from '../../constants/Background';
 import Btn from '../../constants/Btn';
-import {TextInput} from 'react-native-paper';
-import {darkGreen} from '../../constants/ColorConstants';
+import { TextInput } from 'react-native-paper';
+import { darkGreen } from '../../constants/ColorConstants';
 import Field from '../../constants/Field';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import OtpTextInpute from '../components/OtpTextInpute';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 import {
   responsiveFontSize,
   responsiveHeight,
@@ -28,20 +30,25 @@ import Animated, {
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
-import {COLORS} from '../../constants/theme';
+import { COLORS } from '../../constants/theme';
 import DocumentPicker from 'react-native-document-picker';
 const UserDetails = () => {
   const navigation = useNavigation();
   const [doc, setDoc] = useState(null);
+  const [imageData, setImageData] = useState(null);
   const goBack = () => {
     // navigation.navigate('MobileRegistration');
-    scale.value = withTiming(0, {duration: 900});
-    animation.value = withTiming(0, {duration: 900});
+    scale.value = withTiming(0, { duration: 900 });
+    animation.value = withTiming(0, { duration: 900 });
     setTimeout(() => {
       navigation.navigate('MobileRegistration');
     }, 1000);
   };
-  const [text, setText] = React.useState('');
+  const [fname, setFname] = React.useState('');
+  const [lName, setLname] = React.useState('');
+  const [pass, setPass] = React.useState('');
+  const [confirmPass, setConfirmPass] = React.useState('');
+  const [walletpin, setWalletPin] = React.useState('');
 
   const [otpValue, setOtpValue] = useState('');
 
@@ -55,13 +62,13 @@ const UserDetails = () => {
   const animatedStyle = useAnimatedStyle(() => {
     return {
       opacity: animation.value,
-      transform: [{scale: scale.value}],
+      transform: [{ scale: scale.value }],
     };
   });
 
   useEffect(() => {
-    animation.value = withTiming(1, {duration: 900});
-    scale.value = withTiming(1, {duration: 900});
+    animation.value = withTiming(1, { duration: 900 });
+    scale.value = withTiming(1, { duration: 900 });
   }, []);
 
   const SelectDOC = async () => {
@@ -73,6 +80,7 @@ const UserDetails = () => {
         name: selectedDoc.name || 'image.jpg',
       };
       console.log('image data', imageData);
+      setImageData(imageData);
       setDoc(imageData);
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
@@ -89,28 +97,52 @@ const UserDetails = () => {
     setDoc(value);
   };
 
-  const MobileOtpApi = async () => {
-    try {
-      const response = await axios.post(
-        'https://app.srninfotech.com/bullsScript/api/verify-mobile-otp',
-        {mobile_otp: otpValue},
-      );
-      const result = response.data.result;
-      // console.log('res', response.data);
+  // api call 
 
-      if (result == true) {
-        // Registration was successful, navigate to the OTP screen
-        scale.value = withTiming(0, {duration: 900});
-        animation.value = withTiming(0, {duration: 900});
-        setTimeout(() => {
-          navigation.navigate('EmailRegistration');
-        }, 1000);
+
+
+  const UserDetailsApi = async () => {
+    try {
+
+      const access_token = await AsyncStorage.getItem('accessToken');
+      const headers = {
+        Authorization: `Bearer ${access_token}`, // Replace with your authorization token
+        'Content-Type': 'multipart/form-data',
+      };
+
+      const userDetailsData = new FormData(); // Create a FormData object
+
+      userDetailsData.append('first_name', fname);
+      userDetailsData.append('last_name', lName);
+      userDetailsData.append('password', pass);
+      userDetailsData.append('confirm_password', confirmPass);
+      userDetailsData.append('walletPin', walletpin);
+
+      if (imageData) {
+        // If an image is selected, append it to the FormData object
+        userDetailsData.append('profile_picture', imageData);
+      }
+      console.log("userDetailsData", userDetailsData);
+
+      const response = await axios.post(
+        'https://app.srninfotech.com/bullsScript/api/create-profile',
+        userDetailsData,
+        { headers },
+      );
+      const result = response.data.status;
+      console.log("user", response.data)
+
+      if (result === 200) {
+        navigation.navigate('Document');
+      } else if (result === 422) {
+        const ErrorMsg = response.data.message || 'Registration failed';
+        setError(ErrorMsg);
       } else {
-        // Registration failed, set the error message
-        setError(response.data.message || 'Registration failed');
+        setError('An error occurred. Please try again later.');
       }
     } catch (error) {
-      console.log('catch errors', error.response);
+      const errrorCatch = error.response;
+      console.log('catch errors', errrorCatch);
     }
   };
 
@@ -119,7 +151,7 @@ const UserDetails = () => {
       <Animated.View style={[animatedStyle]}>
         <TouchableOpacity
           onPress={goBack}
-          style={{padding: responsiveWidth(3)}}>
+          style={{ padding: responsiveWidth(3) }}>
           <Icon name="arrow-left-long" size={30} color={COLORS.secondary} />
         </TouchableOpacity>
         <View
@@ -168,59 +200,59 @@ const UserDetails = () => {
             style={{
               flex: 1,
             }}>
-            <View style={{marginTop: responsiveHeight(1), alignSelf: 'center'}}>
-              <View style={{marginBottom: responsiveHeight(2)}}>
+            <View style={{ marginTop: responsiveHeight(1), alignSelf: 'center' }}>
+              <View style={{ marginBottom: responsiveHeight(2) }}>
                 <Text style={styles.tittle}>Frist Name</Text>
                 <TextInput
-                  value={text}
-                  onChangeText={text => setText(text)}
+                  value={fname}
+                  onChangeText={text => setFname(text)}
                   mode="outlined"
                   activeOutlineColor={COLORS.secondary}
-                  style={{width: responsiveWidth(80)}}
+                  style={{ width: responsiveWidth(80) }}
                 />
               </View>
 
-              <View style={{marginBottom: responsiveHeight(2)}}>
+              <View style={{ marginBottom: responsiveHeight(2) }}>
                 <Text style={styles.tittle}>Last Name</Text>
                 <TextInput
-                  value={text}
-                  onChangeText={text => setText(text)}
+                  value={lName}
+                  onChangeText={text => setLname(text)}
                   mode="outlined"
                   activeOutlineColor={COLORS.secondary}
-                  style={{width: responsiveWidth(80)}}
+                  style={{ width: responsiveWidth(80) }}
                 />
               </View>
 
-              <View style={{marginBottom: responsiveHeight(2)}}>
+              <View style={{ marginBottom: responsiveHeight(2) }}>
                 <Text style={styles.tittle}>Password</Text>
                 <TextInput
-                  value={text}
-                  onChangeText={text => setText(text)}
+                  value={pass}
+                  onChangeText={text => setPass(text)}
                   mode="outlined"
                   activeOutlineColor={COLORS.secondary}
-                  style={{width: responsiveWidth(80)}}
+                  style={{ width: responsiveWidth(80) }}
                 />
               </View>
 
-              <View style={{marginBottom: responsiveHeight(2)}}>
+              <View style={{ marginBottom: responsiveHeight(2) }}>
                 <Text style={styles.tittle}>Confirm Password</Text>
                 <TextInput
-                  value={text}
-                  onChangeText={text => setText(text)}
+                  value={confirmPass}
+                  onChangeText={text => setConfirmPass(text)}
                   mode="outlined"
                   activeOutlineColor={COLORS.secondary}
-                  style={{width: responsiveWidth(80)}}
+                  style={{ width: responsiveWidth(80) }}
                 />
               </View>
 
-              <View style={{marginBottom: responsiveHeight(2)}}>
+              <View style={{ marginBottom: responsiveHeight(2) }}>
                 <Text style={styles.tittle}>Wallet Pin</Text>
                 <TextInput
-                  value={text}
-                  onChangeText={text => setText(text)}
+                  value={walletpin}
+                  onChangeText={text => setWalletPin(text)}
                   mode="outlined"
                   activeOutlineColor={COLORS.secondary}
-                  style={{width: responsiveWidth(80)}}
+                  style={{ width: responsiveWidth(80) }}
                 />
               </View>
 
@@ -274,12 +306,12 @@ const UserDetails = () => {
               </View>
             </View>
 
-            <View style={{marginTop: responsiveHeight(3), alignSelf: 'center'}}>
+            <View style={{ marginTop: responsiveHeight(3), alignSelf: 'center' }}>
               <Btn
                 textColor="white"
                 bgColor={COLORS.secondary}
                 btnLabel="Submit"
-                Press={MobileOtpApi}
+                Press={UserDetailsApi}
               />
             </View>
           </ScrollView>
