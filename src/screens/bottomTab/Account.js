@@ -18,13 +18,23 @@ import Font5 from 'react-native-vector-icons/FontAwesome5';
 import Font6 from 'react-native-vector-icons/FontAwesome6';
 import Iconic from 'react-native-vector-icons/Ionicons';
 import Material from 'react-native-vector-icons/MaterialIcons';
-
-import {useNavigation} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
 
 const Account = () => {
   const navigation = useNavigation();
+  const logout = async () => {
+    try {
+      await AsyncStorage.removeItem('accessToken');
+      navigation.navigate('Login');
+    } catch (error) {
+      console.error('Error while logging out:', error);
+    }
+  };
+
+
   return (
-    <View style={{flex: 1, backgroundColor: '#fff'}}>
+    <View style={{ flex: 1, backgroundColor: '#fff' }}>
       <View style={styles.top}>
         <Image
           source={require('../../../assets/images/topBg.jpg')}
@@ -34,6 +44,19 @@ const Account = () => {
             position: 'absolute',
           }}
         />
+        <TouchableOpacity style={{
+          alignSelf: 'flex-end', marginHorizontal: responsiveWidth(5),
+          marginVertical: responsiveHeight(1),
+          backgroundColor: '#fff',
+          width: responsiveWidth(8),
+          height: responsiveWidth(8),
+          borderRadius: responsiveWidth(4),
+          justifyContent: 'center',
+          alignItems: 'center'
+        }} onPress={logout}>
+          <Font5 name="power-off" size={25} color="red" />
+        </TouchableOpacity>
+
         <Image
           source={require('../../../assets/images/user.jpg')}
           style={{
@@ -45,7 +68,7 @@ const Account = () => {
             alignItems: 'center',
             display: 'flex',
             alignSelf: 'center',
-            marginTop: responsiveHeight(10),
+            marginTop: responsiveHeight(8),
           }}
         />
         <View
@@ -66,7 +89,7 @@ const Account = () => {
       </View>
 
       <View style={styles.bottom}>
-        <View style={{marginTop: responsiveHeight(2)}}>
+        <View style={{ marginTop: responsiveHeight(2) }}>
           <View style={styles.item}>
             <TouchableOpacity
               style={styles.item_icon}

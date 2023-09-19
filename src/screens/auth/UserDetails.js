@@ -11,13 +11,15 @@ import {
 } from 'react-native';
 import Background from '../../constants/Background';
 import Btn from '../../constants/Btn';
-import { TextInput } from 'react-native-paper';
+import { TextInput, HelperText } from 'react-native-paper';
+
 import { darkGreen } from '../../constants/ColorConstants';
 import Field from '../../constants/Field';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import OtpTextInpute from '../components/OtpTextInpute';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+// import DocsUpload from './DocsUpload';
 import axios from 'axios';
 import {
   responsiveFontSize,
@@ -45,10 +47,15 @@ const UserDetails = () => {
     }, 1000);
   };
   const [fname, setFname] = React.useState('');
+  const [fnameError, setFnameError] = React.useState('');
   const [lName, setLname] = React.useState('');
+  const [lNameError, setlNameError] = React.useState('');
   const [pass, setPass] = React.useState('');
+  const [passError, setpassError] = React.useState('');
   const [confirmPass, setConfirmPass] = React.useState('');
+  const [confirmPassError, setconfirmPassError] = React.useState('');
   const [walletpin, setWalletPin] = React.useState('');
+  const [walletpinError, setwalletpinError] = React.useState('');
 
   const [otpValue, setOtpValue] = useState('');
 
@@ -133,7 +140,7 @@ const UserDetails = () => {
       console.log("user", response.data)
 
       if (result === 200) {
-        navigation.navigate('Document');
+        navigation.navigate('DocsUpload');
       } else if (result === 422) {
         const ErrorMsg = response.data.message || 'Registration failed';
         setError(ErrorMsg);
@@ -141,182 +148,228 @@ const UserDetails = () => {
         setError('An error occurred. Please try again later.');
       }
     } catch (error) {
-      const errrorCatch = error.response;
-      console.log('catch errors', errrorCatch);
+      console.log('catch errors', error.response.data.errors);
+      setFnameError(error.response.data.errors.first_name)
+      setlNameError(error.response.data.errors.last_name)
+      setpassError(error.response.data.errors.password)
+      setconfirmPassError(error.response.data.errors.confirm_password)
+      setwalletpinError(error.response.data.errors.walletPin)
     }
   };
 
   return (
     <Background>
-      <Animated.View style={[animatedStyle]}>
-        <TouchableOpacity
-          onPress={goBack}
-          style={{ padding: responsiveWidth(3) }}>
-          <Icon name="arrow-left-long" size={30} color={COLORS.secondary} />
-        </TouchableOpacity>
-        <View
+      <TouchableOpacity
+        onPress={goBack}
+        style={{ padding: responsiveWidth(3) }}>
+        <Icon name="arrow-left-long" size={30} color={COLORS.secondary} />
+      </TouchableOpacity>
+      <View
+        style={{
+          justifyContent: 'flex-start',
+          alignItems: 'flex-start',
+          marginLeft: responsiveWidth(3),
+          flex: 1 / 8
+        }}>
+        <Text
           style={{
-            justifyContent: 'flex-start',
-            alignItems: 'flex-start',
-            marginLeft: responsiveWidth(3),
+            color: COLORS.secondary,
+            //   color: '#fff',
+            fontSize: responsiveFontSize(3),
+            fontWeight: '800',
+            shadowColor: 'orange',
+            elevation: 5,
+            //   marginTop: responsiveHeight(1),
+            letterSpacing: responsiveWidth(0.5),
           }}>
-          <Text
-            style={{
-              color: COLORS.secondary,
-              //   color: '#fff',
-              fontSize: responsiveFontSize(3),
-              fontWeight: '800',
-              shadowColor: 'orange',
-              elevation: 5,
-              //   marginTop: responsiveHeight(1),
-              letterSpacing: responsiveWidth(0.5),
-            }}>
-            Details
-          </Text>
-          <Text
-            style={{
-              color: COLORS.secondary,
-              fontSize: responsiveFontSize(2),
-              fontWeight: 'bold',
-              marginBottom: responsiveHeight(1.5),
-            }}>
-            Please Enter Details
-          </Text>
-        </View>
-        {/* main White container */}
-        <View
+          Details
+        </Text>
+        <Text
           style={{
-            backgroundColor: 'white',
-            height: responsiveHeight(100),
-            width: responsiveWidth(100),
-            borderTopLeftRadius: responsiveWidth(30),
-            paddingTop: responsiveHeight(4),
-            marginTop: responsiveHeight(2),
-            alignItems: 'center',
-            shadowColor: 'blue',
-            elevation: 10,
+            color: COLORS.secondary,
+            fontSize: responsiveFontSize(2),
+            fontWeight: 'bold',
+            marginBottom: responsiveHeight(1.5),
           }}>
-          <ScrollView
-            style={{
-              flex: 1,
-            }}>
-            <View style={{ marginTop: responsiveHeight(1), alignSelf: 'center' }}>
-              <View style={{ marginBottom: responsiveHeight(2) }}>
-                <Text style={styles.tittle}>Frist Name</Text>
-                <TextInput
-                  value={fname}
-                  onChangeText={text => setFname(text)}
-                  mode="outlined"
-                  activeOutlineColor={COLORS.secondary}
-                  style={{ width: responsiveWidth(80) }}
-                />
-              </View>
+          Please Enter Details
+        </Text>
+      </View>
+      {/* main White container */}
+      <ScrollView
+        style={{
+          flex: 1,
+          borderTopLeftRadius: responsiveWidth(26),
+          backgroundColor: 'white',
 
-              <View style={{ marginBottom: responsiveHeight(2) }}>
-                <Text style={styles.tittle}>Last Name</Text>
-                <TextInput
-                  value={lName}
-                  onChangeText={text => setLname(text)}
-                  mode="outlined"
-                  activeOutlineColor={COLORS.secondary}
-                  style={{ width: responsiveWidth(80) }}
-                />
-              </View>
+          shadowColor: 'blue',
 
-              <View style={{ marginBottom: responsiveHeight(2) }}>
-                <Text style={styles.tittle}>Password</Text>
-                <TextInput
-                  value={pass}
-                  onChangeText={text => setPass(text)}
-                  mode="outlined"
-                  activeOutlineColor={COLORS.secondary}
-                  style={{ width: responsiveWidth(80) }}
-                />
-              </View>
+          elevation: 10,
+        }}>
+        <View style={{
 
-              <View style={{ marginBottom: responsiveHeight(2) }}>
-                <Text style={styles.tittle}>Confirm Password</Text>
-                <TextInput
-                  value={confirmPass}
-                  onChangeText={text => setConfirmPass(text)}
-                  mode="outlined"
-                  activeOutlineColor={COLORS.secondary}
-                  style={{ width: responsiveWidth(80) }}
-                />
-              </View>
+          width: responsiveWidth(95),
+          paddingLeft: responsiveWidth(3),
+          marginLeft: responsiveHeight(3)
 
-              <View style={{ marginBottom: responsiveHeight(2) }}>
-                <Text style={styles.tittle}>Wallet Pin</Text>
-                <TextInput
-                  value={walletpin}
-                  onChangeText={text => setWalletPin(text)}
-                  mode="outlined"
-                  activeOutlineColor={COLORS.secondary}
-                  style={{ width: responsiveWidth(80) }}
-                />
-              </View>
+        }}>
 
-              <View
+
+
+          <View style={{
+            marginTop: responsiveHeight(1), alignSelf: 'center'
+          }}>
+            <View style={{ paddingTop: responsiveWidth(10) }}>
+              <Text style={styles.tittle}>Frist Name</Text>
+              <TextInput
+                value={fname}
+                onChangeText={text => setFname(text)}
+                mode="outlined"
+                activeOutlineColor={COLORS.secondary}
+                style={{ width: responsiveWidth(74) }}
+              />
+              <HelperText type="error" visible={!!fnameError}>
+                {fnameError}
+              </HelperText>
+            </View>
+
+            <View >
+              <Text style={styles.tittle}>Last Name</Text>
+              <TextInput
+                value={lName}
+                onChangeText={text => setLname(text)}
+                mode="outlined"
+                activeOutlineColor={COLORS.secondary}
+                style={{ width: responsiveWidth(74) }}
+              />
+              <HelperText type="error" visible={!!lNameError}>
+                {lNameError}
+              </HelperText>
+            </View>
+
+            <View >
+              <Text style={styles.tittle}>Password</Text>
+              <TextInput
+                value={pass}
+                onChangeText={text => setPass(text)}
+                mode="outlined"
+                activeOutlineColor={COLORS.secondary}
+                style={{ width: responsiveWidth(74) }}
+              />
+              <HelperText type="error" visible={!!passError}>
+                {passError}
+              </HelperText>
+            </View>
+
+            <View >
+              <Text style={styles.tittle}>Confirm Password</Text>
+              <TextInput
+                value={confirmPass}
+                onChangeText={text => setConfirmPass(text)}
+                mode="outlined"
+                activeOutlineColor={COLORS.secondary}
+                style={{ width: responsiveWidth(74) }}
+              />
+              <HelperText type="error" visible={!!confirmPassError}>
+                {confirmPassError}
+              </HelperText>
+            </View>
+
+            <View >
+              <Text style={styles.tittle}>Wallet Pin</Text>
+              <TextInput
+                value={walletpin}
+                onChangeText={text => setWalletPin(text)}
+                mode="outlined"
+                activeOutlineColor={COLORS.secondary}
+                style={{ width: responsiveWidth(74) }}
+              />
+              <HelperText type="error" visible={!!walletpinError}>
+                {walletpinError}
+              </HelperText>
+            </View>
+
+            <View
+              style={{
+                width: responsiveWidth(74),
+                height: responsiveHeight(6),
+                borderRadius: responsiveWidth(1),
+                borderWidth: 1,
+                borderColor: '#757575',
+                marginTop: responsiveHeight(1),
+                display: 'flex',
+                flexDirection: 'row',
+                alignSelf: 'center',
+                // flexWrap: 'wrap',
+              }}>
+              <TouchableOpacity
                 style={{
-                  width: responsiveWidth(80),
-                  height: responsiveHeight(6),
+                  width: responsiveWidth(18),
+                  height: responsiveWidth(12),
                   borderRadius: responsiveWidth(1),
-                  borderWidth: 1,
                   borderColor: '#757575',
-                  marginTop: responsiveHeight(2),
-                  display: 'flex',
-                  flexDirection: 'row',
-                  alignSelf: 'center',
-                  // flexWrap: 'wrap',
-                }}>
-                <TouchableOpacity
-                  style={{
-                    width: responsiveWidth(18),
-                    height: responsiveWidth(12),
-                    borderRadius: responsiveWidth(1),
-                    borderColor: '#757575',
-                    backgroundColor: COLORS.secondary,
+                  backgroundColor: COLORS.secondary,
 
-                    justifyContent: 'center',
-                  }}
-                  onPress={SelectDOC}>
-                  <Text
-                    style={{
-                      color: '#fff',
-                      fontSize: responsiveFontSize(2),
-                      alignSelf: 'center',
-                      fontWeight: '700',
-                    }}>
-                    Select
-                  </Text>
-                </TouchableOpacity>
-
+                  justifyContent: 'center',
+                }}
+                onPress={SelectDOC}>
                 <Text
                   style={{
+                    color: '#fff',
                     fontSize: responsiveFontSize(2),
-                    color: '#000',
-                    maxWidth: responsiveWidth(60),
                     alignSelf: 'center',
-                    paddingHorizontal: responsiveWidth(2),
-                  }}
-                  numberOfLines={1}
-                  ellipsizeMode="tail">
-                  {doc ? doc.name : ''}
+                    fontWeight: '700',
+                  }}>
+                  Select
                 </Text>
-              </View>
-            </View>
+              </TouchableOpacity>
 
-            <View style={{ marginTop: responsiveHeight(3), alignSelf: 'center' }}>
-              <Btn
-                textColor="white"
-                bgColor={COLORS.secondary}
-                btnLabel="Submit"
-                Press={UserDetailsApi}
-              />
+              <Text
+                style={{
+                  fontSize: responsiveFontSize(2),
+                  color: '#000',
+                  maxWidth: responsiveWidth(60),
+                  alignSelf: 'center',
+                  paddingHorizontal: responsiveWidth(2),
+                }}
+                numberOfLines={1}
+                ellipsizeMode="tail">
+                {doc ? doc.name : ''}
+              </Text>
             </View>
-          </ScrollView>
+          </View>
+
+          {/* <View style={{ marginTop: responsiveHeight(3), alignSelf: 'center', marginBottom: responsiveHeight(3) }}>
+            <TouchableOpacity
+              style={{
+                width: responsiveWidth(74),
+                backgroundColor: "green",
+                height: responsiveHeight(6),
+                borderRadius: responsiveWidth(30)
+              }}
+              textColor="white"
+              bgColor={COLORS.secondary}
+                           Press={UserDetailsApi}
+            >
+              <Text style={{color:"white",f}}></Text>
+            </TouchableOpacity>
+
+          </View> */}
+
+          <View
+            style={{ marginTop: responsiveHeight(7), alignSelf: 'center', marginBottom: responsiveHeight(2) }}>
+            <Btn
+              textColor="white"
+              bgColor={COLORS.secondary}
+              btnLabel="Submit"
+              Press={UserDetailsApi}
+            />
+          </View>
+
+
+          {/* </View> */}
         </View>
-      </Animated.View>
+      </ScrollView>
+
     </Background>
   );
 };

@@ -17,13 +17,13 @@ const SlaceScreen = () => {
   const loginHandler = () => {
     navigation.navigate('Login');
   };
-  // const signUpHandler = () => {
-  //   navigation.navigate('MobileRegistration');
-  // };
-
   const signUpHandler = () => {
-    navigation.navigate('Document');
+    navigation.navigate('MobileRegistration');
   };
+
+  // const signUpHandler = () => {
+  //   navigation.navigate('UserDetails');
+  // };
 
   return (
     <Background>

@@ -17,10 +17,21 @@ import {
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
 const CustomDrawer = props => {
+  const navigation = useNavigation();
+  const logout = async () => {
+    try {
+      await AsyncStorage.removeItem('accessToken');
+      navigation.navigate('Login');
+    } catch (error) {
+      console.error('Error while logging out:', error);
+    }
+  };
+
   return (
-    <View style={{flex: 1}}>
+    <View style={{ flex: 1 }}>
       <DrawerContentScrollView
         {...props}
         contentContainerStyle={{
@@ -71,7 +82,7 @@ const CustomDrawer = props => {
         <TouchableOpacity
           style={{
             flexDirection: 'row',
-          }}>
+          }} onPress={logout}>
           <MaterialCommunityIcons name="logout" size={22} color="#333" />
           <Text
             style={{

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -9,29 +9,30 @@ import {
   ToastAndroid,
   FlatList,
 } from 'react-native';
-import {TextInput, Modal, Portal, PaperProvider} from 'react-native-paper';
+import { TextInput, Modal, Portal, PaperProvider } from 'react-native-paper';
 import Iconic from 'react-native-vector-icons/Ionicons';
 import LottieView from 'lottie-react-native';
 import DocumentPicker from 'react-native-document-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Button} from 'react-native-paper';
+import { Button } from 'react-native-paper';
 // import {Toast} from 'react-native-toast-message/lib/src/Toast';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Entypo';
 // import {COLORS, icons, SIZES} from '../../constants';
-import {postData, postData3} from '../../constants/hooks/ApiHelper';
+import { postData, postData3 } from '../../constants/hooks/ApiHelper';
 import {
   responsiveFontSize,
   responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 import axios from 'axios';
-import {COLORS} from '../../constants/theme';
+import { COLORS } from '../../constants/theme';
 import LinearGradient from 'react-native-linear-gradient';
-
+// import DocumentPicker from 'react-native-document-picker';
 const Withdraw = () => {
   const [amount, setAmount] = useState('');
   const [visible, setVisible] = React.useState(false);
+
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
   const containerStyle = {
@@ -51,40 +52,46 @@ const Withdraw = () => {
     setAmount(value);
   };
 
-  //   const BalanceApi = async () => {
-  //     try {
-  //       const access_token = await AsyncStorage.getItem('accessToken');
-  //       const config = {
-  //         headers: {
-  //           Authorization: `Bearer ${access_token}`,
-  //         },
-  //       };
 
-  //       const res = await axios.get(
-  //         'https://scripts.bulleyetrade.com/api/mobile/balance',
-  //         config,
-  //       );
-  //       setUserFund(res.data.balance);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
 
-  //   useEffect(() => {
-  //     const interval = setInterval(() => {
-  //       BalanceApi();
-  //     }, 1000);
 
-  //     return () => clearInterval(interval);
-  //   }, []);
+
+  const WithdrawApi = async () => {
+    try {
+      const access_token = await AsyncStorage.getItem('accessToken');
+      const headers = {
+        Authorization: `Bearer ${access_token}`, // Replace with your authorization token
+      };
+      const response = await axios.post(
+        'https://app.srninfotech.com/bullsScript/api/withdrawl',
+        { withdrawl_amount: amount },
+        { headers },
+      );
+
+      const result = response.data.Status;
+      if (result === 200) {
+        showModal();
+      }
+      console.log('res', response.data);
+
+
+    } catch (error) {
+      // const errorCatch = error.response;
+      // setError(errorCatch);
+      console.log("error login", error.response.data)
+    }
+  };
+
+
+
 
   return (
     <PaperProvider>
       <LinearGradient
         colors={['#7F7FD5', '#91EAE4']}
         // colors={['#fbd490', '#f7a5cb']} // Define your gradient colors here
-        start={{x: 0, y: 1}} // Start point of the gradient
-        end={{x: 1, y: 0}}
+        start={{ x: 0, y: 1 }} // Start point of the gradient
+        end={{ x: 1, y: 0 }}
         style={{
           position: 'relative',
           width: responsiveWidth(100),
@@ -126,8 +133,8 @@ const Withdraw = () => {
           <LinearGradient
             // colors={['#7F7FD5', '#91EAE4']} // Define your gradient colors here
             colors={['#fbd490', '#f7a5cb']}
-            start={{x: 0, y: 1}} // Start point of the gradient
-            end={{x: 1, y: 0}}
+            start={{ x: 0, y: 1 }} // Start point of the gradient
+            end={{ x: 1, y: 0 }}
             style={{
               position: 'relative',
               width: responsiveWidth(90),
@@ -270,10 +277,16 @@ const Withdraw = () => {
               alignItems: 'center',
             }}>
             <Text
-              style={[styles.BoxContent, {fontSize: responsiveFontSize(2)}]}>
+              style={[styles.BoxContent, { fontSize: responsiveFontSize(2) }]}>
               Add Min ₹ 100
             </Text>
           </View>
+
+
+
+
+
+
           {/* button Ui  */}
           <TouchableOpacity
             style={{
@@ -281,11 +294,11 @@ const Withdraw = () => {
               bottom: responsiveHeight(2), // Adjust the bottom position as needed
               alignSelf: 'center',
             }}
-            onPress={showModal}>
+            onPress={WithdrawApi}>
             <LinearGradient
               colors={['#7F7FD5', '#91EAE4']}
-              start={{x: 0, y: 1}} // Start point of the gradient
-              end={{x: 1, y: 0}}
+              start={{ x: 0, y: 1 }} // Start point of the gradient
+              end={{ x: 1, y: 0 }}
               style={{
                 position: 'relative',
                 width: responsiveWidth(90),
@@ -296,7 +309,7 @@ const Withdraw = () => {
                 alignSelf: 'center',
               }}>
               <Text
-                style={[styles.BoxContent, {color: '#fff', fontWeight: '700'}]}>
+                style={[styles.BoxContent, { color: '#fff', fontWeight: '700' }]}>
                 Withdraw
               </Text>
             </LinearGradient>
@@ -321,7 +334,7 @@ const Withdraw = () => {
                 }}>
                 <Icon name="check" size={70} color={'white'} />
               </View>
-              <View style={{marginTop: responsiveHeight(6)}}>
+              <View style={{ marginTop: responsiveHeight(6) }}>
                 <Text
                   style={{
                     fontSize: responsiveFontSize(3.5),

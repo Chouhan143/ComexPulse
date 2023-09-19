@@ -1,4 +1,4 @@
-import {View, Text, TouchableOpacity} from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import {
   responsiveFontSize,
   responsiveHeight,
@@ -6,7 +6,7 @@ import {
 } from 'react-native-responsive-dimensions';
 import React from 'react';
 
-export default function Btn({bgColor, btnLabel, textColor, Press}) {
+export default function Btn({ bgColor, btnLabel, textColor, Press }) {
   return (
     <TouchableOpacity
       onPress={Press}
@@ -23,8 +23,8 @@ export default function Btn({bgColor, btnLabel, textColor, Press}) {
       <Text
         style={{
           color: textColor,
-          fontSize: responsiveFontSize(3),
-          fontWeight: 'bold',
+          fontSize: responsiveFontSize(2.8),
+          fontWeight: '600',
         }}>
         {btnLabel}
       </Text>

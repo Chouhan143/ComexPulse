@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef} from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -10,9 +10,9 @@ import {
 import Background from '../../constants/Background';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Btn from '../../constants/Btn';
-import {darkGreen} from '../../constants/ColorConstants';
+import { darkGreen } from '../../constants/ColorConstants';
 import Field from '../../constants/Field';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import OtpTextInpute from '../components/OtpTextInpute';
 import axios from 'axios';
@@ -27,14 +27,14 @@ import Animated, {
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
-import {COLORS} from '../../constants/theme';
+import { COLORS } from '../../constants/theme';
 
 const MobileOtp = () => {
   const navigation = useNavigation();
   const goBack = () => {
     // navigation.navigate('MobileRegistration');
-    scale.value = withTiming(0, {duration: 900});
-    animation.value = withTiming(0, {duration: 900});
+    scale.value = withTiming(0, { duration: 900 });
+    animation.value = withTiming(0, { duration: 900 });
     setTimeout(() => {
       navigation.navigate('MobileRegistration');
     }, 1000);
@@ -53,13 +53,13 @@ const MobileOtp = () => {
   const animatedStyle = useAnimatedStyle(() => {
     return {
       opacity: animation.value,
-      transform: [{scale: scale.value}],
+      transform: [{ scale: scale.value }],
     };
   });
 
   useEffect(() => {
-    animation.value = withTiming(1, {duration: 900});
-    scale.value = withTiming(1, {duration: 900});
+    animation.value = withTiming(1, { duration: 900 });
+    scale.value = withTiming(1, { duration: 900 });
   }, []);
 
   // api Call here
@@ -72,8 +72,8 @@ const MobileOtp = () => {
       };
       const response = await axios.post(
         'https://app.srninfotech.com/bullsScript/api/verify-mobile-otp',
-        {mobile_otp: otpValue},
-        {headers},
+        { mobile_otp: otpValue },
+        { headers },
       );
       const result = response.data.status;
       if (result == 200) {
@@ -82,7 +82,9 @@ const MobileOtp = () => {
         setError(response.data.message || 'Registration failed');
       }
     } catch (error) {
-      console.log('catch errors', error);
+      console.log('catch errors dekhe', error.response.data.message);
+      const errorCatch = error.response.data.message;
+      setError(errorCatch);
     }
   };
 
@@ -91,7 +93,7 @@ const MobileOtp = () => {
       <Animated.View style={[animatedStyle]}>
         <TouchableOpacity
           onPress={goBack}
-          style={{padding: responsiveWidth(3)}}>
+          style={{ padding: responsiveWidth(3) }}>
           <Icon name="arrow-left-long" size={30} color={COLORS.secondary} />
         </TouchableOpacity>
         <View
@@ -151,7 +153,7 @@ const MobileOtp = () => {
                 marginTop: responsiveHeight(0),
               }}
             />
-            <View style={{position: 'absolute', top: responsiveHeight(37)}}>
+            <View style={{ position: 'absolute', top: responsiveHeight(37) }}>
               <Text
                 style={{
                   color: COLORS.black,
@@ -164,12 +166,37 @@ const MobileOtp = () => {
                 An authentication code has been sent your number
               </Text>
 
-              <View style={{marginTop: responsiveHeight(4)}}>
+              <View style={{ marginTop: responsiveHeight(4) }}>
                 <OtpTextInpute onOtpInputChange={handleOtpInputChange} />
               </View>
 
+              {error !== '' && (
+                <View
+                  style={{
+                    backgroundColor: '#eab3b3',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    alignSelf: 'center',
+                    width: responsiveWidth(85),
+                    height: responsiveHeight(5),
+                    marginTop: responsiveHeight(1),
+                    borderRadius: responsiveWidth(1)
+                  }}>
+                  <Text
+                    style={{
+                      color: '#cf4d4d',
+                      // marginTop: responsiveHeight(2),
+                      fontSize: responsiveFontSize(2),
+                      fontWeight: '600',
+                    }}>
+                    {error}
+                  </Text>
+                </View>
+              )}
+
               <View
-                style={{marginTop: responsiveHeight(7), alignSelf: 'center'}}>
+                style={{ marginTop: responsiveHeight(7), alignSelf: 'center' }}>
                 <Btn
                   textColor="white"
                   bgColor={COLORS.secondary}

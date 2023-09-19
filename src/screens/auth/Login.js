@@ -1,24 +1,29 @@
-import React, {useEffect} from 'react';
-import {View, Text, Touchable, TouchableOpacity} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Touchable, TouchableOpacity } from 'react-native';
 import Background from '../../constants/Background';
 import Btn from '../../constants/Btn';
-import {darkGreen} from '../../constants/ColorConstants';
+import { darkGreen } from '../../constants/ColorConstants';
+import axios from 'axios';
 import Field from '../../constants/Field';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   responsiveFontSize,
   responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
-import {COLORS} from '../../constants/theme';
+import { COLORS } from '../../constants/theme';
 const Login = () => {
   const navigation = useNavigation();
+  const [email, setEmail] = useState(''); // State variable for email input
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState("");
   const SignNavigation = () => {
     navigation.navigate('Signup');
   };
@@ -28,18 +33,52 @@ const Login = () => {
   const animatedStyle = useAnimatedStyle(() => {
     return {
       // opacity: animation.value,
-      transform: [{scale: scale.value}],
+      transform: [{ scale: scale.value }],
     };
   });
 
   useEffect(() => {
-    animation.value = withTiming(1, {duration: 900});
-    scale.value = withTiming(1, {duration: 900});
+    animation.value = withTiming(1, { duration: 900 });
+    scale.value = withTiming(1, { duration: 900 });
   }, []);
+
+  const LoginApi = async () => {
+
+    const payload = {
+      email: email,
+      password: password,
+    };
+
+    try {
+      const response = await axios.post(
+        'https://app.srninfotech.com/bullsScript/api/login',
+        payload,
+      );
+
+      const result = response.data.result;
+      console.log('res', response.data);
+
+      if (result == true) {
+        const token = response.data.token;
+        await AsyncStorage.setItem('accessToken', token);
+        navigation.navigate('DrawerNavigator');
+
+      } else {
+        // Registration failed, set the error message
+        setError(response.data.message || 'Registration failed');
+      }
+    } catch (error) {
+      // const errorCatch = error.response;
+      // setError(errorCatch);
+      console.log("error login", error)
+    }
+  };
+
+
 
   return (
     <Background>
-      <Animated.View style={[{alignItems: 'center'}, animatedStyle]}>
+      <Animated.View style={[{ alignItems: 'center' }, animatedStyle]}>
         <Text
           style={{
             color: COLORS.secondary,
@@ -82,8 +121,13 @@ const Login = () => {
           <Field
             placeholder="Email / Username"
             keyboardType={'email-address'}
+            onChangeText={(text) => setEmail(text)} // Update email state
+            value={email} // Bind email state to the input value
           />
-          <Field placeholder="Password" secureTextEntry={true} />
+          <Field placeholder="Password" secureTextEntry={true}
+            onChangeText={(text) => setPassword(text)} // Update password state
+            value={password} // Bind password state to the input value
+          />
           <View
             style={{
               alignItems: 'flex-end',
@@ -104,7 +148,7 @@ const Login = () => {
             textColor="white"
             bgColor={COLORS.secondary}
             btnLabel="Login"
-            Press={() => navigation.navigate('DrawerNavigator')}
+            Press={LoginApi}
           />
           <View
             style={{

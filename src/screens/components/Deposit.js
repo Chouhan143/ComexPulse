@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -9,24 +9,24 @@ import {
   ToastAndroid,
   FlatList,
 } from 'react-native';
-import {TextInput, Modal, Portal, PaperProvider} from 'react-native-paper';
+import { TextInput, Modal, Portal, PaperProvider } from 'react-native-paper';
 import Iconic from 'react-native-vector-icons/Ionicons';
 import LottieView from 'lottie-react-native';
 import DocumentPicker from 'react-native-document-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Button} from 'react-native-paper';
+import { Button } from 'react-native-paper';
 // import {Toast} from 'react-native-toast-message/lib/src/Toast';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Entypo';
 // import {COLORS, icons, SIZES} from '../../constants';
-import {postData, postData3} from '../../constants/hooks/ApiHelper';
+import { postData, postData3 } from '../../constants/hooks/ApiHelper';
 import {
   responsiveFontSize,
   responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 import axios from 'axios';
-import {COLORS} from '../../constants/theme';
+import { COLORS } from '../../constants/theme';
 import LinearGradient from 'react-native-linear-gradient';
 
 const Deposit = () => {
@@ -34,6 +34,8 @@ const Deposit = () => {
   const [visible, setVisible] = React.useState(false);
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
+  const [imageData, setImageData] = useState(null);
+  const [doc, setDoc] = useState(null);
   const containerStyle = {
     backgroundColor: '#fff',
     width: responsiveWidth(90),
@@ -51,40 +53,75 @@ const Deposit = () => {
     setAmount(value);
   };
 
-  //   const BalanceApi = async () => {
-  //     try {
-  //       const access_token = await AsyncStorage.getItem('accessToken');
-  //       const config = {
-  //         headers: {
-  //           Authorization: `Bearer ${access_token}`,
-  //         },
-  //       };
+  const SelectDOC = async () => {
+    try {
+      const selectedDoc = await DocumentPicker.pickSingle();
+      const imageData = {
+        uri: selectedDoc.uri,
+        type: selectedDoc.type,
+        name: selectedDoc.name || 'image.jpg',
+      };
+      console.log('image data', imageData);
+      setImageData(imageData);
+      setDoc(imageData);
+    } catch (err) {
+      if (DocumentPicker.isCancel(err)) {
+        setDoc(null); // Reset the doc state if document selection is canceled
+        console.log('User cancelled the upload');
+      } else {
+        setDoc('Error selecting document'); // Set an error message in doc state if there's an error
+        console.log(err);
+      }
+    }
+  };
 
-  //       const res = await axios.get(
-  //         'https://scripts.bulleyetrade.com/api/mobile/balance',
-  //         config,
-  //       );
-  //       setUserFund(res.data.balance);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
 
-  //   useEffect(() => {
-  //     const interval = setInterval(() => {
-  //       BalanceApi();
-  //     }, 1000);
+  const DepositApi = async () => {
+    const payload = new FormData();
+    payload.append('deposit_amount', amount);
 
-  //     return () => clearInterval(interval);
-  //   }, []);
+    if (doc) {
+      // If 'doc' (imageData) is available, append it to the FormData
+      payload.append('screenshot_deposit_amount', {
+        uri: doc.uri,
+        type: doc.type,
+        name: doc.name || 'image.jpg',
+      });
+    }
+
+
+    try {
+      const access_token = await AsyncStorage.getItem('accessToken');
+      const headers = {
+        Authorization: `Bearer ${access_token}`, // Replace with your authorization token
+      };
+      const response = await axios.post(
+        'https://app.srninfotech.com/bullsScript/api/deposit',
+        payload,
+        { headers },
+      );
+
+      const result = response.data.Status;
+      if (result === 200) {
+        showModal();
+      }
+      console.log('res', response.data);
+
+
+    } catch (error) {
+      // const errorCatch = error.response;
+      // setError(errorCatch);
+      console.log("error deposit", error)
+    }
+  };
 
   return (
     <PaperProvider>
       <LinearGradient
         colors={['#7F7FD5', '#91EAE4']}
         // colors={['#fbd490', '#f7a5cb']} // Define your gradient colors here
-        start={{x: 0, y: 1}} // Start point of the gradient
-        end={{x: 1, y: 0}}
+        start={{ x: 0, y: 1 }} // Start point of the gradient
+        end={{ x: 1, y: 0 }}
         style={{
           position: 'relative',
           width: responsiveWidth(100),
@@ -126,8 +163,8 @@ const Deposit = () => {
           <LinearGradient
             // colors={['#7F7FD5', '#91EAE4']} // Define your gradient colors here
             colors={['#fbd490', '#f7a5cb']}
-            start={{x: 0, y: 1}} // Start point of the gradient
-            end={{x: 1, y: 0}}
+            start={{ x: 0, y: 1 }} // Start point of the gradient
+            end={{ x: 1, y: 0 }}
             style={{
               position: 'relative',
               width: responsiveWidth(90),
@@ -270,10 +307,82 @@ const Deposit = () => {
               alignItems: 'center',
             }}>
             <Text
-              style={[styles.BoxContent, {fontSize: responsiveFontSize(2)}]}>
+              style={[styles.BoxContent, { fontSize: responsiveFontSize(2) }]}>
               Add Min ₹ 100
             </Text>
           </View>
+
+
+          {/* screnshort uload here  */}
+
+          <View
+            style={{
+              marginHorizontal: responsiveWidth(8),
+              marginVertical: responsiveHeight(2),
+            }}>
+            <Text
+              style={{
+                color: COLORS.black,
+                fontSize: responsiveFontSize(2.3),
+                fontWeight: '700',
+                letterSpacing: responsiveFontSize(0.1),
+              }}>
+              Upload Screenshot
+            </Text>
+          </View>
+          <View
+            style={{
+              width: responsiveWidth(90),
+              height: responsiveHeight(6),
+              borderRadius: responsiveWidth(1),
+              borderWidth: 1,
+              borderColor: '#757575',
+              marginTop: responsiveHeight(1),
+              display: 'flex',
+              flexDirection: 'row',
+              alignSelf: 'center',
+              // flexWrap: 'wrap',
+            }}>
+            <TouchableOpacity
+              style={{
+                // width: responsiveWidth(18),
+                paddingHorizontal: responsiveWidth(5),
+                height: responsiveWidth(12),
+                borderRadius: responsiveWidth(1),
+                borderColor: '#757575',
+                backgroundColor: COLORS.secondary,
+
+                justifyContent: 'center',
+              }}
+              onPress={SelectDOC}>
+              <Text
+                style={{
+                  color: '#fff',
+                  fontSize: responsiveFontSize(2),
+                  alignSelf: 'center',
+                  fontWeight: '700',
+                }}>
+                Select
+              </Text>
+            </TouchableOpacity>
+
+            <Text
+              style={{
+                fontSize: responsiveFontSize(2),
+                color: '#000',
+                maxWidth: responsiveWidth(60),
+                alignSelf: 'center',
+                paddingHorizontal: responsiveWidth(2),
+              }}
+              numberOfLines={1}
+              ellipsizeMode="tail">
+              {doc ? doc.name : ''}
+            </Text>
+          </View>
+
+
+
+
           {/* button Ui  */}
           <TouchableOpacity
             style={{
@@ -281,11 +390,11 @@ const Deposit = () => {
               bottom: responsiveHeight(2), // Adjust the bottom position as needed
               alignSelf: 'center',
             }}
-            onPress={showModal}>
+            onPress={DepositApi}>
             <LinearGradient
               colors={['#7F7FD5', '#91EAE4']}
-              start={{x: 0, y: 1}} // Start point of the gradient
-              end={{x: 1, y: 0}}
+              start={{ x: 0, y: 1 }} // Start point of the gradient
+              end={{ x: 1, y: 0 }}
               style={{
                 position: 'relative',
                 width: responsiveWidth(90),
@@ -296,7 +405,7 @@ const Deposit = () => {
                 alignSelf: 'center',
               }}>
               <Text
-                style={[styles.BoxContent, {color: '#fff', fontWeight: '700'}]}>
+                style={[styles.BoxContent, { color: '#fff', fontWeight: '700' }]}>
                 Deposit
               </Text>
             </LinearGradient>
@@ -323,7 +432,7 @@ const Deposit = () => {
                 }}>
                 <Icon name="check" size={70} color={'white'} />
               </View>
-              <View style={{marginTop: responsiveHeight(6)}}>
+              <View style={{ marginTop: responsiveHeight(6) }}>
                 <Text
                   style={{
                     fontSize: responsiveFontSize(3.5),

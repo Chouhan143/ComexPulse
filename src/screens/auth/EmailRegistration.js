@@ -38,7 +38,7 @@ const EmailRegistration = () => {
     navigation.goBack();
   };
   const [text, setText] = React.useState('');
-
+  const [error, setError] = useState('');
   // Animation code
   const animation = useSharedValue(0);
   const scale = useSharedValue(0);
@@ -77,7 +77,8 @@ const EmailRegistration = () => {
         setError(response.data.message || 'Registration failed');
       }
     } catch (error) {
-      console.log('catch errors', error);
+      const errorCatch = error.response.data.errors.email;
+      setError(errorCatch);
     }
   };
 
@@ -171,6 +172,33 @@ const EmailRegistration = () => {
                   mode="outlined"
                 />
               </View>
+
+              {error !== '' && (
+                <View
+                  style={{
+                    backgroundColor: '#eab3b3',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    alignSelf: 'center',
+                    width: responsiveWidth(90),
+                    height: responsiveHeight(5),
+                    marginTop: responsiveHeight(1),
+                    borderRadius: responsiveWidth(1)
+                  }}>
+                  <Text
+                    style={{
+                      color: '#cf4d4d',
+                      // marginTop: responsiveHeight(2),
+                      fontSize: responsiveFontSize(2),
+                      fontWeight: '600',
+                    }}>
+                    {error}
+                  </Text>
+                </View>
+              )}
+
+
 
               <View
                 style={{ marginTop: responsiveHeight(7), alignSelf: 'center' }}>

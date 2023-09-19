@@ -18,7 +18,8 @@ import MobileOtp from '../../screens/auth/MobileOtp';
 import EmailRegistration from '../../screens/auth/EmailRegistration';
 import EmailOtp from '../../screens/auth/EmailOtp';
 import UserDetails from '../../screens/auth/UserDetails';
-import Document from '../../screens/auth/Document';
+// import Document from '../../screens/auth/Document';
+import DocsUpload from '../../screens/auth/DocsUpload';
 const Stack = createStackNavigator();
 
 function AuthNavigator() {
@@ -60,9 +61,9 @@ function AuthNavigator() {
         component={UserDetails}
       />
       <Stack.Screen
-        name="Document"
+        name="DocsUpload"
         options={{ headerShown: false }}
-        component={Document}
+        component={DocsUpload}
       />
       <Stack.Screen
         name="SplaceScreen"

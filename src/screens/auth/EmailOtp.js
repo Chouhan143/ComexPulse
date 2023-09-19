@@ -80,8 +80,8 @@ const EmailOtp = () => {
         setError('An error occurred. Please try again later.');
       }
     } catch (error) {
-      const errrorCatch = error.response.data.errors;
-      console.log('catch errors', errrorCatch);
+      const errorCatch = error.response.data.errors.email_otp;
+      setError(errorCatch);
     }
   };
 
@@ -178,6 +178,31 @@ const EmailOtp = () => {
                   mode="outlined"
                 />
               </View>
+
+              {error !== '' && (
+                <View
+                  style={{
+                    backgroundColor: '#eab3b3',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    alignSelf: 'center',
+                    width: responsiveWidth(90),
+                    height: responsiveHeight(5),
+                    marginTop: responsiveHeight(1),
+                    borderRadius: responsiveWidth(1)
+                  }}>
+                  <Text
+                    style={{
+                      color: '#cf4d4d',
+                      // marginTop: responsiveHeight(2),
+                      fontSize: responsiveFontSize(2),
+                      fontWeight: '600',
+                    }}>
+                    {error}
+                  </Text>
+                </View>
+              )}
 
               <View
                 style={{ marginTop: responsiveHeight(7), alignSelf: 'center' }}>
