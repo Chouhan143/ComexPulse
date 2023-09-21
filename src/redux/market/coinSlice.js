@@ -10,7 +10,6 @@ export const fetchCoinData = createAsyncThunk('fetchCoin', async () => {
     );
     const result = response.data.Data;
     return result;
-    
   } catch (error) {
     console.log('error aaya', error);
     throw error;
@@ -38,7 +37,25 @@ export const getLiveTrade = createAsyncThunk('LiveTrade', async () => {
   }
 });
 
+export const userBalance = createAsyncThunk('UserBalance', async () => {
+  try {
+    const token = await AsyncStorage.getItem('accessToken');
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
 
+    const response = await axios.get(
+      'https://app.srninfotech.com/bullsScript/api/user-balance',
+      config,
+    );
+    const Balance = response.data.Balance; // <-- Corrected property name
+    return Balance;
+  } catch (error) {
+    console.log('error', error);
+  }
+});
 
 export const getPastTrade = createAsyncThunk('PastTrade', async () => {
   try {
@@ -86,6 +103,7 @@ export const coinSlice = createSlice({
     watchlistData: [],
     liveTradedata: [],
     pastTradedata: [],
+    userBalance: null,
   },
   reducers: {
     setIsTradeModalVisible: (state, action) => {
@@ -156,6 +174,21 @@ export const coinSlice = createSlice({
 
     builder.addCase(getPastTrade.fulfilled, (state, action) => {
       state.pastTradedata = action.payload;
+    });
+
+    // Balance  fetch here
+
+    builder.addCase(userBalance.pending, state => {
+      state.isLoader = true;
+    });
+
+    builder.addCase(userBalance.fulfilled, (state, action) => {
+      state.userBalance = action.payload;
+    });
+
+    builder.addCase(userBalance.rejected, state => {
+      state.isLoader = false;
+      state.isError = true;
     });
   },
 });
