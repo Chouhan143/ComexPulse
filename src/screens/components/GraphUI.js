@@ -21,6 +21,7 @@ import {
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 import {useSelector, useDispatch} from 'react-redux';
+import Iconic from 'react-native-vector-icons/Ionicons';
 import BuySellButton from './BuySellButton';
 import {useNavigation} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
@@ -221,14 +222,8 @@ const GraphUI = () => {
                 gap: 40,
               }}>
               <View>
-                <TouchableOpacity
-                  onPress={handleGoBack}
-                  style={styles.backIcon}>
-                  <Icon
-                    name="left"
-                    size={responsiveFontSize(3)}
-                    color={COLORS.black}
-                  />
+                <TouchableOpacity onPress={handleGoBack}>
+                  <Iconic name="arrow-back" size={25} color={'white'} />
                 </TouchableOpacity>
               </View>
               <View style={{justifyContent: 'center', alignItems: 'center'}}>
@@ -715,7 +710,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: responsiveWidth(5),
     paddingVertical: responsiveWidth(3),
     height: responsiveHeight(20),
-    paddingTop: responsiveHeight(5),
+    paddingTop: responsiveHeight(3),
   },
   headingText: {
     fontSize: responsiveFontSize(2),
