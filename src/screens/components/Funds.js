@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -9,29 +9,30 @@ import {
   ScrollView,
   ToastAndroid,
   FlatList,
+  ActivityIndicator
 } from 'react-native';
-import {Divider} from 'react-native-paper';
+import { Divider } from 'react-native-paper';
 import Iconic from 'react-native-vector-icons/Ionicons';
 import LottieView from 'lottie-react-native';
 import DocumentPicker from 'react-native-document-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Button} from 'react-native-paper';
+import { Button } from 'react-native-paper';
 // import {Toast} from 'react-native-toast-message/lib/src/Toast';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Entypo';
 // import {COLORS, icons, SIZES} from '../../constants';
-import {postData, postData3} from '../../constants/hooks/ApiHelper';
+import { postData, postData3 } from '../../constants/hooks/ApiHelper';
 import {
   responsiveFontSize,
   responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 import axios from 'axios';
-import {COLORS} from '../../constants/theme';
+import { COLORS } from '../../constants/theme';
 import LinearGradient from 'react-native-linear-gradient';
-import {fetchCoinData} from '../../redux/market/coinSlice';
-import {useDispatch, useSelector} from 'react-redux';
-import {userBalance} from '../../redux/market/coinSlice';
+import { fetchCoinData } from '../../redux/market/coinSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { userBalance } from '../../redux/market/coinSlice';
 
 const Funds = () => {
   dispatch = useDispatch();
@@ -61,7 +62,7 @@ const Funds = () => {
 
       const response = await axios.get(
         'https://scripts.bulleyetrade.com/api/deposit',
-        {headers},
+        { headers },
       );
 
       const formattedData = response.data.Data.map(item => {
@@ -74,7 +75,7 @@ const Funds = () => {
 
         const isApproved = item.is_approved === 1 ? 'Active' : 'Pending';
 
-        return {...item, created_at: formattedDate, is_approved: isApproved};
+        return { ...item, created_at: formattedDate, is_approved: isApproved };
       });
 
       setDepositeResponse(formattedData);
@@ -93,7 +94,7 @@ const Funds = () => {
 
       const response = await axios.get(
         'https://scripts.bulleyetrade.com/api/withdraw',
-        {headers},
+        { headers },
       );
 
       const formattedData = response.data.Data.map(item => {
@@ -106,7 +107,7 @@ const Funds = () => {
 
         const isApproved = item.is_approved === 1 ? 'Active' : 'Pending';
 
-        return {...item, created_at: formattedDate, is_approved: isApproved};
+        return { ...item, created_at: formattedDate, is_approved: isApproved };
       });
 
       setWithdrawResponse(formattedData);
@@ -175,7 +176,7 @@ const Funds = () => {
     }
   };
 
-  const MyAssetsUi = ({item}) => {
+  const MyAssetsUi = ({ item }) => {
     return (
       <>
         <View
@@ -197,8 +198,8 @@ const Funds = () => {
             <LinearGradient
               // colors={['#7F7FD5', '#91EAE4']}
               colors={['#fbd490', '#f7a5cb']} // Define your gradient colors here
-              start={{x: 0, y: 1}} // Start point of the gradient
-              end={{x: 1, y: 0}}
+              start={{ x: 0, y: 1 }} // Start point of the gradient
+              end={{ x: 1, y: 0 }}
               style={{
                 position: 'relative',
                 width: responsiveWidth(10),
@@ -259,8 +260,8 @@ const Funds = () => {
     <LinearGradient
       colors={['#7F7FD5', '#91EAE4']}
       // colors={['#fbd490', '#f7a5cb']} // Define your gradient colors here
-      start={{x: 0, y: 1}} // Start point of the gradient
-      end={{x: 1, y: 0}}
+      start={{ x: 0, y: 1 }} // Start point of the gradient
+      end={{ x: 1, y: 0 }}
       style={{
         position: 'relative',
         width: responsiveWidth(100),
@@ -302,8 +303,8 @@ const Funds = () => {
         <LinearGradient
           // colors={['#7F7FD5', '#91EAE4']} // Define your gradient colors here
           colors={['#fbd490', '#f7a5cb']}
-          start={{x: 0, y: 1}} // Start point of the gradient
-          end={{x: 1, y: 0}}
+          start={{ x: 0, y: 1 }} // Start point of the gradient
+          end={{ x: 1, y: 0 }}
           style={{
             position: 'relative',
             width: responsiveWidth(90),
@@ -361,26 +362,17 @@ const Funds = () => {
               Total Balance
             </Text>
 
-            {isLoadingBalance ? (
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <ActivityIndicator size="large" color="blue" />
-              </View>
-            ) : (
-              <Text
-                style={{
-                  fontSize: responsiveFontSize(2.2),
-                  color: 'blue',
-                  fontWeight: '700',
-                  paddingTop: responsiveHeight(1),
-                }}>
-                ₹ {getBalance}
-              </Text>
-            )}
+
+            <Text
+              style={{
+                fontSize: responsiveFontSize(2.5),
+                color: 'blue',
+                fontWeight: '700',
+                paddingTop: responsiveHeight(1),
+              }}>
+              ₹ {getBalance}
+            </Text>
+
           </View>
         </LinearGradient>
         {/* </LinearGradient> */}

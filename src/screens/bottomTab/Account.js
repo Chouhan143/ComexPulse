@@ -5,13 +5,15 @@ import {
   StyleSheet,
   opacity,
   Image,
+  Modal
 } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import {
   responsiveWidth,
   responsiveHeight,
   responsiveFontSize,
 } from 'react-native-responsive-dimensions';
+// import Iconic from 'react-native-vector-icons/Ionicons';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Icon1 from 'react-native-vector-icons/MaterialCommunityIcons';
 import Font5 from 'react-native-vector-icons/FontAwesome5';
@@ -19,9 +21,11 @@ import Font6 from 'react-native-vector-icons/FontAwesome6';
 import Iconic from 'react-native-vector-icons/Ionicons';
 import Material from 'react-native-vector-icons/MaterialIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
+import { Divider } from 'react-native-paper';
 
 const Account = () => {
+  const [showLogoutModal, setShowLogoutModal] = useState(false); // State to control the modal visibility
   const navigation = useNavigation();
   const logout = async () => {
     try {
@@ -32,8 +36,19 @@ const Account = () => {
     }
   };
 
+  const goBack = () => {
+    navigation.goBack(); // Use the navigation.goBack() method to go back to the previous screen
+  };
+
+  const openLogoutConfirmationModal = () => {
+    setShowLogoutModal(true);
+  };
+
+  const closeLogoutConfirmationModal = () => {
+    setShowLogoutModal(false);
+  };
   return (
-    <View style={{flex: 1, backgroundColor: '#fff'}}>
+    <View style={{ flex: 1, backgroundColor: '#fff' }}>
       <View style={styles.top}>
         <Image
           source={require('../../../assets/images/topBg.jpg')}
@@ -43,21 +58,28 @@ const Account = () => {
             position: 'absolute',
           }}
         />
-        <TouchableOpacity
-          style={{
-            alignSelf: 'flex-end',
-            marginHorizontal: responsiveWidth(5),
-            marginVertical: responsiveHeight(1),
-            backgroundColor: '#fff',
-            width: responsiveWidth(8),
-            height: responsiveWidth(8),
-            borderRadius: responsiveWidth(4),
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-          onPress={logout}>
-          <Font5 name="power-off" size={25} color="red" />
-        </TouchableOpacity>
+
+        <View style={{ justifyContent: 'space-between', alignItems: "center", flexDirection: 'row' }}>
+          <TouchableOpacity style={{ paddingLeft: responsiveWidth(3) }} onPress={goBack}>
+            <Iconic name="arrow-back" size={25} color={'white'} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              alignSelf: 'flex-end',
+              marginHorizontal: responsiveWidth(5),
+              marginVertical: responsiveHeight(1),
+              backgroundColor: '#fff',
+              width: responsiveWidth(8),
+              height: responsiveWidth(8),
+              borderRadius: responsiveWidth(4),
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+            onPress={openLogoutConfirmationModal}>
+            <Font5 name="power-off" size={25} color="red" />
+          </TouchableOpacity>
+        </View>
+
 
         <Image
           source={require('../../../assets/images/user.jpg')}
@@ -90,8 +112,39 @@ const Account = () => {
         </View>
       </View>
 
+
+      {/* Logout Confirmation Modal */}
+      <Modal
+        visible={showLogoutModal}
+        transparent={true}
+        animationType="fade">
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalText}>Are you sure you want to logout?</Text>
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                onPress={closeLogoutConfirmationModal}
+                style={[styles.modalButton, { backgroundColor: 'gray' }]}>
+                <Text style={styles.buttonText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  closeLogoutConfirmationModal();
+                  logout();
+                }}
+                style={[styles.modalButton, { backgroundColor: 'red' }]}>
+                <Text style={styles.buttonText}>Logout</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+
+
+
       <View style={styles.bottom}>
-        <View style={{marginTop: responsiveHeight(2)}}>
+        <View style={{ marginTop: responsiveHeight(2) }}>
           <View style={styles.item}>
             <TouchableOpacity
               style={styles.item_icon}
@@ -105,7 +158,7 @@ const Account = () => {
             </TouchableOpacity>
           </View>
 
-          <View style={styles.sperator}></View>
+          <Divider style={{ height: 1, backgroundColor: 'gray' }} horizontalInset={16} bold />
 
           <View style={styles.item}>
             <TouchableOpacity style={styles.item_icon}>
@@ -118,7 +171,7 @@ const Account = () => {
             </TouchableOpacity>
           </View>
 
-          <View style={styles.sperator}></View>
+          <Divider style={{ height: 0.8, backgroundColor: 'gray' }} horizontalInset={16} bold />
 
           <View style={styles.item}>
             <TouchableOpacity
@@ -133,7 +186,7 @@ const Account = () => {
             </TouchableOpacity>
           </View>
 
-          <View style={styles.sperator}></View>
+          <Divider style={{ height: 0.5, backgroundColor: 'gray' }} horizontalInset={16} bold />
 
           <View style={styles.item}>
             <TouchableOpacity
@@ -147,7 +200,7 @@ const Account = () => {
               <Text style={styles.item_text}>Help & Support</Text>
             </TouchableOpacity>
           </View>
-          <View style={styles.sperator}></View>
+          <Divider style={{ height: 0.5, backgroundColor: 'gray' }} horizontalInset={16} bold />
           <View style={styles.item}>
             <TouchableOpacity style={styles.item_icon}>
               <Iconic name="settings" size={25} color={'black'} />
@@ -156,6 +209,7 @@ const Account = () => {
               <Text style={styles.item_text}>Settings</Text>
             </TouchableOpacity>
           </View>
+          <Divider style={{ height: 1, backgroundColor: 'gray' }} horizontalInset={16} bold />
         </View>
       </View>
     </View>
@@ -191,5 +245,41 @@ const styles = StyleSheet.create({
     backgroundColor: 'gray',
     opacity: 0.5,
   },
+
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    width: responsiveWidth(80),
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+  },
+  modalText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
+  modalButton: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 5,
+    marginHorizontal: 10,
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+
+
+
+
 });
 export default Account;
