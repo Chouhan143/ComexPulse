@@ -9,7 +9,7 @@ import {
   Modal,
   Image,
 } from 'react-native';
-import React, {useEffect, useState, useRef} from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Icon from 'react-native-vector-icons/AntDesign';
 import Icon2 from 'react-native-vector-icons/Feather';
 import Icon3 from 'react-native-vector-icons/AntDesign';
@@ -17,10 +17,10 @@ import Icon4 from 'react-native-vector-icons/AntDesign';
 import Icon5 from 'react-native-vector-icons/FontAwesome';
 import Icon6 from 'react-native-vector-icons/AntDesign';
 
-import {COLORS} from '../../constants/theme';
-import {useNavigation} from '@react-navigation/native';
-import {useSelector, useDispatch} from 'react-redux';
-import {fetchCoinData, addToWatchlist} from '../../redux/market/coinSlice';
+import { COLORS } from '../../constants/theme';
+import { useNavigation } from '@react-navigation/native';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchCoinData, addToWatchlist } from '../../redux/market/coinSlice';
 import {
   responsiveFontSize,
   responsiveHeight,
@@ -69,7 +69,7 @@ const SearchData = () => {
 
   const watchlistData = useSelector(state => state.coin.watchlistData);
 
-  const renderItem = ({item}) => {
+  const renderItem = ({ item }) => {
     const isAddedToWatchlist = watchlistData.some(
       watchlistItem => watchlistItem.id === item.id,
     );
@@ -114,7 +114,7 @@ const SearchData = () => {
                 marginRight: responsiveWidth(3),
               }}>
               <Text
-                style={{color: COLORS.white, fontSize: responsiveFontSize(2)}}>
+                style={{ color: COLORS.white, fontSize: responsiveFontSize(2) }}>
                 {item.trade_name.charAt(0)}
               </Text>
             </View>
@@ -148,7 +148,7 @@ const SearchData = () => {
               <Icon5 name="shopping-bag" size={responsiveFontSize(2.6)} color="#1B1A1A" />
             </TouchableOpacity> */}
             <TouchableOpacity
-              style={{paddingLeft: responsiveWidth(5)}}
+              style={{ paddingLeft: responsiveWidth(5) }}
               onPress={() => handleAddToWatchlist(item)}>
               {isAddedToWatchlist ? (
                 <Icon4
@@ -171,11 +171,11 @@ const SearchData = () => {
   };
 
   return (
-    <View style={{flex: 1}}>
-      <View style={{display: 'flex', position: 'absolute'}}>
+    <View style={{ flex: 1 }}>
+      <View style={{ display: 'flex', position: 'absolute' }}>
         <Image
           source={require('../../../assets/images/topBg.jpg')}
-          style={{width: responsiveWidth(100), height: responsiveHeight(30)}}
+          style={{ width: responsiveWidth(100), height: responsiveHeight(30) }}
         />
       </View>
       <View style={styles.searchContainer}>
@@ -259,14 +259,14 @@ const SearchData = () => {
               <Text style={styles.topText1}>Stock Name</Text>
             </View>
             <View style={styles.topLast}>
-              <Text style={[styles.topText1, {paddingRight: 20}]}>Price</Text>
+              <Text style={[styles.topText1, { paddingRight: 20 }]}>Price</Text>
               <Text style={styles.topText1}>Change / Vol</Text>
             </View>
           </View>
         </View>
 
         {/* stock Heading end here  */}
-        <View style={{marginBottom: responsiveHeight(30)}}>
+        <View style={{ marginBottom: responsiveHeight(40) }}>
           <FlatList
             data={filterData}
             renderItem={renderItem}

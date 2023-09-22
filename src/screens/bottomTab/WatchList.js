@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -11,8 +11,8 @@ import {
 import Icon from 'react-native-vector-icons/AntDesign';
 import Icon2 from 'react-native-vector-icons/Feather';
 import Icon3 from 'react-native-vector-icons/AntDesign';
-import {useNavigation} from '@react-navigation/native';
-import {useSelector, useDispatch} from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
+import { useSelector, useDispatch } from 'react-redux';
 import Icon4 from 'react-native-vector-icons/MaterialCommunityIcons';
 import {
   fetchCoinData,
@@ -20,7 +20,7 @@ import {
   removeFromWatchlist,
   initWatchlistData,
 } from '../../redux/market/coinSlice';
-import {COLORS} from '../../constants/theme';
+import { COLORS } from '../../constants/theme';
 import {
   responsiveFontSize,
   responsiveHeight,
@@ -70,10 +70,11 @@ const WatchList = () => {
 
         <View
           style={{
-            justifyContent: 'center',
+            justifyContent: 'flex-start',
             alignItems: 'center',
             flexDirection: 'row',
             paddingVertical: responsiveHeight(2.5),
+            paddingHorizontal: responsiveWidth(4),
           }}>
           <TouchableOpacity onPress={handleGoBack}>
             <Icon
@@ -93,12 +94,12 @@ const WatchList = () => {
             <Text
               style={[
                 styles.searchInput,
-                {fontSize: responsiveFontSize(2.1), color: '#000'},
+                { fontSize: responsiveFontSize(2.1), color: '#000' },
               ]}>
               Search
             </Text>
           </TouchableOpacity>
-          <View
+          {/* <View
             style={{
               display: 'flex',
               alignItems: 'flex-end',
@@ -107,17 +108,17 @@ const WatchList = () => {
             <TouchableOpacity style={styles.addBox} onPress={navigationHandle}>
               <Icon name="plus" size={responsiveFontSize(3)} color="#fff" />
             </TouchableOpacity>
-          </View>
+          </View> */}
         </View>
       </View>
     );
   };
 
   const GraphUi = item => {
-    navigation.navigate('GraphUI', {selectedItem: item});
+    navigation.navigate('GraphUI', { selectedItem: item });
   };
 
-  const renderItem = ({item}) => {
+  const renderItem = ({ item }) => {
     return (
       <ScrollView>
         <TouchableOpacity
@@ -130,9 +131,9 @@ const WatchList = () => {
             paddingHorizontal: responsiveWidth(3),
             alignSelf: 'center',
             borderBottomColor: 'rgba(200,200,200,0.8)',
-            shadowColor: 'black',
+            shadowColor: 'blue',
             // shadowOffset: 15,
-            elevation: 10,
+            elevation: 15,
             borderBottomWidth: responsiveWidth(0.3),
             borderRadius: responsiveWidth(2),
           }}
@@ -142,20 +143,15 @@ const WatchList = () => {
               <Text style={styles.topText}>{item.trade_name}</Text>
             </View>
             <View style={styles.topLast}>
-              <Text style={[styles.topText, {paddingRight: 60}]}>
+              <Text style={[styles.topText, { paddingRight: 60 }]}>
                 {item.price}
               </Text>
               <Text style={styles.topText}>{item.percent_chg}%</Text>
             </View>
-            <TouchableOpacity
-              style={{
-                padding: responsiveWidth(1.5),
-                backgroundColor: '#323860',
-                borderRadius: responsiveWidth(7),
-              }}
-              onPress={() => handleRemoveItem(item.id)}>
-              {/* <Icon4 name="delete-circle-outline" size={22} color="red" /> */}
-              <Text style={{color: 'white'}}>Remove</Text>
+            <TouchableOpacity onPress={() => handleRemoveItem(item.id)}>
+              <Image source={require("../../../assets/images/close.png")} resizeMode='contain' style={{
+                width: responsiveWidth(4),
+              }} />
             </TouchableOpacity>
           </View>
         </TouchableOpacity>
@@ -195,15 +191,39 @@ const WatchList = () => {
             />
           ) : (
             <View style={styles.noItemsContainer}>
-              <Text style={{color: '#000', fontSize: responsiveFontSize(2.5)}}>
-                No items in watchlist
-              </Text>
+
+              <Image source={require("../../../assets/images/serching.png")} resizeMode='cover' style={{
+              }} />
+
+              <View style={{
+                backgroundColor: 'lightgray',
+                padding: responsiveWidth(2),
+                borderRadius: responsiveWidth(2)
+              }}>
+                <Text style={{ color: 'gray', fontSize: responsiveFontSize(2.5) }}>
+                  No any Assets here !
+                </Text>
+              </View>
+
+              {/* <TouchableOpacity style={{
+                position: 'absolute',
+                top: responsiveHeight(46),
+                right: responsiveWidth(6),
+
+              }} onPress={navigationHandle}>
+                <Image source={require("../../../assets/images/add.png")} resizeMode='contain' style={{
+                  width: responsiveWidth(14),
+                }} />
+
+              </TouchableOpacity> */}
+
+
             </View>
           )}
 
-          {/* <TouchableOpacity style={styles.addBox} onPress={navigationHandle}>
-        <Icon name="plus" size={responsiveFontSize(2.5)} color="#fff" />
-      </TouchableOpacity> */}
+          <TouchableOpacity style={styles.addBox} onPress={navigationHandle}>
+            <Icon name="plus" size={responsiveFontSize(2.5)} color="#fff" />
+          </TouchableOpacity>
         </View>
       </View>
     </View>
@@ -230,16 +250,18 @@ const styles = StyleSheet.create({
     marginLeft: responsiveWidth(6),
   },
   addBox: {
-    // position: 'absolute',
-    // bottom: responsiveHeight(12),
-    // right: responsiveWidth(5),
-    width: responsiveWidth(10),
+    position: 'absolute',
+    bottom: responsiveHeight(0),
+    right: responsiveWidth(0),
+    width: responsiveWidth(15),
     height: responsiveWidth(10),
     backgroundColor: '#616DBC',
-
-    borderRadius: responsiveWidth(6),
+    borderTopLeftRadius: responsiveWidth(6),
+    borderBottomLeftRadius: responsiveWidth(6),
     justifyContent: 'center',
     alignItems: 'center',
+    shadowColor: '#000',
+    elevation: 10,
   },
   searchInput: {
     flex: 1,
