@@ -31,7 +31,7 @@ import { useRoute } from '@react-navigation/native';
 import { LineChart } from 'react-native-gifted-charts';
 import { fetchCoinData } from '../../redux/market/coinSlice';
 import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
-import CandlestickChart from './CandlestickChart';
+
 const GraphUI = () => {
   const navigation = useNavigation();
   const route = useRoute();
@@ -43,16 +43,11 @@ const GraphUI = () => {
   const [isSwitchOnTarget, setIsSwitchOnTarget] = useState(false);
   const onToggleSwitchTarget = () => setIsSwitchOnTarget(!isSwitchOnTarget);
   const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
-  console.log('selectedItem', selectedItem);
+  // console.log('selectedItem', selectedItem);
+  // Go back to the previous screen
   const handleGoBack = () => {
-    navigation.goBack(); // Go back to the previous screen
+    navigation.goBack();
   };
-
-  // const data = [
-  //   { date: '2023-09-01', open: 100, close: 120, high: 130, low: 90 },
-  //   // Add more data points as needed
-  // ];
-
 
   const customDataPoint = () => {
     return (
@@ -144,25 +139,36 @@ const GraphUI = () => {
   ];
 
   const bottomSheetModalRef = useRef(null);
-  const snapPoints = ['63%'];
 
-  const handlePressModal = () => {
+  let snapPoints = [];
+
+  if (isSwitchOn && isSwitchOnTarget) {
+    snapPoints.push('79%');
+  } else if (isSwitchOn) {
+    snapPoints.push('74%');
+  }
+
+
+  if (snapPoints.length === 0) {
+    snapPoints.push('68%'); //  '68%'  default value
+  }
+
+
+  const handleBuyPressModal = () => {
     bottomSheetModalRef.current?.present();
+    handleBuyClick();
+  };
+
+
+  const handleSellPressModal = () => {
+    bottomSheetModalRef.current?.present();
+    handleSellClick();
   };
 
   const handleCloseModal = () => {
     bottomSheetModalRef.current?.dismiss();
   };
 
-  const handlePressIn = event => {
-    event.persist();
-    setIsPressed(true);
-  };
-
-  const handlePressOut = event => {
-    event.persist();
-    setIsPressed(false);
-  };
 
   const handleIncrement = () => {
     dispatch(incrementCounter());
@@ -207,6 +213,14 @@ const GraphUI = () => {
     setIsSellActive(true);
     // Add your Sell logic here
   };
+
+  // Api Functionalty start here 
+
+
+
+
+
+
 
   return (
     <BottomSheetModalProvider>
@@ -372,10 +386,8 @@ const GraphUI = () => {
           </LinearGradient>
 
 
-
-
           <View style={{
-            width: responsiveWidth(90),
+            width: responsiveWidth(100),
             height: responsiveHeight(15),
             backgroundColor: 'blue',
             alignSelf: 'center',
@@ -420,13 +432,13 @@ const GraphUI = () => {
               <BuySellButton
                 label="Buy"
                 backgroundColor="green"
-                onPress={handlePressModal}
+                onPress={handleBuyPressModal}
               />
 
               <BuySellButton
                 label="Sell"
                 backgroundColor="red"
-                onPress={handlePressModal}
+                onPress={handleSellPressModal}
               />
             </View>
 
@@ -438,9 +450,10 @@ const GraphUI = () => {
             ref={bottomSheetModalRef}
             index={0}
             snapPoints={snapPoints}
-            backgroundStyle={{ borderRadius: responsiveWidth(5) }}>
+            backgroundStyle={{ borderRadius: responsiveWidth(5), backgroundColor: '#D1D1D1', }}>
             {/* Content of your bottom sheet */}
             <View style={{ flex: 1 }}>
+              <View style={{ flex: 1, }}></View>
               <View style={styles.topContentBottomsheet}>
                 <View>
                   <Text
@@ -463,11 +476,21 @@ const GraphUI = () => {
                   </Text>
                 </View>
 
-                <TouchableOpacity onPress={handleCloseModal}>
+                <TouchableOpacity style={{
+                  width: responsiveWidth(8),
+                  height: responsiveWidth(8),
+                  borderRadius: responsiveWidth(4),
+                  backgroundColor: "#fff",
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  shadowColor: '#000',
+                  elevation: 5
+
+                }} onPress={handleCloseModal}>
                   <Icon3
-                    name="closecircle"
-                    size={responsiveFontSize(3)}
-                    color={COLORS.black}
+                    name="close"
+                    size={responsiveFontSize(2.5)}
+                    color={COLORS.gray}
                   />
                 </TouchableOpacity>
               </View>
@@ -485,15 +508,15 @@ const GraphUI = () => {
                     paddingTop: responsiveHeight(1),
                   }}>
                   <Text style={styles.headingText}>
-                    <Text style={{ color: '#A9A9A9' }}> Open: </Text>
+                    <Text style={{ color: 'gray' }}> Open: </Text>
                     {selectedItem.open}
                   </Text>
                   <Text style={styles.headingText}>
-                    <Text style={{ color: '#A9A9A9' }}> High: </Text>
+                    <Text style={{ color: 'gray' }}> High: </Text>
                     {selectedItem.high}
                   </Text>
                   <Text style={styles.headingText}>
-                    <Text style={{ color: '#A9A9A9' }}> Low: </Text>{' '}
+                    <Text style={{ color: 'gray' }}> Low: </Text>{' '}
                     {selectedItem.low}
                   </Text>
                 </View>
@@ -512,12 +535,12 @@ const GraphUI = () => {
                   onPress={handleBuyClick}
                   style={[
                     styles.BottomSheetButtonStyle,
-                    { backgroundColor: isBuyActive ? 'green' : '#efefef' },
+                    { backgroundColor: isBuyActive ? 'green' : '#efefef', shadowColor: "green", elevation: 5 },
                   ]}>
                   <Text
                     style={{
                       fontSize: responsiveFontSize(2.2),
-                      color: COLORS.white,
+                      color: isBuyActive ? "white" : "black",
                       fontWeight: '700',
                       letterSpacing: responsiveWidth(0.2),
                     }}>
@@ -528,12 +551,12 @@ const GraphUI = () => {
                   onPress={handleSellClick}
                   style={[
                     styles.BottomSheetButtonStyle,
-                    { backgroundColor: isSellActive ? 'red' : '#efefef' },
+                    { backgroundColor: isSellActive ? 'red' : '#efefef', shadowColor: "red", elevation: 5 },
                   ]}>
                   <Text
                     style={{
                       fontSize: responsiveFontSize(2.2),
-                      color: '#a49cd3',
+                      color: isSellActive ? "white" : "black",
                       fontWeight: '700',
                       letterSpacing: responsiveWidth(0.2),
                     }}>
@@ -547,7 +570,7 @@ const GraphUI = () => {
                 style={{
                   width: responsiveWidth(90),
                   //   height: responsiveHeight(33),
-                  paddingBottom: responsiveHeight(4),
+                  // paddingBottom: responsiveHeight(1),
                   backgroundColor: '#efefef',
                   alignSelf: 'center',
                   marginTop: responsiveHeight(1.6),
@@ -558,7 +581,7 @@ const GraphUI = () => {
                 {/*  main container */}
                 <View
                   style={{
-                    backgroundColor: 'blue',
+                    backgroundColor: `rgba(0,128,0,0.1)`,
                     width: responsiveWidth(20),
                     height: responsiveHeight(4),
                     borderRadius: responsiveWidth(1),
@@ -567,7 +590,7 @@ const GraphUI = () => {
                   }}>
                   <Text
                     style={{
-                      color: '#fff',
+                      color: `rgba(0,128,0,1)`,
                       fontSize: responsiveFontSize(1.8),
                       fontWeight: '400',
                     }}>
@@ -597,7 +620,7 @@ const GraphUI = () => {
                       <AntDesign
                         name="minuscircleo"
                         size={responsiveFontSize(2.5)}
-                        color="#000"
+                        color={`rgba(255,0,0,0.5)`}
                         style={{ marginRight: responsiveWidth(5) }}
                       />
                     </TouchableOpacity>
@@ -621,50 +644,115 @@ const GraphUI = () => {
                       <AntDesign
                         name="pluscircleo"
                         size={responsiveFontSize(2.5)}
-                        color="#000"
+                        color={`rgba(0,128,0,1)`}
                         style={{ marginRight: responsiveWidth(1) }}
                       />
                     </TouchableOpacity>
                   </View>
                   {/* <Text>{selectedItem ? selectedItem.price : ''} </Text> */}
                 </View>
-                <Divider />
+                <Divider style={{ borderColor: `rgba(0,128,0,0.3)`, borderWidth: 1 }} />
+
                 {/* max lot end here  */}
-                <View
-                  style={{
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    flexDirection: 'row',
-                    paddingHorizontal: responsiveWidth(5),
-                    paddingVertical: responsiveHeight(2),
-                  }}>
-                  <View
-                    style={{
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}>
-                    <Text
-                      style={{
-                        color: '#000',
-                        fontSize: responsiveFontSize(1.8),
-                      }}>
-                      Stop Loss
-                    </Text>
-                  </View>
-                  <View
-                    style={{
-                      justifyContent: 'flex-end',
-                      alignItems: 'flex-end',
-                      alignSelf: 'flex-end',
-                    }}>
-                    <Switch
-                      value={isSwitchOn}
-                      onValueChange={onToggleSwitch}
-                      color="green"
-                    />
-                  </View>
+                <View style={{
+                  marginHorizontal: responsiveWidth(2),
+                  marginVertical: responsiveHeight(0.6), flexDirection: 'row',
+                  justifyContent: 'space-between'
+                }}>
+
+                  <Text style={{ fontSize: responsiveFontSize(2), fontWeight: "500", color: "#000" }}>Order Type</Text>
+                  <Text style={{ fontSize: responsiveFontSize(2), fontWeight: "500", color: "#000", marginRight: responsiveWidth(2) }}>Buying Price</Text>
                 </View>
-                <Divider />
+                <View style={{ justifyContent: 'space-between', flexDirection: 'row', marginHorizontal: responsiveWidth(2), alignItems: 'center' }}>
+                  <View>
+
+                    <View style={{ flexDirection: 'row', }}>
+                      <TouchableOpacity style={styles.orderType}>
+                        <Text style={{ fontSize: responsiveFontSize(1.5), fontWeight: "500", color: "#fff" }}>Limit</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={[styles.orderType, { backgroundColor: 'green', marginLeft: responsiveWidth(2) }]}>
+                        <Text style={{ fontSize: responsiveFontSize(1.5), fontWeight: "500", color: "#fff" }}>Market</Text>
+                      </TouchableOpacity>
+
+                    </View>
+                  </View>
+
+                  <View>
+                    <TextInput
+                      editable
+                      maxLength={40}
+                      // onChangeText={text => onChangeText(text)}
+                      // value={value}
+                      style={{
+                        borderColor: 'gray',
+                        borderWidth: 1,
+                        width: responsiveWidth(25),
+                        height: responsiveHeight(5),
+                        borderRadius: responsiveWidth(1),
+                        fontSize: responsiveFontSize(2),
+                        color: "#000"
+                      }} />
+                  </View>
+
+                </View>
+
+
+
+
+
+
+                <View>
+                  <View
+                    style={{
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      flexDirection: 'row',
+                      paddingHorizontal: responsiveWidth(5),
+                      paddingVertical: responsiveHeight(2),
+                      backgroundColor: 'lightgray'
+                    }}>
+                    <View
+                      style={{
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}>
+                      <Text
+                        style={{
+                          color: '#000',
+                          fontSize: responsiveFontSize(2),
+                          fontWeight: "500"
+                        }}>
+                        Stop Loss
+                      </Text>
+                    </View>
+                    <View
+                      style={{
+                        justifyContent: 'flex-end',
+                        alignItems: 'flex-end',
+                        alignSelf: 'flex-end',
+                      }}>
+                      <Switch
+                        value={isSwitchOn}
+                        onValueChange={onToggleSwitch}
+                        color="green"
+                      />
+                    </View>
+                  </View>
+
+                  {
+                    isSwitchOn && (
+                      <View>
+                        <TextInput
+                          placeholder='StopLoss'
+                          style={styles.stoplossBox} />
+                      </View>
+                    )
+                  }
+
+                </View>
+
+
+                <Divider style={{ borderColor: "gray", borderWidth: 0.2 }} />
                 {/* switch  stoploss end */}
                 <View
                   style={{
@@ -673,6 +761,7 @@ const GraphUI = () => {
                     flexDirection: 'row',
                     paddingHorizontal: responsiveWidth(5),
                     paddingVertical: responsiveHeight(2),
+                    backgroundColor: 'lightgray'
                   }}>
                   <View
                     style={{
@@ -682,7 +771,8 @@ const GraphUI = () => {
                     <Text
                       style={{
                         color: '#000',
-                        fontSize: responsiveFontSize(1.8),
+                        fontSize: responsiveFontSize(2),
+                        fontWeight: "500"
                       }}>
                       Take Profit
                     </Text>
@@ -700,6 +790,14 @@ const GraphUI = () => {
                     />
                   </View>
                 </View>
+                {isSwitchOnTarget && (
+                  <View>
+                    <TextInput
+                      placeholder='TakeProfit'
+                      style={[styles.stoplossBox, { borderColor: `rgba(0,128,0,1)` }]} />
+                  </View>
+                )}
+
                 <Divider />
               </View>
 
@@ -729,12 +827,12 @@ const GraphUI = () => {
                     height: responsiveHeight(6),
                     justifyContent: 'center',
                     alignItems: 'center',
-                    backgroundColor: 'green',
+                    backgroundColor: isSellActive ? 'red' : "green",
                     borderRadius: responsiveWidth(1),
                   }}>
                   <Text
                     style={{
-                      color: '#fff',
+                      color: "#fff",
                       fontSize: responsiveFontSize(2),
                       fontWeight: '500',
                     }}>
@@ -763,6 +861,15 @@ const styles = StyleSheet.create({
     height: responsiveHeight(20),
     paddingTop: responsiveHeight(3),
   },
+  orderType: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: responsiveWidth(15),
+    height: responsiveHeight(4),
+    backgroundColor: "#000",
+    borderRadius: responsiveWidth(1)
+  },
+
   headingText: {
     fontSize: responsiveFontSize(2),
     fontWeight: '500',
@@ -844,4 +951,26 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  stoplossBox: {
+    marginHorizontal: responsiveWidth(5),
+    height: responsiveHeight(5),
+    borderRadius: responsiveWidth(1),
+    alignSelf: 'center',
+    paddingHorizontal: responsiveWidth(2),
+    textAlign: 'center',
+    borderBottomWidth: 2,
+    borderTopWidth: 2,
+    borderLeftWidth: 0.5,
+    borderRightWidth: 0.5,
+    borderColor: `rgba(255,0,0,0.5)`,
+    fontSize: responsiveFontSize(2.1),
+    color: '#000',
+    shadowColor: "#000000",
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    shadowOffset: {
+      height: 1,
+      width: 1
+    }
+  }
 });
