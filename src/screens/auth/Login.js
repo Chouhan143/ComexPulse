@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from 'react';
-import {View, Text, Touchable, TouchableOpacity} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Touchable, TouchableOpacity } from 'react-native';
 import Background from '../../constants/Background';
 import Btn from '../../constants/Btn';
-import {darkGreen} from '../../constants/ColorConstants';
+import { darkGreen } from '../../constants/ColorConstants';
 import axios from 'axios';
 import Field from '../../constants/Field';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -11,15 +11,15 @@ import {
   responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
-import {Entypo} from 'react-native-vector-icons/Entypo';
-import {useNavigation} from '@react-navigation/native';
+import { Entypo } from 'react-native-vector-icons/Entypo';
+import { useNavigation } from '@react-navigation/native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
-import {COLORS} from '../../constants/theme';
+import { COLORS } from '../../constants/theme';
 const Login = () => {
   const navigation = useNavigation();
   const [email, setEmail] = useState('test1@gmail.com'); // State variable for email input
@@ -34,13 +34,13 @@ const Login = () => {
   const animatedStyle = useAnimatedStyle(() => {
     return {
       // opacity: animation.value,
-      transform: [{scale: scale.value}],
+      transform: [{ scale: scale.value }],
     };
   });
 
   useEffect(() => {
-    animation.value = withTiming(1, {duration: 900});
-    scale.value = withTiming(1, {duration: 900});
+    animation.value = withTiming(1, { duration: 900 });
+    scale.value = withTiming(1, { duration: 900 });
   }, []);
 
   const LoginApi = async () => {
@@ -75,7 +75,7 @@ const Login = () => {
 
   return (
     <Background>
-      <Animated.View style={[{alignItems: 'center'}, animatedStyle]}>
+      <Animated.View style={[{ alignItems: 'center' }, animatedStyle]}>
         <Text
           style={{
             color: COLORS.secondary,

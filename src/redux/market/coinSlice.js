@@ -1,5 +1,5 @@
-import {createSlice} from '@reduxjs/toolkit';
-import {createAsyncThunk} from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -26,12 +26,13 @@ export const getLiveTrade = createAsyncThunk('LiveTrade', async () => {
     };
 
     const response = await axios.get(
-      'https://scripts.bulleyetrade.com/api/trades?type=active',
+      'https://app.srninfotech.com/bullsScript/api/live-trades',
       config,
     );
-    const Data = response.data.Data.activeTrades; // <-- Corrected property name
+    const Data = response.data; // <-- Corrected property name
+    console.log('livekkk', Data);
     return Data;
-    // console.log('livekkk', Data);
+
   } catch (error) {
     console.log('error', error);
   }
@@ -67,12 +68,12 @@ export const getPastTrade = createAsyncThunk('PastTrade', async () => {
     };
 
     const response = await axios.get(
-      'https://scripts.bulleyetrade.com/api/trades?type=past',
+      'https://app.srninfotech.com/bullsScript/api/past-trades',
       config,
     );
-    const Data = response.data.Data.pastTrades; // <-- Corrected property name
-    return Data;
+    const Data = response.data; // <-- Corrected property name
     console.log('past Trade', response);
+    return Data;
   } catch (error) {
     console.log('error', error);
   }

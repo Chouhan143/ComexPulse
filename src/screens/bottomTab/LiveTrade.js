@@ -1,22 +1,40 @@
-import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
-import React from 'react';
+import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import Reac, { useEffect } from 'react';
 import {
   responsiveWidth,
   responsiveHeight,
   responsiveFontSize,
 } from 'react-native-responsive-dimensions';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/AntDesign';
-import {COLORS} from '../../constants/theme';
+import { COLORS } from '../../constants/theme';
+import { getLiveTrade } from '../../redux/market/coinSlice';
+import { useSelector, useDispatch } from 'react-redux';
+
 const LiveTrade = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    // Dispatch the getLiveTrade action when the component mounts
+    dispatch(getLiveTrade());
+  }, [dispatch]);
+
+
+  const LiveTrade = useSelector(state => state.coin.liveTradedata);
+
+  console.log(LiveTrade, "dsad")
 
   const handleGoBack = () => {
     navigation.goBack(); // Go back to the previous screen
   };
 
+
+
+
+
   return (
-    <View style={{flex: 1}}>
+    <View style={{ flex: 1 }}>
       <View>
         <Image
           source={require('../../../assets/images/topBg.jpg')}
@@ -26,7 +44,7 @@ const LiveTrade = () => {
             position: 'absolute',
           }}
         />
-        <View style={{flexDirection: 'row'}}>
+        <View style={{ flexDirection: 'row' }}>
           <TouchableOpacity onPress={handleGoBack} style={styles.backIcon}>
             <Icon
               name="left"
