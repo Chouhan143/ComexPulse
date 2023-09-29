@@ -139,6 +139,7 @@ const TradeScreen = (props) => {
         setSelection(!isSelected);
         getSelectedAsset(selectedAsset, true);
     };
+    
     async function getKind() {
         AsyncStorage.getItem('userSession').then(userData => {
             //Get assets
@@ -171,12 +172,16 @@ const TradeScreen = (props) => {
                 });
         });
     }
+
+
     useEffect(() => {
         getKind().then(r => {
             console.log("Function called in TradeScreen.js");
 
         });
     }, []);
+
+
     const getSelectedAsset = (assetKey, onCheck=false) =>{
         setSelectedAsset(assetKey);
         let config = {
