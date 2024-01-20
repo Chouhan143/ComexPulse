@@ -1,5 +1,5 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { createAsyncThunk } from '@reduxjs/toolkit';
+import {createSlice} from '@reduxjs/toolkit';
+import {createAsyncThunk} from '@reduxjs/toolkit';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -26,13 +26,12 @@ export const getLiveTrade = createAsyncThunk('LiveTrade', async () => {
     };
 
     const response = await axios.get(
-      'https://app.srninfotech.com/bullsScript/api/live-trades',
+      'https://app.srninfotech.com/bullsPanel/api/live-trades',
       config,
     );
-    const Data = response.data; // <-- Corrected property name
-    console.log('livekkk', Data);
+    const Data = response.data.Data; // <-- Corrected property name
+    // console.log('livekkk', Data);
     return Data;
-
   } catch (error) {
     console.log('error', error);
   }
@@ -48,7 +47,7 @@ export const userBalance = createAsyncThunk('UserBalance', async () => {
     };
 
     const response = await axios.get(
-      'https://app.srninfotech.com/bullsScript/api/user-balance',
+      'https://app.srninfotech.com/bullsPanel/api/user-balance',
       config,
     );
     const Balance = response.data.Balance; // <-- Corrected property name
@@ -68,11 +67,11 @@ export const getPastTrade = createAsyncThunk('PastTrade', async () => {
     };
 
     const response = await axios.get(
-      'https://app.srninfotech.com/bullsScript/api/past-trades',
+      'https://app.srninfotech.com/bullsPanel/api/past-trades',
       config,
     );
     const Data = response.data; // <-- Corrected property name
-    console.log('past Trade', response);
+    // console.log('past Trade', response);
     return Data;
   } catch (error) {
     console.log('error', error);

@@ -9,31 +9,31 @@ import {
   TextInput,
   ImageBackground,
 } from 'react-native';
-import React, { useRef, useState } from 'react';
+import React, {useRef, useState} from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import { COLORS } from '../../constants/theme';
+import {COLORS} from '../../constants/theme';
 import Icon from 'react-native-vector-icons/AntDesign';
 import Icon2 from 'react-native-vector-icons/Entypo';
 import Icon3 from 'react-native-vector-icons/AntDesign';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Divider, Switch } from 'react-native-paper';
+import {Divider, Switch} from 'react-native-paper';
 import axios from 'axios';
 import {
   responsiveFontSize,
   responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
-import { useSelector, useDispatch } from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import Iconic from 'react-native-vector-icons/Ionicons';
 import BuySellButton from './BuySellButton';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
-import { incrementCounter, decrementCounter } from '../../redux/market/coinSlice';
-import { useRoute } from '@react-navigation/native';
-import { LineChart } from 'react-native-gifted-charts';
-import { fetchCoinData } from '../../redux/market/coinSlice';
-import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
-import { Modal, Portal, PaperProvider } from 'react-native-paper';
+import {incrementCounter, decrementCounter} from '../../redux/market/coinSlice';
+import {useRoute} from '@react-navigation/native';
+import {LineChart} from 'react-native-gifted-charts';
+import {fetchCoinData} from '../../redux/market/coinSlice';
+import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
+import {Modal, Portal, PaperProvider} from 'react-native-paper';
 
 const GraphUI = () => {
   const navigation = useNavigation();
@@ -49,8 +49,8 @@ const GraphUI = () => {
   const [isSwitchOnTarget, setIsSwitchOnTarget] = useState(false);
   const onToggleSwitchTarget = () => setIsSwitchOnTarget(!isSwitchOnTarget);
   const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
-  const [stopLoss, setStopLoss] = useState("0")
-  const [target, setTarget] = useState("0")
+  const [stopLoss, setStopLoss] = useState('0');
+  const [target, setTarget] = useState('0');
   const [orderType, setOrderType] = useState('Market'); // Initially, set to 'Market'
   const [buyingPrice, setBuyingPrice] = useState(selectedItem.price);
   const containerStyle = {
@@ -69,8 +69,7 @@ const GraphUI = () => {
   const tradeUiNavigate = () => {
     hideModal();
     handleCloseModal();
-
-  }
+  };
 
   const customDataPoint = () => {
     return (
@@ -88,8 +87,8 @@ const GraphUI = () => {
   };
   const customLabel = val => {
     return (
-      <View style={{ width: 70, marginLeft: 7 }}>
-        <Text style={{ color: 'white', fontWeight: 'bold' }}>{val}</Text>
+      <View style={{width: 70, marginLeft: 7}}>
+        <Text style={{color: 'white', fontWeight: 'bold'}}>{val}</Text>
       </View>
     );
   };
@@ -127,7 +126,7 @@ const GraphUI = () => {
               paddingVertical: 5,
               borderRadius: 4,
             }}>
-            <Text style={{ color: 'white' }}>410</Text>
+            <Text style={{color: 'white'}}>410</Text>
           </View>
         );
       },
@@ -171,17 +170,14 @@ const GraphUI = () => {
     snapPoints.push('74%');
   }
 
-
   if (snapPoints.length === 0) {
     snapPoints.push('68%'); //  '68%'  default value
   }
-
 
   const handleBuyPressModal = () => {
     bottomSheetModalRef.current?.present();
     handleBuyClick();
   };
-
 
   const handleSellPressModal = () => {
     bottomSheetModalRef.current?.present();
@@ -191,7 +187,6 @@ const GraphUI = () => {
   const handleCloseModal = () => {
     bottomSheetModalRef.current?.dismiss();
   };
-
 
   const handleIncrement = () => {
     dispatch(incrementCounter());
@@ -229,7 +224,6 @@ const GraphUI = () => {
     setIsBuyActive(true);
     setIsSellActive(false);
 
-
     // Add your Buy logic here
   };
 
@@ -239,9 +233,9 @@ const GraphUI = () => {
     // Add your Sell logic here
   };
 
-  // Api Functionalty start here 
+  // Api Functionalty start here
 
-  const handleOrderTypeChange = (type) => {
+  const handleOrderTypeChange = type => {
     setOrderType(type);
     if (type === 'Market') {
       setBuyingPrice(selectedItem.price);
@@ -250,8 +244,6 @@ const GraphUI = () => {
       setBuyingPrice('');
     }
   };
-
-
 
   const BuySellapi = async () => {
     try {
@@ -270,7 +262,6 @@ const GraphUI = () => {
         trade_type: 'intraday',
         market_price: 'SET_TRADE', // Include 'market_price' only for Market order
         limit: orderType === 'Limit' ? buyingPrice : selectedItem.price, // Include 'limit' only for Limit order
-
       };
 
       if (isBuyActive) {
@@ -283,32 +274,29 @@ const GraphUI = () => {
         return;
       }
 
-      console.log("payload", payload);
+      console.log('payload', payload);
       const res = await axios.post(
-        'https://app.srninfotech.com/bullsScript/api/add-trade',
+        'https://app.srninfotech.com/bullsPanel/api/add-trade',
         payload,
         config,
       );
-      console.log("res", res.data.response)
+      console.log('res', res.data.response);
       // showModal();
       if (res.data.response === true) {
         showModal();
       } else {
-        console.log("something wrong")
+        console.log('something wrong');
       }
-
     } catch (error) {
       const AllErrors = error.response.data.errors.limit;
       console.log(AllErrors);
     }
   };
 
-
-
   return (
     <PaperProvider>
       <BottomSheetModalProvider>
-        <View style={{ backgroundColor: 'blue' }}>
+        <View style={{backgroundColor: 'blue'}}>
           <View style={styles.searchContainer}>
             <View
               style={{
@@ -323,7 +311,7 @@ const GraphUI = () => {
                   <Iconic name="arrow-back" size={25} color={'white'} />
                 </TouchableOpacity>
               </View>
-              <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+              <View style={{justifyContent: 'center', alignItems: 'center'}}>
                 <Text
                   style={{
                     fontSize: responsiveFontSize(2.5),
@@ -333,7 +321,7 @@ const GraphUI = () => {
                   {selectedItem.trade_name}
                 </Text>
                 <Text
-                  style={{ color: '#fff', fontSize: responsiveFontSize(2.2) }}>
+                  style={{color: '#fff', fontSize: responsiveFontSize(2.2)}}>
                   ₹ {selectedItem.price}
                 </Text>
               </View>
@@ -358,7 +346,7 @@ const GraphUI = () => {
               borderTopLeftRadius: responsiveWidth(8),
               borderTopRightRadius: responsiveWidth(8),
               position: 'absolute',
-              top: responsiveHeight(13)
+              top: responsiveHeight(13),
             }}>
             <View style={styles.lowHigh}>
               <View
@@ -394,7 +382,7 @@ const GraphUI = () => {
                   <Text
                     style={[
                       styles.headingText,
-                      { fontSize: responsiveFontSize(2.5), color: 'green' },
+                      {fontSize: responsiveFontSize(2.5), color: 'green'},
                     ]}>
                     {selectedItem.price}
                   </Text>
@@ -408,19 +396,19 @@ const GraphUI = () => {
                   alignItems: 'center',
                 }}>
                 <View
-                  style={{ flexDirection: 'row', gap: 10, paddingVertical: 10 }}>
+                  style={{flexDirection: 'row', gap: 10, paddingVertical: 10}}>
                   <Text style={styles.headingText}>
-                    <Text style={{ color: '#A9A9A9' }}> Open: </Text>
+                    <Text style={{color: '#A9A9A9'}}> Open: </Text>
                     {selectedItem.open}
                   </Text>
                   <Text style={styles.headingText}>
-                    <Text style={{ color: '#A9A9A9' }}> High: </Text>
+                    <Text style={{color: '#A9A9A9'}}> High: </Text>
                     {selectedItem.high}
                   </Text>
                 </View>
-                <View style={{ flexDirection: 'row', alignSelf: 'flex-start' }}>
+                <View style={{flexDirection: 'row', alignSelf: 'flex-start'}}>
                   <Text style={styles.headingText}>
-                    <Text style={{ color: '#A9A9A9' }}> Low: </Text>{' '}
+                    <Text style={{color: '#A9A9A9'}}> Low: </Text>{' '}
                     {selectedItem.low}
                   </Text>
                 </View>
@@ -429,10 +417,9 @@ const GraphUI = () => {
 
             {/* Graph Ui Here */}
 
-
             <LinearGradient
-              start={{ x: -0.1, y: 0.8 }}
-              end={{ x: 1, y: 1 }}
+              start={{x: -0.1, y: 0.8}}
+              end={{x: 1, y: 1}}
               colors={['#4D5DFB', '#08C8F6']}
               style={{
                 marginTop: responsiveHeight(3),
@@ -450,7 +437,7 @@ const GraphUI = () => {
                 maxValue={600}
                 noOfSections={4}
                 areaChart
-                yAxisTextStyle={{ color: 'lightgray' }}
+                yAxisTextStyle={{color: 'lightgray'}}
                 data={data}
                 curved
                 startFillColor={'rgb(84,219,234)'}
@@ -469,50 +456,53 @@ const GraphUI = () => {
               />
             </LinearGradient>
 
-
-            <View style={{
-              width: responsiveWidth(100),
-              height: responsiveHeight(15),
-              backgroundColor: 'blue',
-              alignSelf: 'center',
-              borderTopRightRadius: responsiveWidth(7),
-              borderTopLeftRadius: responsiveWidth(7),
-              marginTop: responsiveHeight(15),
-
-
-            }}>
-
-              <Image source={require("../../../assets/images/dotleft.png")} resizeMode='cover' style={{
-                position: 'absolute',
-                top: 20,
-                right: 10,
-
-              }} />
-
-              <Image source={require("../../../assets/images/dotright.png")} resizeMode='cover' style={{
-                position: 'absolute',
-                bottom: 20,
-                left: 10,
-
-              }} />
-
-              <View style={{
-                position: "absolute",
-                width: responsiveWidth(50),
-                height: responsiveHeight(6),
-                backgroundColor: 'white',
+            <View
+              style={{
+                width: responsiveWidth(100),
+                height: responsiveHeight(15),
+                backgroundColor: 'blue',
                 alignSelf: 'center',
-                borderBottomRightRadius: responsiveWidth(3),
-                borderBottomLeftRadius: responsiveWidth(3),
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                paddingHorizontal: responsiveWidth(2.5),
-                shadowColor: '#000',
-                elevation: 10,
-                shadowOffset: 25,
-                shadowRadius: 10
+                borderTopRightRadius: responsiveWidth(7),
+                borderTopLeftRadius: responsiveWidth(7),
+                marginTop: responsiveHeight(15),
               }}>
+              <Image
+                source={require('../../../assets/images/dotleft.png')}
+                resizeMode="cover"
+                style={{
+                  position: 'absolute',
+                  top: 20,
+                  right: 10,
+                }}
+              />
 
+              <Image
+                source={require('../../../assets/images/dotright.png')}
+                resizeMode="cover"
+                style={{
+                  position: 'absolute',
+                  bottom: 20,
+                  left: 10,
+                }}
+              />
+
+              <View
+                style={{
+                  position: 'absolute',
+                  width: responsiveWidth(50),
+                  height: responsiveHeight(6),
+                  backgroundColor: 'white',
+                  alignSelf: 'center',
+                  borderBottomRightRadius: responsiveWidth(3),
+                  borderBottomLeftRadius: responsiveWidth(3),
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  paddingHorizontal: responsiveWidth(2.5),
+                  shadowColor: '#000',
+                  elevation: 10,
+                  shadowOffset: 25,
+                  shadowRadius: 10,
+                }}>
                 <BuySellButton
                   label="Buy"
                   backgroundColor="green"
@@ -525,7 +515,6 @@ const GraphUI = () => {
                   onPress={handleSellPressModal}
                 />
               </View>
-
             </View>
 
             {/* <CandlestickChart data={data} width={400} height={400} /> */}
@@ -534,10 +523,13 @@ const GraphUI = () => {
               ref={bottomSheetModalRef}
               index={0}
               snapPoints={snapPoints}
-              backgroundStyle={{ borderRadius: responsiveWidth(5), backgroundColor: '#D1D1D1', }}>
+              backgroundStyle={{
+                borderRadius: responsiveWidth(5),
+                backgroundColor: '#D1D1D1',
+              }}>
               {/* Content of your bottom sheet */}
-              <View style={{ flex: 1 }}>
-                <View style={{ flex: 1, }}></View>
+              <View style={{flex: 1}}>
+                <View style={{flex: 1}}></View>
                 <View style={styles.topContentBottomsheet}>
                   <View>
                     <Text
@@ -560,17 +552,18 @@ const GraphUI = () => {
                     </Text>
                   </View>
 
-                  <TouchableOpacity style={{
-                    width: responsiveWidth(8),
-                    height: responsiveWidth(8),
-                    borderRadius: responsiveWidth(4),
-                    backgroundColor: "#fff",
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    shadowColor: '#000',
-                    elevation: 5
-
-                  }} onPress={handleCloseModal}>
+                  <TouchableOpacity
+                    style={{
+                      width: responsiveWidth(8),
+                      height: responsiveWidth(8),
+                      borderRadius: responsiveWidth(4),
+                      backgroundColor: '#fff',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      shadowColor: '#000',
+                      elevation: 5,
+                    }}
+                    onPress={handleCloseModal}>
                     <Icon3
                       name="close"
                       size={responsiveFontSize(2.5)}
@@ -592,15 +585,15 @@ const GraphUI = () => {
                       paddingTop: responsiveHeight(1),
                     }}>
                     <Text style={styles.headingText}>
-                      <Text style={{ color: 'gray' }}> Open: </Text>
+                      <Text style={{color: 'gray'}}> Open: </Text>
                       {selectedItem.open}
                     </Text>
                     <Text style={styles.headingText}>
-                      <Text style={{ color: 'gray' }}> High: </Text>
+                      <Text style={{color: 'gray'}}> High: </Text>
                       {selectedItem.high}
                     </Text>
                     <Text style={styles.headingText}>
-                      <Text style={{ color: 'gray' }}> Low: </Text>{' '}
+                      <Text style={{color: 'gray'}}> Low: </Text>{' '}
                       {selectedItem.low}
                     </Text>
                   </View>
@@ -619,12 +612,16 @@ const GraphUI = () => {
                     onPress={handleBuyClick}
                     style={[
                       styles.BottomSheetButtonStyle,
-                      { backgroundColor: isBuyActive ? 'green' : '#efefef', shadowColor: "green", elevation: 5 },
+                      {
+                        backgroundColor: isBuyActive ? 'green' : '#efefef',
+                        shadowColor: 'green',
+                        elevation: 5,
+                      },
                     ]}>
                     <Text
                       style={{
                         fontSize: responsiveFontSize(2.2),
-                        color: isBuyActive ? "white" : "black",
+                        color: isBuyActive ? 'white' : 'black',
                         fontWeight: '700',
                         letterSpacing: responsiveWidth(0.2),
                       }}>
@@ -635,12 +632,16 @@ const GraphUI = () => {
                     onPress={handleSellClick}
                     style={[
                       styles.BottomSheetButtonStyle,
-                      { backgroundColor: isSellActive ? 'red' : '#efefef', shadowColor: "red", elevation: 5 },
+                      {
+                        backgroundColor: isSellActive ? 'red' : '#efefef',
+                        shadowColor: 'red',
+                        elevation: 5,
+                      },
                     ]}>
                     <Text
                       style={{
                         fontSize: responsiveFontSize(2.2),
-                        color: isSellActive ? "white" : "black",
+                        color: isSellActive ? 'white' : 'black',
                         fontWeight: '700',
                         letterSpacing: responsiveWidth(0.2),
                       }}>
@@ -683,9 +684,13 @@ const GraphUI = () => {
                   </View>
                   {/* ddfd */}
 
-                  <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                  <View
+                    style={{justifyContent: 'center', alignItems: 'center'}}>
                     <Text
-                      style={{ color: '#000', fontSize: responsiveFontSize(1.8) }}>
+                      style={{
+                        color: '#000',
+                        fontSize: responsiveFontSize(1.8),
+                      }}>
                       Max Lot
                     </Text>
                   </View>
@@ -705,7 +710,7 @@ const GraphUI = () => {
                           name="minuscircleo"
                           size={responsiveFontSize(2.5)}
                           color={`rgba(255,0,0,0.5)`}
-                          style={{ marginRight: responsiveWidth(5) }}
+                          style={{marginRight: responsiveWidth(5)}}
                         />
                       </TouchableOpacity>
                     </View>
@@ -719,7 +724,10 @@ const GraphUI = () => {
                         keyboardType="numeric"
                         maxLength={7}
                         placeholderTextColor={'#000'}
-                        style={{ fontSize: responsiveFontSize(2.5), color: '#000' }}
+                        style={{
+                          fontSize: responsiveFontSize(2.5),
+                          color: '#000',
+                        }}
                       />
                     </View>
 
@@ -729,37 +737,84 @@ const GraphUI = () => {
                           name="pluscircleo"
                           size={responsiveFontSize(2.5)}
                           color={`rgba(0,128,0,1)`}
-                          style={{ marginRight: responsiveWidth(1) }}
+                          style={{marginRight: responsiveWidth(1)}}
                         />
                       </TouchableOpacity>
                     </View>
                     {/* <Text>{selectedItem ? selectedItem.price : ''} </Text> */}
                   </View>
-                  <Divider style={{ borderColor: `rgba(0,128,0,0.3)`, borderWidth: 1 }} />
+                  <Divider
+                    style={{borderColor: `rgba(0,128,0,0.3)`, borderWidth: 1}}
+                  />
 
                   {/* max lot end here  */}
-                  <View style={{
-                    marginHorizontal: responsiveWidth(2),
-                    marginVertical: responsiveHeight(0.6), flexDirection: 'row',
-                    justifyContent: 'space-between'
-                  }}>
-
-                    <Text style={{ fontSize: responsiveFontSize(2), fontWeight: "500", color: "#000" }}>Order Type</Text>
-                    <Text style={{ fontSize: responsiveFontSize(2), fontWeight: "500", color: "#000", marginRight: responsiveWidth(2) }}>Buying Price</Text>
+                  <View
+                    style={{
+                      marginHorizontal: responsiveWidth(2),
+                      marginVertical: responsiveHeight(0.6),
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: responsiveFontSize(2),
+                        fontWeight: '500',
+                        color: '#000',
+                      }}>
+                      Order Type
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: responsiveFontSize(2),
+                        fontWeight: '500',
+                        color: '#000',
+                        marginRight: responsiveWidth(2),
+                      }}>
+                      Buying Price
+                    </Text>
                   </View>
-                  <View style={{ justifyContent: 'space-between', flexDirection: 'row', marginHorizontal: responsiveWidth(2), alignItems: 'center' }}>
+                  <View
+                    style={{
+                      justifyContent: 'space-between',
+                      flexDirection: 'row',
+                      marginHorizontal: responsiveWidth(2),
+                      alignItems: 'center',
+                    }}>
                     <View>
-
-                      <View style={{ flexDirection: 'row', }}>
-                        <TouchableOpacity style={[styles.orderType, orderType === 'Limit' && { backgroundColor: 'green' }]}
+                      <View style={{flexDirection: 'row'}}>
+                        <TouchableOpacity
+                          style={[
+                            styles.orderType,
+                            orderType === 'Limit' && {backgroundColor: 'green'},
+                          ]}
                           onPress={() => handleOrderTypeChange('Limit')}>
-                          <Text style={{ fontSize: responsiveFontSize(1.5), fontWeight: "500", color: "#fff" }}>Limit</Text>
+                          <Text
+                            style={{
+                              fontSize: responsiveFontSize(1.5),
+                              fontWeight: '500',
+                              color: '#fff',
+                            }}>
+                            Limit
+                          </Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={[styles.orderType, { marginLeft: responsiveWidth(3) }, orderType === 'Market' && { backgroundColor: 'green' }]}
+                        <TouchableOpacity
+                          style={[
+                            styles.orderType,
+                            {marginLeft: responsiveWidth(3)},
+                            orderType === 'Market' && {
+                              backgroundColor: 'green',
+                            },
+                          ]}
                           onPress={() => handleOrderTypeChange('Market')}>
-                          <Text style={{ fontSize: responsiveFontSize(1.5), fontWeight: "500", color: "#fff" }}>Market</Text>
+                          <Text
+                            style={{
+                              fontSize: responsiveFontSize(1.5),
+                              fontWeight: '500',
+                              color: '#fff',
+                            }}>
+                            Market
+                          </Text>
                         </TouchableOpacity>
-
                       </View>
                     </View>
 
@@ -768,8 +823,12 @@ const GraphUI = () => {
                         editable
                         maxLength={40}
                         value={buyingPrice.toString()}
-                        onChangeText={(text) => setBuyingPrice(text)}
-                        placeholder={orderType === 'Market' ? 'Market Price' : 'Enter Price'}
+                        onChangeText={text => setBuyingPrice(text)}
+                        placeholder={
+                          orderType === 'Market'
+                            ? 'Market Price'
+                            : 'Enter Price'
+                        }
                         style={{
                           borderColor: 'gray',
                           borderWidth: 1,
@@ -777,16 +836,11 @@ const GraphUI = () => {
                           height: responsiveHeight(5),
                           borderRadius: responsiveWidth(1),
                           fontSize: responsiveFontSize(2),
-                          color: "#000"
-                        }} />
+                          color: '#000',
+                        }}
+                      />
                     </View>
-
                   </View>
-
-
-
-
-
 
                   <View>
                     <View
@@ -796,7 +850,7 @@ const GraphUI = () => {
                         flexDirection: 'row',
                         paddingHorizontal: responsiveWidth(5),
                         paddingVertical: responsiveHeight(2),
-                        backgroundColor: 'lightgray'
+                        backgroundColor: 'lightgray',
                       }}>
                       <View
                         style={{
@@ -807,7 +861,7 @@ const GraphUI = () => {
                           style={{
                             color: '#000',
                             fontSize: responsiveFontSize(2),
-                            fontWeight: "500"
+                            fontWeight: '500',
                           }}>
                           Stop Loss
                         </Text>
@@ -826,22 +880,19 @@ const GraphUI = () => {
                       </View>
                     </View>
 
-                    {
-                      isSwitchOn && (
-                        <View>
-                          <TextInput
-                            value={stopLoss}
-                            onChangeText={text => setStopLoss(text)}
-                            placeholder='StopLoss'
-                            style={styles.stoplossBox} />
-                        </View>
-                      )
-                    }
-
+                    {isSwitchOn && (
+                      <View>
+                        <TextInput
+                          value={stopLoss}
+                          onChangeText={text => setStopLoss(text)}
+                          placeholder="StopLoss"
+                          style={styles.stoplossBox}
+                        />
+                      </View>
+                    )}
                   </View>
 
-
-                  <Divider style={{ borderColor: "gray", borderWidth: 0.2 }} />
+                  <Divider style={{borderColor: 'gray', borderWidth: 0.2}} />
                   {/* switch  stoploss end */}
                   <View
                     style={{
@@ -850,7 +901,7 @@ const GraphUI = () => {
                       flexDirection: 'row',
                       paddingHorizontal: responsiveWidth(5),
                       paddingVertical: responsiveHeight(2),
-                      backgroundColor: 'lightgray'
+                      backgroundColor: 'lightgray',
                     }}>
                     <View
                       style={{
@@ -861,7 +912,7 @@ const GraphUI = () => {
                         style={{
                           color: '#000',
                           fontSize: responsiveFontSize(2),
-                          fontWeight: "500"
+                          fontWeight: '500',
                         }}>
                         Take Profit
                       </Text>
@@ -884,8 +935,12 @@ const GraphUI = () => {
                       <TextInput
                         value={target}
                         onChangeText={text => setTarget(text)}
-                        placeholder='TakeProfit'
-                        style={[styles.stoplossBox, { borderColor: `rgba(0,128,0,1)` }]} />
+                        placeholder="TakeProfit"
+                        style={[
+                          styles.stoplossBox,
+                          {borderColor: `rgba(0,128,0,1)`},
+                        ]}
+                      />
                     </View>
                   )}
 
@@ -918,22 +973,22 @@ const GraphUI = () => {
                       height: responsiveHeight(6),
                       justifyContent: 'center',
                       alignItems: 'center',
-                      backgroundColor: isSellActive ? 'red' : "green",
+                      backgroundColor: isSellActive ? 'red' : 'green',
                       borderRadius: responsiveWidth(1),
-                    }} onPress={BuySellapi}>
+                    }}
+                    onPress={BuySellapi}>
                     <Text
                       style={{
-                        color: "#fff",
+                        color: '#fff',
                         fontSize: responsiveFontSize(2),
                         fontWeight: '500',
                       }}>
-                      {isSellActive ? "Sell" : "Buy"} {selectedItem.price}
+                      {isSellActive ? 'Sell' : 'Buy'} {selectedItem.price}
                     </Text>
                   </TouchableOpacity>
                 </View>
               </View>
             </BottomSheetModal>
-
 
             <Portal>
               <Modal
@@ -954,7 +1009,7 @@ const GraphUI = () => {
                   }}>
                   <Icon name="check" size={70} color={'white'} />
                 </View>
-                <View style={{ marginTop: responsiveHeight(6) }}>
+                <View style={{marginTop: responsiveHeight(6)}}>
                   <Text
                     style={{
                       fontSize: responsiveFontSize(3.5),
@@ -999,8 +1054,6 @@ const GraphUI = () => {
                 </View>
               </Modal>
             </Portal>
-
-
           </View>
         </View>
       </BottomSheetModalProvider>
@@ -1024,8 +1077,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: responsiveWidth(15),
     height: responsiveHeight(4),
-    backgroundColor: "#000",
-    borderRadius: responsiveWidth(1)
+    backgroundColor: '#000',
+    borderRadius: responsiveWidth(1),
   },
 
   headingText: {
@@ -1061,7 +1114,7 @@ const styles = StyleSheet.create({
     elevation: 10,
     shadowOffset: 2,
     shadowColor: 'blue',
-    marginTop: responsiveHeight(5)
+    marginTop: responsiveHeight(5),
   },
   innerLow: {
     width: responsiveWidth(25),
@@ -1123,12 +1176,12 @@ const styles = StyleSheet.create({
     borderColor: `rgba(255,0,0,0.5)`,
     fontSize: responsiveFontSize(2.1),
     color: '#000',
-    shadowColor: "#000000",
+    shadowColor: '#000000',
     shadowOpacity: 0.8,
     shadowRadius: 2,
     shadowOffset: {
       height: 1,
-      width: 1
-    }
-  }
+      width: 1,
+    },
+  },
 });

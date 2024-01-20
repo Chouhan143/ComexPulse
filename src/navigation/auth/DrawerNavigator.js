@@ -9,6 +9,7 @@ import CustomDrawer from '../../screens/bottomTab/CustomDrawer';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {responsiveFontSize} from 'react-native-responsive-dimensions';
+
 const Drawer = createDrawerNavigator();
 
 function DrawerNavigator() {

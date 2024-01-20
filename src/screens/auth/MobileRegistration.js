@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {
   View,
   Text,
@@ -9,11 +9,11 @@ import {
 } from 'react-native';
 import Background from '../../constants/Background';
 import Btn from '../../constants/Btn';
-import { darkGreen } from '../../constants/ColorConstants';
+import {darkGreen} from '../../constants/ColorConstants';
 import Field from '../../constants/Field';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome6';
-import { TextInput } from 'react-native-paper';
+import {TextInput} from 'react-native-paper';
 import PhoneInput from 'react-native-phone-number-input';
 
 import {
@@ -27,7 +27,7 @@ import Animated, {
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
-import { COLORS } from '../../constants/theme';
+import {COLORS} from '../../constants/theme';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -44,13 +44,13 @@ const MobileRegistration = () => {
   const animatedStyle = useAnimatedStyle(() => {
     return {
       opacity: animation.value,
-      transform: [{ scale: scale.value }],
+      transform: [{scale: scale.value}],
     };
   });
 
   useEffect(() => {
-    animation.value = withTiming(1, { duration: 900 });
-    scale.value = withTiming(1, { duration: 900 });
+    animation.value = withTiming(1, {duration: 900});
+    scale.value = withTiming(1, {duration: 900});
   }, []);
 
   const [loading, setLoading] = useState(false);
@@ -80,8 +80,8 @@ const MobileRegistration = () => {
   const MobileRegistrationApi = async () => {
     try {
       const response = await axios.post(
-        'https://app.srninfotech.com/bullsScript/api/mobile-register',
-        { mobile: value },
+        'https://app.srninfotech.com/bullsPanel/api/mobile-register',
+        {mobile: value},
       );
 
       const result = response.data.result;
@@ -91,7 +91,6 @@ const MobileRegistration = () => {
         const token = response.data.user_details.token;
         await AsyncStorage.setItem('accessToken', token);
         navigation.navigate('MobileOtp');
-
       } else {
         // Registration failed, set the error message
         setError(response.data.message || 'Registration failed');
@@ -107,7 +106,7 @@ const MobileRegistration = () => {
       <Animated.View style={[animatedStyle]}>
         <TouchableOpacity
           onPress={goBack}
-          style={{ padding: responsiveWidth(3) }}>
+          style={{padding: responsiveWidth(3)}}>
           <Icon name="arrow-left-long" size={30} color={COLORS.secondary} />
         </TouchableOpacity>
         <View
@@ -167,7 +166,7 @@ const MobileRegistration = () => {
                 marginTop: responsiveHeight(0),
               }}
             />
-            <View style={{ position: 'absolute', top: responsiveHeight(37) }}>
+            <View style={{position: 'absolute', top: responsiveHeight(37)}}>
               <Text
                 style={{
                   color: COLORS.black,
@@ -195,7 +194,7 @@ const MobileRegistration = () => {
                 textContainerStyle={[
                   styles.textContainer,
                   !valid && value.length !== 10
-                    ? { borderColor: '	#cf4d4d' }
+                    ? {borderColor: '	#cf4d4d'}
                     : null,
                 ]}
                 textInputStyle={[
@@ -223,7 +222,7 @@ const MobileRegistration = () => {
                     width: responsiveWidth(90),
                     height: responsiveHeight(5),
                     marginTop: responsiveHeight(1),
-                    borderRadius: responsiveWidth(1)
+                    borderRadius: responsiveWidth(1),
                   }}>
                   <Text
                     style={{
@@ -237,16 +236,13 @@ const MobileRegistration = () => {
                 </View>
               )}
 
-
-
-
-              <View style={{ marginTop: responsiveHeight(7) }}>
+              <View style={{marginTop: responsiveHeight(7)}}>
                 <Btn
                   textColor="white"
                   bgColor={COLORS.secondary}
                   btnLabel="Send OTP"
                   Press={MobileRegistrationApi}
-                // Press={() => navigation.navigate('MobileOtp')}
+                  // Press={() => navigation.navigate('MobileOtp')}
                 />
               </View>
             </View>

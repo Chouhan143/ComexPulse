@@ -61,7 +61,7 @@ const Withdraw = () => {
         Authorization: `Bearer ${access_token}`, // Replace with your authorization token
       };
       const response = await axios.post(
-        'https://app.srninfotech.com/bullsScript/api/withdrawl',
+        'https://app.srninfotech.com/bullsPanel/api/withdrawl',
         {withdrawl_amount: amount},
         {headers},
       );

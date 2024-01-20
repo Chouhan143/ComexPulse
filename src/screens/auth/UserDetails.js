@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 
 import {
   View,
@@ -11,11 +11,11 @@ import {
 } from 'react-native';
 import Background from '../../constants/Background';
 import Btn from '../../constants/Btn';
-import { TextInput, HelperText } from 'react-native-paper';
+import {TextInput, HelperText} from 'react-native-paper';
 
-import { darkGreen } from '../../constants/ColorConstants';
+import {darkGreen} from '../../constants/ColorConstants';
 import Field from '../../constants/Field';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import OtpTextInpute from '../components/OtpTextInpute';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -32,7 +32,7 @@ import Animated, {
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
-import { COLORS } from '../../constants/theme';
+import {COLORS} from '../../constants/theme';
 import DocumentPicker from 'react-native-document-picker';
 const UserDetails = () => {
   const navigation = useNavigation();
@@ -40,8 +40,8 @@ const UserDetails = () => {
   const [imageData, setImageData] = useState(null);
   const goBack = () => {
     // navigation.navigate('MobileRegistration');
-    scale.value = withTiming(0, { duration: 900 });
-    animation.value = withTiming(0, { duration: 900 });
+    scale.value = withTiming(0, {duration: 900});
+    animation.value = withTiming(0, {duration: 900});
     setTimeout(() => {
       navigation.navigate('MobileRegistration');
     }, 1000);
@@ -69,13 +69,13 @@ const UserDetails = () => {
   const animatedStyle = useAnimatedStyle(() => {
     return {
       opacity: animation.value,
-      transform: [{ scale: scale.value }],
+      transform: [{scale: scale.value}],
     };
   });
 
   useEffect(() => {
-    animation.value = withTiming(1, { duration: 900 });
-    scale.value = withTiming(1, { duration: 900 });
+    animation.value = withTiming(1, {duration: 900});
+    scale.value = withTiming(1, {duration: 900});
   }, []);
 
   const SelectDOC = async () => {
@@ -104,13 +104,10 @@ const UserDetails = () => {
     setDoc(value);
   };
 
-  // api call 
-
-
+  // api call
 
   const UserDetailsApi = async () => {
     try {
-
       const access_token = await AsyncStorage.getItem('accessToken');
       const headers = {
         Authorization: `Bearer ${access_token}`, // Replace with your authorization token
@@ -129,15 +126,15 @@ const UserDetails = () => {
         // If an image is selected, append it to the FormData object
         userDetailsData.append('profile_picture', imageData);
       }
-      console.log("userDetailsData", userDetailsData);
+      console.log('userDetailsData', userDetailsData);
 
       const response = await axios.post(
-        'https://app.srninfotech.com/bullsScript/api/create-profile',
+        'https://app.srninfotech.com/bullsPanel/api/create-profile',
         userDetailsData,
-        { headers },
+        {headers},
       );
       const result = response.data.status;
-      console.log("user", response.data)
+      console.log('user', response.data);
 
       if (result === 200) {
         navigation.navigate('DocsUpload');
@@ -149,19 +146,17 @@ const UserDetails = () => {
       }
     } catch (error) {
       console.log('catch errors', error.response.data.errors);
-      setFnameError(error.response.data.errors.first_name)
-      setlNameError(error.response.data.errors.last_name)
-      setpassError(error.response.data.errors.password)
-      setconfirmPassError(error.response.data.errors.confirm_password)
-      setwalletpinError(error.response.data.errors.walletPin)
+      setFnameError(error.response.data.errors.first_name);
+      setlNameError(error.response.data.errors.last_name);
+      setpassError(error.response.data.errors.password);
+      setconfirmPassError(error.response.data.errors.confirm_password);
+      setwalletpinError(error.response.data.errors.walletPin);
     }
   };
 
   return (
     <Background>
-      <TouchableOpacity
-        onPress={goBack}
-        style={{ padding: responsiveWidth(3) }}>
+      <TouchableOpacity onPress={goBack} style={{padding: responsiveWidth(3)}}>
         <Icon name="arrow-left-long" size={30} color={COLORS.secondary} />
       </TouchableOpacity>
       <View
@@ -169,7 +164,7 @@ const UserDetails = () => {
           justifyContent: 'flex-start',
           alignItems: 'flex-start',
           marginLeft: responsiveWidth(3),
-          flex: 1 / 8
+          flex: 1 / 8,
         }}>
         <Text
           style={{
@@ -205,83 +200,81 @@ const UserDetails = () => {
 
           elevation: 10,
         }}>
-        <View style={{
-
-          width: responsiveWidth(95),
-          paddingLeft: responsiveWidth(3),
-          marginLeft: responsiveHeight(3)
-
-        }}>
-
-
-
-          <View style={{
-            marginTop: responsiveHeight(1), alignSelf: 'center'
+        <View
+          style={{
+            width: responsiveWidth(95),
+            paddingLeft: responsiveWidth(3),
+            marginLeft: responsiveHeight(3),
           }}>
-            <View style={{ paddingTop: responsiveWidth(10) }}>
+          <View
+            style={{
+              marginTop: responsiveHeight(1),
+              alignSelf: 'center',
+            }}>
+            <View style={{paddingTop: responsiveWidth(10)}}>
               <Text style={styles.tittle}>Frist Name</Text>
               <TextInput
                 value={fname}
                 onChangeText={text => setFname(text)}
                 mode="outlined"
                 activeOutlineColor={COLORS.secondary}
-                style={{ width: responsiveWidth(74) }}
+                style={{width: responsiveWidth(74)}}
               />
               <HelperText type="error" visible={!!fnameError}>
                 {fnameError}
               </HelperText>
             </View>
 
-            <View >
+            <View>
               <Text style={styles.tittle}>Last Name</Text>
               <TextInput
                 value={lName}
                 onChangeText={text => setLname(text)}
                 mode="outlined"
                 activeOutlineColor={COLORS.secondary}
-                style={{ width: responsiveWidth(74) }}
+                style={{width: responsiveWidth(74)}}
               />
               <HelperText type="error" visible={!!lNameError}>
                 {lNameError}
               </HelperText>
             </View>
 
-            <View >
+            <View>
               <Text style={styles.tittle}>Password</Text>
               <TextInput
                 value={pass}
                 onChangeText={text => setPass(text)}
                 mode="outlined"
                 activeOutlineColor={COLORS.secondary}
-                style={{ width: responsiveWidth(74) }}
+                style={{width: responsiveWidth(74)}}
               />
               <HelperText type="error" visible={!!passError}>
                 {passError}
               </HelperText>
             </View>
 
-            <View >
+            <View>
               <Text style={styles.tittle}>Confirm Password</Text>
               <TextInput
                 value={confirmPass}
                 onChangeText={text => setConfirmPass(text)}
                 mode="outlined"
                 activeOutlineColor={COLORS.secondary}
-                style={{ width: responsiveWidth(74) }}
+                style={{width: responsiveWidth(74)}}
               />
               <HelperText type="error" visible={!!confirmPassError}>
                 {confirmPassError}
               </HelperText>
             </View>
 
-            <View >
+            <View>
               <Text style={styles.tittle}>Wallet Pin</Text>
               <TextInput
                 value={walletpin}
                 onChangeText={text => setWalletPin(text)}
                 mode="outlined"
                 activeOutlineColor={COLORS.secondary}
-                style={{ width: responsiveWidth(74) }}
+                style={{width: responsiveWidth(74)}}
               />
               <HelperText type="error" visible={!!walletpinError}>
                 {walletpinError}
@@ -356,7 +349,11 @@ const UserDetails = () => {
           </View> */}
 
           <View
-            style={{ marginTop: responsiveHeight(7), alignSelf: 'center', marginBottom: responsiveHeight(2) }}>
+            style={{
+              marginTop: responsiveHeight(7),
+              alignSelf: 'center',
+              marginBottom: responsiveHeight(2),
+            }}>
             <Btn
               textColor="white"
               bgColor={COLORS.secondary}
@@ -365,11 +362,9 @@ const UserDetails = () => {
             />
           </View>
 
-
           {/* </View> */}
         </View>
       </ScrollView>
-
     </Background>
   );
 };

@@ -18,6 +18,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import {fetchCoinData} from '../../redux/market/coinSlice';
 import {COLORS} from '../../constants/theme';
 import Icon from 'react-native-vector-icons/Ionicons';
+import * as Animatable from 'react-native-animatable';
 import axios from 'axios';
 const Home = () => {
   const navigation = useNavigation();
@@ -139,7 +140,13 @@ const Home = () => {
   return (
     <View style={{flex: 1}}>
       <View style={styles.topContiner}>
-        <Text style={styles.topContainerText}>ComexPulse</Text>
+        <Animatable.Text
+          animation="pulse"
+          easing="ease-out-cubic"
+          iterationCount="infinite"
+          style={styles.topContainerText}>
+          ComexPulse
+        </Animatable.Text>
         <TouchableOpacity>
           <Icon name="notifications" size={25} color="#fff" />
           <View

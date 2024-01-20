@@ -9,18 +9,18 @@ import {
   Modal,
   Image,
 } from 'react-native';
-import React, { useEffect, useState, useRef } from 'react';
-import Icon from 'react-native-vector-icons/AntDesign';
+import React, {useEffect, useState, useRef} from 'react';
+import Icon from 'react-native-vector-icons/Ionicons';
 import Icon2 from 'react-native-vector-icons/Feather';
 import Icon3 from 'react-native-vector-icons/AntDesign';
 import Icon4 from 'react-native-vector-icons/AntDesign';
 import Icon5 from 'react-native-vector-icons/FontAwesome';
 import Icon6 from 'react-native-vector-icons/AntDesign';
-
-import { COLORS } from '../../constants/theme';
-import { useNavigation } from '@react-navigation/native';
-import { useSelector, useDispatch } from 'react-redux';
-import { fetchCoinData, addToWatchlist } from '../../redux/market/coinSlice';
+import * as Animatable from 'react-native-animatable';
+import {COLORS} from '../../constants/theme';
+import {useNavigation} from '@react-navigation/native';
+import {useSelector, useDispatch} from 'react-redux';
+import {fetchCoinData, addToWatchlist} from '../../redux/market/coinSlice';
 import {
   responsiveFontSize,
   responsiveHeight,
@@ -29,6 +29,10 @@ import {
 const SearchData = () => {
   // const dispatch = useDispatch();
   const addedItems = useSelector(state => state);
+  const back = () => {
+    navigation.goBack();
+  };
+
   // console.log(addedItems);
   const addItem = item => {
     dispatch(addCardItem(item));
@@ -50,7 +54,6 @@ const SearchData = () => {
 
   const handleAddToWatchlist = item => {
     dispatch(addToWatchlist(item));
-
     navigation.navigate('WatchList');
   };
 
@@ -69,31 +72,28 @@ const SearchData = () => {
 
   const watchlistData = useSelector(state => state.coin.watchlistData);
 
-  const renderItem = ({ item }) => {
+  const renderItem = ({item, index}) => {
     const isAddedToWatchlist = watchlistData.some(
       watchlistItem => watchlistItem.id === item.id,
     );
 
     return (
-      <TouchableOpacity
-        style={{
-          width: responsiveWidth(97),
-          height: responsiveWidth(15),
-          backgroundColor: COLORS.white,
-          marginVertical: responsiveHeight(0.2),
-          justifyContent: 'center',
-          paddingHorizontal: responsiveWidth(5),
-          alignSelf: 'center',
-          borderRadius: responsiveWidth(2),
-          shadowColor: '#000',
-          elevation: 5,
-        }}>
-        <View
+      <Animatable.View
+        animation={'fadeInUp'}
+        duration={1000}
+        delay={index * 300}>
+        <TouchableOpacity
           style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            flexDirection: 'row',
+            width: responsiveWidth(97),
+            height: responsiveWidth(15),
+            backgroundColor: COLORS.white,
+            marginVertical: responsiveHeight(0.2),
+            justifyContent: 'center',
+            paddingHorizontal: responsiveWidth(5),
+            alignSelf: 'center',
+            borderRadius: responsiveWidth(2),
+            shadowColor: '#000',
+            elevation: 5,
           }}>
           <View
             style={{
@@ -104,83 +104,98 @@ const SearchData = () => {
             }}>
             <View
               style={{
-                width: responsiveWidth(10),
-                height: responsiveWidth(10),
-                borderRadius: responsiveWidth(5),
-                backgroundColor: COLORS.primary,
-                justifyContent: 'center',
+                display: 'flex',
+                justifyContent: 'space-between',
                 alignItems: 'center',
-                borderRadius: responsiveWidth(1),
-                marginRight: responsiveWidth(3),
+                flexDirection: 'row',
               }}>
+              <View
+                style={{
+                  width: responsiveWidth(10),
+                  height: responsiveWidth(10),
+                  borderRadius: responsiveWidth(5),
+                  backgroundColor: COLORS.primary,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  borderRadius: responsiveWidth(1),
+                  marginRight: responsiveWidth(3),
+                }}>
+                <Text
+                  style={{
+                    color: COLORS.white,
+                    fontSize: responsiveFontSize(2),
+                  }}>
+                  {item.trade_name.charAt(0)}
+                </Text>
+              </View>
               <Text
-                style={{ color: COLORS.white, fontSize: responsiveFontSize(2) }}>
-                {item.trade_name.charAt(0)}
+                style={{
+                  color: COLORS.black,
+                  fontSize: responsiveFontSize(1.8),
+                  fontWeight: '400',
+                }}>
+                {item.trade_name}
               </Text>
             </View>
-            <Text
+            <View
               style={{
-                color: COLORS.black,
-                fontSize: responsiveFontSize(1.8),
-                fontWeight: '400',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                flexDirection: 'row',
+                gap: 5,
               }}>
-              {item.trade_name}
-            </Text>
-          </View>
-          <View
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              flexDirection: 'row',
-              gap: 5,
-            }}>
-            <Text
-              style={{
-                paddingRight: responsiveWidth(10),
-                color: COLORS.black,
-                fontSize: responsiveFontSize(1.8),
-                fontWeight: '400',
-              }}>
-              {item.price}
-            </Text>
-            {/* <TouchableOpacity>
+              <Text
+                style={{
+                  paddingRight: responsiveWidth(10),
+                  color: COLORS.black,
+                  fontSize: responsiveFontSize(1.8),
+                  fontWeight: '400',
+                }}>
+                {item.price}
+              </Text>
+              {/* <TouchableOpacity>
               <Icon5 name="shopping-bag" size={responsiveFontSize(2.6)} color="#1B1A1A" />
             </TouchableOpacity> */}
-            <TouchableOpacity
-              style={{ paddingLeft: responsiveWidth(5) }}
-              onPress={() => handleAddToWatchlist(item)}>
-              {isAddedToWatchlist ? (
-                <Icon4
-                  name="star"
-                  size={responsiveFontSize(2.6)}
-                  color="green"
-                />
-              ) : (
-                <Icon4
-                  name="star"
-                  size={responsiveFontSize(2.6)}
-                  color="#1B1A1A"
-                />
-              )}
-            </TouchableOpacity>
+              <TouchableOpacity
+                style={{paddingLeft: responsiveWidth(5)}}
+                onPress={() => handleAddToWatchlist(item)}>
+                {isAddedToWatchlist ? (
+                  <Icon4
+                    name="heart"
+                    size={responsiveFontSize(2.6)}
+                    color="red"
+                  />
+                ) : (
+                  <Icon4
+                    name="hearto"
+                    size={responsiveFontSize(2.6)}
+                    color="red"
+                  />
+                )}
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-      </TouchableOpacity>
+        </TouchableOpacity>
+      </Animatable.View>
     );
   };
 
   return (
-    <View style={{ flex: 1 }}>
-      <View style={{ display: 'flex', position: 'absolute' }}>
+    <View style={{flex: 1}}>
+      <View style={{display: 'flex', position: 'absolute'}}>
         <Image
           source={require('../../../assets/images/topBg.jpg')}
-          style={{ width: responsiveWidth(100), height: responsiveHeight(30) }}
+          style={{width: responsiveWidth(100), height: responsiveHeight(30)}}
         />
       </View>
       <View style={styles.searchContainer}>
-        <TouchableOpacity onPress={() => navigation.navigate('WatchList')}>
-          <Icon name="arrowleft" size={responsiveFontSize(3)} color="#fff" />
+        <TouchableOpacity onPress={back}>
+          <Icon
+            name="chevron-back-circle"
+            size={responsiveFontSize(5)}
+            color="#fff"
+          />
         </TouchableOpacity>
 
         <View style={styles.searchInputContainer}>
@@ -240,7 +255,10 @@ const SearchData = () => {
             justifyContent: 'center',
             borderRadius: responsiveWidth(1),
           }}>
-          <Text
+          <Animatable.Text
+            animation="zoomInUp"
+            duration={2000}
+            delay={500}
             style={{
               color: '#000',
               fontWeight: '700',
@@ -248,7 +266,7 @@ const SearchData = () => {
               paddingLeft: responsiveWidth(5),
             }}>
             Commodity
-          </Text>
+          </Animatable.Text>
         </View>
 
         {/* commodity end here */}
@@ -259,14 +277,14 @@ const SearchData = () => {
               <Text style={styles.topText1}>Stock Name</Text>
             </View>
             <View style={styles.topLast}>
-              <Text style={[styles.topText1, { paddingRight: 20 }]}>Price</Text>
+              <Text style={[styles.topText1, {paddingRight: 20}]}>Price</Text>
               <Text style={styles.topText1}>Change / Vol</Text>
             </View>
           </View>
         </View>
 
         {/* stock Heading end here  */}
-        <View style={{ marginBottom: responsiveHeight(40) }}>
+        <View style={{marginBottom: responsiveHeight(40)}}>
           <FlatList
             data={filterData}
             renderItem={renderItem}
@@ -335,7 +353,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingLeft: responsiveWidth(5),
-    marginLeft: responsiveWidth(6),
+    marginLeft: responsiveWidth(2),
   },
   topContainer: {
     width: responsiveWidth(97),

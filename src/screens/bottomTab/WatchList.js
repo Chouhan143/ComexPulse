@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, {useEffect} from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -11,8 +11,8 @@ import {
 import Icon from 'react-native-vector-icons/AntDesign';
 import Icon2 from 'react-native-vector-icons/Feather';
 import Icon3 from 'react-native-vector-icons/AntDesign';
-import { useNavigation } from '@react-navigation/native';
-import { useSelector, useDispatch } from 'react-redux';
+import {useNavigation} from '@react-navigation/native';
+import {useSelector, useDispatch} from 'react-redux';
 import Icon4 from 'react-native-vector-icons/MaterialCommunityIcons';
 import {
   fetchCoinData,
@@ -20,12 +20,14 @@ import {
   removeFromWatchlist,
   initWatchlistData,
 } from '../../redux/market/coinSlice';
-import { COLORS } from '../../constants/theme';
+import {COLORS} from '../../constants/theme';
 import {
   responsiveFontSize,
   responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
+import ReanimatedLoaderButton from '../components/ReanimatedLoaderButton';
+import TopHeader from '../components/TopHeader';
 
 const WatchList = () => {
   const navigation = useNavigation();
@@ -94,7 +96,7 @@ const WatchList = () => {
             <Text
               style={[
                 styles.searchInput,
-                { fontSize: responsiveFontSize(2.1), color: '#000' },
+                {fontSize: responsiveFontSize(2.1), color: '#000'},
               ]}>
               Search
             </Text>
@@ -115,10 +117,10 @@ const WatchList = () => {
   };
 
   const GraphUi = item => {
-    navigation.navigate('GraphUI', { selectedItem: item });
+    navigation.navigate('GraphUI', {selectedItem: item});
   };
 
-  const renderItem = ({ item }) => {
+  const renderItem = ({item}) => {
     return (
       <ScrollView>
         <TouchableOpacity
@@ -143,15 +145,19 @@ const WatchList = () => {
               <Text style={styles.topText}>{item.trade_name}</Text>
             </View>
             <View style={styles.topLast}>
-              <Text style={[styles.topText, { paddingRight: 60 }]}>
+              <Text style={[styles.topText, {paddingRight: 60}]}>
                 {item.price}
               </Text>
               <Text style={styles.topText}>{item.percent_chg}%</Text>
             </View>
             <TouchableOpacity onPress={() => handleRemoveItem(item.id)}>
-              <Image source={require("../../../assets/images/close.png")} resizeMode='contain' style={{
-                width: responsiveWidth(4),
-              }} />
+              <Image
+                source={require('../../../assets/images/close.png')}
+                resizeMode="contain"
+                style={{
+                  width: responsiveWidth(4),
+                }}
+              />
             </TouchableOpacity>
           </View>
         </TouchableOpacity>
@@ -165,7 +171,8 @@ const WatchList = () => {
   return (
     <View style={styles.container}>
       {/* Top Header Fuction Call Here */}
-      {renderHeader()}
+      {/* {renderHeader()} */}
+      <TopHeader />
 
       <View
         style={{
@@ -191,16 +198,20 @@ const WatchList = () => {
             />
           ) : (
             <View style={styles.noItemsContainer}>
+              <Image
+                source={require('../../../assets/images/serching.png')}
+                resizeMode="cover"
+                style={{}}
+              />
 
-              <Image source={require("../../../assets/images/serching.png")} resizeMode='cover' style={{
-              }} />
-
-              <View style={{
-                backgroundColor: 'lightgray',
-                padding: responsiveWidth(2),
-                borderRadius: responsiveWidth(2)
-              }}>
-                <Text style={{ color: 'gray', fontSize: responsiveFontSize(2.5) }}>
+              <View
+                style={{
+                  backgroundColor: 'lightgray',
+                  padding: responsiveWidth(2),
+                  borderRadius: responsiveWidth(2),
+                }}>
+                <Text
+                  style={{color: 'gray', fontSize: responsiveFontSize(2.5)}}>
                   No any Assets here !
                 </Text>
               </View>
@@ -216,14 +227,16 @@ const WatchList = () => {
                 }} />
 
               </TouchableOpacity> */}
-
-
             </View>
           )}
 
-          <TouchableOpacity style={styles.addBox} onPress={navigationHandle}>
+          {/* <TouchableOpacity style={styles.addBox} onPress={navigationHandle}>
             <Icon name="plus" size={responsiveFontSize(2.5)} color="#fff" />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
+
+          {/* <ReanimatedLoaderButton /> */}
+          {/* <Icon name="plus" size={responsiveFontSize(2.5)} color="#fff" />
+          </ReanimatedLoaderButton> */}
         </View>
       </View>
     </View>
