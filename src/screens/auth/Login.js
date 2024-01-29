@@ -1,5 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, Touchable, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  Touchable,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
 import Background from '../../constants/Background';
 import Btn from '../../constants/Btn';
 import {darkGreen} from '../../constants/ColorConstants';
@@ -26,6 +32,7 @@ const Login = () => {
   const [email, setEmail] = useState('test1@gmail.com'); // State variable for email input
   const [password, setPassword] = useState('12345678');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const SignNavigation = () => {
     navigation.navigate('Signup');
   };
@@ -45,6 +52,7 @@ const Login = () => {
   }, []);
 
   const LoginApi = async () => {
+    setLoading(true);
     const payload = {
       email: email,
       password: password,
@@ -55,7 +63,6 @@ const Login = () => {
         'https://app.srninfotech.com/bullsPanel/api/login',
         payload,
       );
-
       const result = response.data.result;
       console.log('res', response.data);
 
@@ -63,6 +70,7 @@ const Login = () => {
         const token = response.data.token;
         await AsyncStorage.setItem('accessToken', token);
         navigation.navigate('DrawerNavigator');
+        navigation.navigate('DrawerNavigator', {screen: 'Home'});
       } else {
         // Registration failed, set the error message
         setError(response.data.message || 'Registration failed');
@@ -71,6 +79,8 @@ const Login = () => {
       // const errorCatch = error.response;
       // setError(errorCatch);
       console.log('error login', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -147,7 +157,13 @@ const Login = () => {
           <Btn
             textColor="white"
             bgColor={COLORS.secondary}
-            btnLabel="Login"
+            btnLabel={
+              loading ? (
+                <ActivityIndicator color={'#fff'} size={'large'} />
+              ) : (
+                'Login'
+              )
+            }
             Press={LoginApi}
           />
 

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback, useMemo, useRef} from 'react';
 import {
   StyleSheet,
   Text,
@@ -30,7 +30,8 @@ import {COLORS} from '../../constants/theme';
 import LinearGradient from 'react-native-linear-gradient';
 import {userBalance} from '../../redux/market/coinSlice';
 import {useSelector} from 'react-redux';
-
+import {BottomSheetModal} from '@gorhom/bottom-sheet';
+import BottomSheetQRcode from './BottomSheetQRcode';
 const Deposit = () => {
   const getBalance = useSelector(state => state.coin.userBalance);
   const [amount, setAmount] = useState('');
@@ -79,39 +80,37 @@ const Deposit = () => {
   };
 
   const DepositApi = async () => {
-    const payload = new FormData();
-    payload.append('deposit_amount', amount);
-
-    if (doc) {
-      // If 'doc' (imageData) is available, append it to the FormData
-      payload.append('screenshot_deposit_amount', {
-        uri: doc.uri,
-        type: doc.type,
-        name: doc.name || 'image.jpg',
-      });
-    }
-
-    try {
-      const access_token = await AsyncStorage.getItem('accessToken');
-      const headers = {
-        Authorization: `Bearer ${access_token}`, // Replace with your authorization token
-      };
-      const response = await axios.post(
-        'https://app.srninfotech.com/bullsPanel/api/deposit',
-        payload,
-        {headers},
-      );
-
-      const result = response.data.Status;
-      if (result === 200) {
-        showModal();
-      }
-      console.log('res', response.data);
-    } catch (error) {
-      // const errorCatch = error.response;
-      // setError(errorCatch);
-      console.log('error deposit', error);
-    }
+    // const payload = new FormData();
+    // payload.append('deposit_amount', amount);
+    // if (doc) {
+    //   // If 'doc' (imageData) is available, append it to the FormData
+    //   payload.append('screenshot_deposit_amount', {
+    //     uri: doc.uri,
+    //     type: doc.type,
+    //     name: doc.name || 'image.jpg',
+    //   });
+    // }
+    // try {
+    //   const access_token = await AsyncStorage.getItem('accessToken');
+    //   const headers = {
+    //     Authorization: `Bearer ${access_token}`, // Replace with your authorization token
+    //   };
+    //   const response = await axios.post(
+    //     'https://app.srninfotech.com/bullsPanel/api/deposit',
+    //     payload,
+    //     {headers},
+    //   );
+    //   const result = response.data.Status;
+    //   if (result === 200) {
+    //     showModal();
+    //   }
+    //   console.log('res', response.data);
+    // } catch (error) {
+    //   // const errorCatch = error.response;
+    //   // setError(errorCatch);
+    //   console.log('error deposit', error);
+    // }
+    handlePresentModalPress;
   };
 
   useEffect(() => {
@@ -121,6 +120,23 @@ const Deposit = () => {
       }
     }, 1000);
     return () => clearInterval(interval);
+  }, []);
+
+  // BottomSheet SnapPoint here
+
+  // ref
+  const bottomSheetModalRef = useRef(null);
+
+  // variables
+  const snapPoints = useMemo(() => ['25%', '50%'], []);
+
+  // callbacks
+  const handlePresentModalPress = useCallback(() => {
+    bottomSheetModalRef.current?.present();
+  }, []);
+
+  const handleSheetChanges = useCallback(index => {
+    console.log('handleSheetChanges', index);
   }, []);
 
   return (
@@ -322,7 +338,7 @@ const Deposit = () => {
 
           {/* screnshort uload here  */}
 
-          <View
+          {/* <View
             style={{
               marginHorizontal: responsiveWidth(8),
               marginVertical: responsiveHeight(2),
@@ -336,8 +352,9 @@ const Deposit = () => {
               }}>
               Upload Screenshot
             </Text>
-          </View>
-          <View
+          </View> */}
+
+          {/*  <View
             style={{
               width: responsiveWidth(90),
               height: responsiveHeight(6),
@@ -386,6 +403,7 @@ const Deposit = () => {
               {doc ? doc.name : ''}
             </Text>
           </View>
+          */}
 
           {/* button Ui  */}
           <TouchableOpacity
@@ -481,6 +499,11 @@ const Deposit = () => {
               </View>
             </Modal>
           </Portal>
+
+          <BottomSheetQRcode
+            modalRef={bottomSheetModalRef}
+            snapPoints={snapPoints}
+          />
         </View>
       </LinearGradient>
     </PaperProvider>

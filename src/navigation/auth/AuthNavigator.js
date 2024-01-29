@@ -1,8 +1,9 @@
-import react from 'react';
+import React, {useEffect} from 'react';
 import {
   CardStyleInterpolators,
   createStackNavigator,
 } from '@react-navigation/stack';
+// import SplaceScreen from '../../screens/SplaceScreen/SplaceScreen';
 import SplaceScreen from '../../screens/SplaceScreen/SlaceScreen';
 import Login from '../../screens/auth/Login';
 import Signup from '../../screens/auth/Signup';
@@ -21,14 +22,34 @@ import MobileOtp from '../../screens/auth/MobileOtp';
 import EmailRegistration from '../../screens/auth/EmailRegistration';
 import EmailOtp from '../../screens/auth/EmailOtp';
 import UserDetails from '../../screens/auth/UserDetails';
-import ReanimatedLoaderButton from '../../screens/components/ReanimatedLoaderButton';
-// import Document from '../../screens/auth/Document';
 import DocsUpload from '../../screens/auth/DocsUpload';
+import {setLoggedInStatus} from '../../redux/market/coinSlice';
+import {useSelector} from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import ReanimatedLoaderButton from '../../screens/components/ReanimatedLoaderButton';
+import {useNavigation} from '@react-navigation/native';
 import {Easing} from 'react-native';
 
 const Stack = createStackNavigator();
 
 function AuthNavigator() {
+  const navigation = useNavigation();
+  const isLoggedIn = useSelector(state => state.coin.isLoggedIn);
+
+  useEffect(() => {
+    const checkToken = async () => {
+      try {
+        const token = await AsyncStorage.getItem('accessToken');
+        if (token) {
+          setLoggedInStatus(token);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    checkToken();
+  }, [setLoggedInStatus]);
+
   const config = {
     animation: 'spring',
     config: {
@@ -63,102 +84,109 @@ function AuthNavigator() {
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         headerMode: 'float',
       }}>
-      <Stack.Screen
-        name="Login"
-        options={{headerShown: false}}
-        component={Login}
-      />
-      <Stack.Screen
-        name="Signup"
-        options={{headerShown: false}}
-        component={Signup}
-      />
-      <Stack.Screen
-        name="MobileRegistration"
-        options={{headerShown: false}}
-        component={MobileRegistration}
-      />
-      <Stack.Screen
-        name="MobileOtp"
-        options={{headerShown: false}}
-        component={MobileOtp}
-      />
-      <Stack.Screen
-        name="EmailRegistration"
-        options={{headerShown: false}}
-        component={EmailRegistration}
-      />
-      <Stack.Screen
-        name="EmailOtp"
-        options={{headerShown: false}}
-        component={EmailOtp}
-      />
-      <Stack.Screen
-        name="UserDetails"
-        options={{headerShown: false}}
-        component={UserDetails}
-      />
-      <Stack.Screen
-        name="DocsUpload"
-        options={{headerShown: false}}
-        component={DocsUpload}
-      />
-      <Stack.Screen
-        name="SplaceScreen"
-        options={{headerShown: false}}
-        initialParams={{initialRoute: 'SplaceScreen'}}
-        component={SplaceScreen}
-      />
-      <Stack.Screen
-        name="DrawerNavigator"
-        options={{headerShown: false}}
-        component={DrawerNavigator}
-      />
-      <Stack.Screen
-        name="SearchData"
-        options={{headerShown: false}}
-        component={SearchData}
-      />
-      <Stack.Screen
-        name="GraphUI"
-        options={{headerShown: false}}
-        component={GraphUI}
-      />
-      <Stack.Screen
-        name="Edit"
-        options={{headerShown: false}}
-        component={Edit}
-      />
-      <Stack.Screen
-        name="ProfileEdit"
-        options={{headerShown: false}}
-        component={ProfileEdit}
-      />
-      <Stack.Screen
-        name="Funds"
-        options={{headerShown: false}}
-        component={Funds}
-      />
-      <Stack.Screen
-        name="Deposit"
-        options={{headerShown: false}}
-        component={Deposit}
-      />
-      <Stack.Screen
-        name="Withdraw"
-        options={{headerShown: false}}
-        component={Withdraw}
-      />
-      <Stack.Screen
-        name="Help_Support"
-        options={{headerShown: false}}
-        component={Help_Support}
-      />
-      <Stack.Screen
-        name="BankDetails"
-        options={{headerShown: false}}
-        component={BankDetails}
-      />
+      {isLoggedIn ? (
+        <>
+          <Stack.Screen
+            name="DrawerNavigator"
+            options={{headerShown: false}}
+            component={DrawerNavigator}
+          />
+          <Stack.Screen
+            name="SearchData"
+            options={{headerShown: false}}
+            component={SearchData}
+          />
+          <Stack.Screen
+            name="GraphUI"
+            options={{headerShown: false}}
+            component={GraphUI}
+          />
+          <Stack.Screen
+            name="Edit"
+            options={{headerShown: false}}
+            component={Edit}
+          />
+          <Stack.Screen
+            name="ProfileEdit"
+            options={{headerShown: false}}
+            component={ProfileEdit}
+          />
+          <Stack.Screen
+            name="Funds"
+            options={{headerShown: false}}
+            component={Funds}
+          />
+          <Stack.Screen
+            name="Deposit"
+            options={{headerShown: false}}
+            component={Deposit}
+          />
+          <Stack.Screen
+            name="Withdraw"
+            options={{headerShown: false}}
+            component={Withdraw}
+          />
+          <Stack.Screen
+            name="Help_Support"
+            options={{headerShown: false}}
+            component={Help_Support}
+          />
+          <Stack.Screen
+            name="BankDetails"
+            options={{headerShown: false}}
+            component={BankDetails}
+          />
+        </>
+      ) : (
+        <>
+          <Stack.Screen
+            name="Login"
+            options={{headerShown: false}}
+            component={Login}
+          />
+          <Stack.Screen
+            name="Signup"
+            options={{headerShown: false}}
+            component={Signup}
+          />
+          <Stack.Screen
+            name="MobileRegistration"
+            options={{headerShown: false}}
+            component={MobileRegistration}
+          />
+          <Stack.Screen
+            name="MobileOtp"
+            options={{headerShown: false}}
+            component={MobileOtp}
+          />
+          <Stack.Screen
+            name="EmailRegistration"
+            options={{headerShown: false}}
+            component={EmailRegistration}
+          />
+          <Stack.Screen
+            name="EmailOtp"
+            options={{headerShown: false}}
+            component={EmailOtp}
+          />
+          <Stack.Screen
+            name="UserDetails"
+            options={{headerShown: false}}
+            component={UserDetails}
+          />
+          <Stack.Screen
+            name="DocsUpload"
+            options={{headerShown: false}}
+            component={DocsUpload}
+          />
+          <Stack.Screen
+            name="SplaceScreen"
+            options={{headerShown: false}}
+            initialParams={{initialRoute: 'SplaceScreen'}}
+            component={SplaceScreen}
+          />
+        </>
+      )}
     </Stack.Navigator>
   );
 }

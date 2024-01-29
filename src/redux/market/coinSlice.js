@@ -104,6 +104,7 @@ export const coinSlice = createSlice({
     liveTradedata: [],
     pastTradedata: [],
     userBalance: null,
+    isLoggedIn: false,
   },
   reducers: {
     setIsTradeModalVisible: (state, action) => {
@@ -115,6 +116,11 @@ export const coinSlice = createSlice({
     decrementCounter: (state, action) => {
       state.counter -= 1;
     },
+
+    setLoggedInStatus: (state, action) => {
+      state.isLoggedIn = action.payload;
+    },
+
     addToWatchlist: (state, action) => {
       const newItem = action.payload;
       const existingItem = state.watchlistData.find(
@@ -200,6 +206,7 @@ export const {
   addToWatchlist,
   removeFromWatchlist,
   removeAllFromWatchlist,
+  setLoggedInStatus,
 } = coinSlice.actions;
 export default coinSlice.reducer;
 export const selectIsTradeModalVisible = state =>

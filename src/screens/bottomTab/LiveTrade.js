@@ -145,7 +145,7 @@ const LiveTrade = () => {
             height: responsiveHeight(40),
             position: 'absolute',
           }}
-        />
+        /> 
         <View
           style={{
             flexDirection: 'row',
