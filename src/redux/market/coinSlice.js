@@ -37,6 +37,58 @@ export const getLiveTrade = createAsyncThunk('LiveTrade', async () => {
   }
 });
 
+// ge Holding trade api here
+
+export const getHoldingTrade = createAsyncThunk('HoldingTrade', async () => {
+  try {
+    const token = await AsyncStorage.getItem('accessToken');
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const response = await axios.get(
+      'https://app.srninfotech.com/bullsPanel/api/holding-trades',
+      config,
+    );
+    const Data = response.data.Data; // <-- Corrected property name
+
+    return Data;
+  } catch (error) {
+    console.log('error', error);
+  }
+});
+
+export const updateLiveTrade = createAsyncThunk(
+  'updateLiveTrade',
+  async ({tradeId, payload}) => {
+    try {
+      const token = await AsyncStorage.getItem('accessToken');
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const response = await axios.post(
+        `https://app.srninfotech.com/bullsPanel/api/update-trade/${tradeId}`,
+        payload,
+        config,
+      );
+
+      if (response.data.Status === 200) {
+        const updatedTrade = response.data.Data;
+
+        return updatedTrade;
+      }
+    } catch (error) {
+      console.error('Error updating trade:', error);
+      throw error;
+    }
+  },
+);
+
 export const userBalance = createAsyncThunk('UserBalance', async () => {
   try {
     const token = await AsyncStorage.getItem('accessToken');
@@ -70,8 +122,8 @@ export const getPastTrade = createAsyncThunk('PastTrade', async () => {
       'https://app.srninfotech.com/bullsPanel/api/past-trades',
       config,
     );
-    const Data = response.data; // <-- Corrected property name
-    // console.log('past Trade', response);
+    const Data = response.data.Data; // <-- Corrected property name
+    console.log('past Trade', Data);
     return Data;
   } catch (error) {
     console.log('error', error);
@@ -103,6 +155,7 @@ export const coinSlice = createSlice({
     watchlistData: [],
     liveTradedata: [],
     pastTradedata: [],
+    holdingTradedata: [],
     userBalance: null,
     isLoggedIn: false,
   },
@@ -119,6 +172,14 @@ export const coinSlice = createSlice({
 
     setLoggedInStatus: (state, action) => {
       state.isLoggedIn = action.payload;
+    },
+
+    setLiveTradeData: (state, action) => {
+      state.liveTradedata = action.payload;
+    },
+
+    setHoldingTradeData: (state, action) => {
+      state.holdingTradedata = action.payload;
     },
 
     addToWatchlist: (state, action) => {
@@ -182,6 +243,17 @@ export const coinSlice = createSlice({
       state.pastTradedata = action.payload;
     });
 
+    //  Holding trade fetch here
+
+    builder.addCase(getHoldingTrade.fulfilled, (state, action) => {
+      state.holdingTradedata = action.payload;
+    });
+
+    // updated edit stop loss data
+    builder.addCase(updateLiveTrade.fulfilled, (state, action) => {
+      dispatch(setLiveTradeData(action.payload));
+    });
+
     // Balance  fetch here
 
     builder.addCase(userBalance.pending, state => {
@@ -207,6 +279,7 @@ export const {
   removeFromWatchlist,
   removeAllFromWatchlist,
   setLoggedInStatus,
+  setLiveTradeData,
 } = coinSlice.actions;
 export default coinSlice.reducer;
 export const selectIsTradeModalVisible = state =>

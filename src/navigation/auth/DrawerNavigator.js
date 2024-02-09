@@ -2,10 +2,9 @@ import react from 'react';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import BottomTabNavigator from './BottomTabNavigator';
 import WatchList from '../../screens/bottomTab/WatchList';
-import PendingOrder from '../../screens/bottomTab/PendingOrder';
-import LiveTrade from '../../screens/bottomTab/LiveTrade';
 import Account from '../../screens/bottomTab/Account';
 import CustomDrawer from '../../screens/bottomTab/CustomDrawer';
+// import Notification from '../../screens/components/Notification';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {responsiveFontSize} from 'react-native-responsive-dimensions';
@@ -36,6 +35,7 @@ function DrawerNavigator() {
           },
         }}
       />
+
       <Drawer.Screen
         name="WatchList"
         component={WatchList}
@@ -46,16 +46,7 @@ function DrawerNavigator() {
           },
         }}
       />
-      <Drawer.Screen
-        name="PendingOrder"
-        component={PendingOrder}
-        options={{headerShown: false}}
-      />
-      <Drawer.Screen
-        name="LiveTrade"
-        component={LiveTrade}
-        options={{headerShown: false}}
-      />
+
       <Drawer.Screen
         name="Account"
         component={Account}

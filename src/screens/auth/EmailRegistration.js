@@ -37,7 +37,7 @@ const EmailRegistration = () => {
   const goBack = () => {
     navigation.goBack();
   };
-  const [text, setText] = React.useState('');
+  const [email, setEmail] = React.useState('');
   const [error, setError] = useState('');
   // Animation code
   const animation = useSharedValue(0);
@@ -56,20 +56,18 @@ const EmailRegistration = () => {
 
   const Email_registerApi = async () => {
     try {
-      console.log(text);
-      const access_token = await AsyncStorage.getItem('accessToken');
-      const headers = {
-        Authorization: `Bearer ${access_token}`, // Replace with your authorization token
-      };
+      console.log(email, 'fdffdfg');
       const response = await axios.post(
         'https://app.srninfotech.com/bullsPanel/api/email-register',
-        {email: text},
-        {headers},
+        {email: email},
       );
       const result = response.data.status;
       console.log('email', response.data);
 
       if (result == 200) {
+        const accessToken = response.data.user_details.access_token;
+        console.log('token', accessToken);
+        await AsyncStorage.setItem('accessToken', accessToken);
         navigation.navigate('EmailOtp');
       } else {
         setError(response.data.message || 'Registration failed');
@@ -162,8 +160,8 @@ const EmailRegistration = () => {
               <View style={{marginTop: responsiveHeight(1)}}>
                 <TextInput
                   label="Email"
-                  value={text}
-                  onChangeText={text => setText(text)}
+                  value={email}
+                  onChangeText={text => setEmail(text)}
                   mode="outlined"
                 />
               </View>

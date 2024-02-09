@@ -1,4 +1,4 @@
-package com.comexpulse;
+package com.SkyCommodity;
 
 import android.app.Application;
 import com.facebook.react.PackageList;

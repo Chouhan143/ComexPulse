@@ -5,9 +5,9 @@ import {
   StyleSheet,
   opacity,
   Image,
-  Modal
+  Modal,
 } from 'react-native';
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   responsiveWidth,
   responsiveHeight,
@@ -19,10 +19,11 @@ import Icon1 from 'react-native-vector-icons/MaterialCommunityIcons';
 import Font5 from 'react-native-vector-icons/FontAwesome5';
 import Font6 from 'react-native-vector-icons/FontAwesome6';
 import Iconic from 'react-native-vector-icons/Ionicons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Material from 'react-native-vector-icons/MaterialIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
-import { Divider } from 'react-native-paper';
+import {useNavigation} from '@react-navigation/native';
+import {Divider} from 'react-native-paper';
 
 const Account = () => {
   const [showLogoutModal, setShowLogoutModal] = useState(false); // State to control the modal visibility
@@ -48,7 +49,7 @@ const Account = () => {
     setShowLogoutModal(false);
   };
   return (
-    <View style={{ flex: 1, backgroundColor: '#fff' }}>
+    <View style={{flex: 1, backgroundColor: '#fff'}}>
       <View style={styles.top}>
         <Image
           source={require('../../../assets/images/topBg.jpg')}
@@ -59,8 +60,15 @@ const Account = () => {
           }}
         />
 
-        <View style={{ justifyContent: 'space-between', alignItems: "center", flexDirection: 'row' }}>
-          <TouchableOpacity style={{ paddingLeft: responsiveWidth(3) }} onPress={goBack}>
+        <View
+          style={{
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexDirection: 'row',
+          }}>
+          <TouchableOpacity
+            style={{paddingLeft: responsiveWidth(3)}}
+            onPress={goBack}>
             <Iconic name="arrow-back" size={25} color={'white'} />
           </TouchableOpacity>
           <TouchableOpacity
@@ -79,7 +87,6 @@ const Account = () => {
             <Font5 name="power-off" size={25} color="red" />
           </TouchableOpacity>
         </View>
-
 
         <Image
           source={require('../../../assets/images/user.jpg')}
@@ -112,19 +119,17 @@ const Account = () => {
         </View>
       </View>
 
-
       {/* Logout Confirmation Modal */}
-      <Modal
-        visible={showLogoutModal}
-        transparent={true}
-        animationType="fade">
+      <Modal visible={showLogoutModal} transparent={true} animationType="fade">
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalText}>Are you sure you want to logout?</Text>
+            <Text style={styles.modalText}>
+              Are you sure you want to logout?
+            </Text>
             <View style={styles.modalButtons}>
               <TouchableOpacity
                 onPress={closeLogoutConfirmationModal}
-                style={[styles.modalButton, { backgroundColor: 'gray' }]}>
+                style={[styles.modalButton, {backgroundColor: 'gray'}]}>
                 <Text style={styles.buttonText}>Cancel</Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -132,7 +137,7 @@ const Account = () => {
                   closeLogoutConfirmationModal();
                   logout();
                 }}
-                style={[styles.modalButton, { backgroundColor: 'red' }]}>
+                style={[styles.modalButton, {backgroundColor: 'red'}]}>
                 <Text style={styles.buttonText}>Logout</Text>
               </TouchableOpacity>
             </View>
@@ -140,11 +145,8 @@ const Account = () => {
         </View>
       </Modal>
 
-
-
-
       <View style={styles.bottom}>
-        <View style={{ marginTop: responsiveHeight(2) }}>
+        <View style={{marginTop: responsiveHeight(2)}}>
           <View style={styles.item}>
             <TouchableOpacity
               style={styles.item_icon}
@@ -158,7 +160,11 @@ const Account = () => {
             </TouchableOpacity>
           </View>
 
-          <Divider style={{ height: 1, backgroundColor: 'gray' }} horizontalInset={16} bold />
+          <Divider
+            style={{height: 1, backgroundColor: 'gray'}}
+            horizontalInset={16}
+            bold
+          />
 
           <View style={styles.item}>
             <TouchableOpacity style={styles.item_icon}>
@@ -171,7 +177,11 @@ const Account = () => {
             </TouchableOpacity>
           </View>
 
-          <Divider style={{ height: 0.8, backgroundColor: 'gray' }} horizontalInset={16} bold />
+          <Divider
+            style={{height: 0.8, backgroundColor: 'gray'}}
+            horizontalInset={16}
+            bold
+          />
 
           <View style={styles.item}>
             <TouchableOpacity
@@ -186,7 +196,11 @@ const Account = () => {
             </TouchableOpacity>
           </View>
 
-          <Divider style={{ height: 0.5, backgroundColor: 'gray' }} horizontalInset={16} bold />
+          <Divider
+            style={{height: 0.5, backgroundColor: 'gray'}}
+            horizontalInset={16}
+            bold
+          />
 
           <View style={styles.item}>
             <TouchableOpacity
@@ -200,16 +214,32 @@ const Account = () => {
               <Text style={styles.item_text}>Help & Support</Text>
             </TouchableOpacity>
           </View>
-          <Divider style={{ height: 0.5, backgroundColor: 'gray' }} horizontalInset={16} bold />
+          <Divider
+            style={{height: 0.5, backgroundColor: 'gray'}}
+            horizontalInset={16}
+            bold
+          />
           <View style={styles.item}>
-            <TouchableOpacity style={styles.item_icon}>
-              <Iconic name="settings" size={25} color={'black'} />
+            <TouchableOpacity
+              style={styles.item_icon}
+              onPress={() => navigation.navigate('Security')}>
+              <MaterialCommunityIcons
+                name="security"
+                size={25}
+                color={'black'}
+              />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.item_content}>
-              <Text style={styles.item_text}>Settings</Text>
+            <TouchableOpacity
+              style={styles.item_content}
+              onPress={() => navigation.navigate('Security')}>
+              <Text style={styles.item_text}>Security</Text>
             </TouchableOpacity>
           </View>
-          <Divider style={{ height: 1, backgroundColor: 'gray' }} horizontalInset={16} bold />
+          <Divider
+            style={{height: 1, backgroundColor: 'gray'}}
+            horizontalInset={16}
+            bold
+          />
         </View>
       </View>
     </View>
@@ -277,9 +307,5 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
   },
-
-
-
-
 });
 export default Account;

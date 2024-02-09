@@ -9,7 +9,8 @@ import {Provider} from 'react-redux';
 import {store} from './src/redux/store';
 import {PaperProvider} from 'react-native-paper';
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
-
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import Toast from 'react-native-toast-message';
 export default function App() {
   const navigationRef = useNavigationContainerRef();
 
@@ -17,12 +18,15 @@ export default function App() {
   return (
     <Provider store={store}>
       <PaperProvider>
-        <BottomSheetModalProvider>
-          <NavigationContainer ref={navigationRef}>
-            <AuthNavigator />
-          </NavigationContainer>
-        </BottomSheetModalProvider>
+        <GestureHandlerRootView style={{flex: 1}}>
+          <BottomSheetModalProvider>
+            <NavigationContainer ref={navigationRef}>
+              <AuthNavigator />
+            </NavigationContainer>
+          </BottomSheetModalProvider>
+        </GestureHandlerRootView>
       </PaperProvider>
+      <Toast />
     </Provider>
   );
 }

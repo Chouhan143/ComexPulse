@@ -34,13 +34,15 @@ import {LineChart} from 'react-native-gifted-charts';
 import {fetchCoinData} from '../../redux/market/coinSlice';
 import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import {Modal, Portal, PaperProvider} from 'react-native-paper';
+import Toast from 'react-native-toast-message';
 
 const GraphUI = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const selectedItem = route.params?.selectedItem;
   const counter = useSelector(state => state.coin.counter);
-  const [isPressed, setIsPressed] = useState(false);
+  const [error, setError] = useState('');
+  const [isEnabled, setIsEnabled] = useState(false);
   const [visible, setVisible] = React.useState(false);
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
@@ -245,6 +247,16 @@ const GraphUI = () => {
     }
   };
 
+  const showToast = errorMessage => {
+    Toast.show({
+      type: 'error', // Assuming you have a type for error messages
+      text1: 'Error',
+      text2: errorMessage,
+      text1Style: {fontSize: responsiveFontSize(2)},
+      text2Style: {fontSize: responsiveFontSize(1.6)},
+    });
+  };
+
   const BuySellapi = async () => {
     try {
       const access_token = await AsyncStorage.getItem('accessToken');
@@ -288,8 +300,13 @@ const GraphUI = () => {
         console.log('something wrong');
       }
     } catch (error) {
-      const AllErrors = error.response.data.errors.limit;
-      console.log(AllErrors);
+      // const AllErrors = error.response.data.errors.limit;
+      const AllErrors = error.response.data.errors;
+      const errorBuySell = Object.values(AllErrors);
+
+      const errorCatch = errorBuySell.map(e => e[0]);
+
+      showToast(errorCatch.join(' ,'));
     }
   };
 
@@ -983,7 +1000,8 @@ const GraphUI = () => {
                         fontSize: responsiveFontSize(2),
                         fontWeight: '500',
                       }}>
-                      {isSellActive ? 'Sell' : 'Buy'} {selectedItem.price}
+                      {isSellActive ? 'Sell' : 'Buy'} {buyingPrice}
+                      {/* {isSellActive ? 'Sell' : 'Buy'} {selectedItem.price} */}
                     </Text>
                   </TouchableOpacity>
                 </View>

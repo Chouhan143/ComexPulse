@@ -1,5 +1,5 @@
 import {View, Text, TouchableOpacity, Image, StyleSheet} from 'react-native';
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   responsiveFontSize,
   responsiveHeight,
@@ -13,12 +13,61 @@ import Material from 'react-native-vector-icons/MaterialIcons';
 import {ScrollView, TextInput} from 'react-native-gesture-handler';
 import LinearGradient from 'react-native-linear-gradient';
 import {useNavigation} from '@react-navigation/native';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ProfileEdit = () => {
   const navigation = useNavigation();
   const goBack = () => {
     navigation.navigate('Account');
   };
+
+  const [ProfileImg, setProfileImg] = useState('');
+
+  const [state, setState] = useState({
+    fName: '',
+    lName: '',
+    email: '', // Add other state variables as needed
+    mobile_No: '',
+  });
+
+  // edit profile api here
+
+  const EditProfile = async () => {
+    try {
+      const access_token = await AsyncStorage.getItem('accessToken');
+      const config = {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      };
+
+      const res = await axios.get(
+        'https://app.srninfotech.com/bullsPanel/api/profile-details',
+        config,
+      );
+
+      const getData = res.data.user_prfile_detail;
+
+      setState({
+        fName: getData.first_name,
+        lName: getData.last_name,
+        email: getData.email, // Add other state updates as needed
+        mobile_No: getData.mobile.toString(),
+      });
+
+      setProfileImg(
+        getData.profile_picture || require('../../../assets/images/user.jpg'),
+      );
+    } catch (error) {
+      console.log('error', error.response);
+    }
+  };
+
+  useEffect(() => {
+    EditProfile();
+  }, []); // Add dependencies if needed
+
   return (
     <ScrollView>
       <Image
@@ -41,7 +90,7 @@ const ProfileEdit = () => {
           <View style={styles.bottom_main_top}>
             {/* <View style={styles.bottom_main_top_img}> */}
             <Image
-              source={require('../../../assets/images/user.jpg')}
+              source={ProfileImg}
               resizeMode="contain"
               style={styles.bottom_main_top_img}
             />
@@ -77,7 +126,7 @@ const ProfileEdit = () => {
           </View>
           <View style={{padding: responsiveWidth(2)}}>
             <View>
-              <Text style={styles.bottom_lable}>Name</Text>
+              <Text style={styles.bottom_lable}>First Name</Text>
               <View style={styles.input_view}>
                 <TextInput
                   style={{
@@ -87,14 +136,35 @@ const ProfileEdit = () => {
                     elevation: 5,
                     backgroundColor: 'white',
                   }}
-                  placeholder="Name"
+                  placeholder="First Name"
+                  value={state.fName} // Bind the value from the state
+                  // onChangeText={(text) => setState({...state, first_name: text})} // Update the state on change
+                  editable={false}
                 />
               </View>
             </View>
+
+            <View>
+              <Text style={styles.bottom_lable}>Last Name</Text>
+              <View style={styles.input_view}>
+                <TextInput
+                  style={styles.input_field}
+                  placeholder="Last Name"
+                  value={state.lName}
+                  editable={false}
+                />
+              </View>
+            </View>
+
             <View>
               <Text style={styles.bottom_lable}>Email</Text>
               <View style={styles.input_view}>
-                <TextInput style={styles.input_field} placeholder="Email-id" />
+                <TextInput
+                  style={styles.input_field}
+                  placeholder="Email-id"
+                  value={state.email}
+                  editable={false}
+                />
               </View>
             </View>
             <View>
@@ -103,18 +173,15 @@ const ProfileEdit = () => {
                 <TextInput
                   style={styles.input_field}
                   placeholder="Mobile Number"
+                  keyboardType="phone-pad"
+                  value={state.mobile_No}
+                  editable={false}
                 />
-              </View>
-            </View>
-            <View>
-              <Text style={styles.bottom_lable}>Password</Text>
-              <View style={styles.input_view}>
-                <TextInput style={styles.input_field} placeholder="Password" />
               </View>
             </View>
           </View>
           <View style={styles.button_container}>
-            <TouchableOpacity onPress={() => navigation.navigate('Account')}>
+            {/* <TouchableOpacity onPress={EditProfile}>
               <LinearGradient
                 colors={['#4D5DFB', '#08C8F6']}
                 start={{x: -0.1, y: 0}}
@@ -125,7 +192,7 @@ const ProfileEdit = () => {
                   Update
                 </Text>
               </LinearGradient>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
         </View>
       </View>
@@ -150,7 +217,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   bottom_main: {
-    flex: 3,
+    flex: 1,
     backgroundColor: '#fff',
     borderTopLeftRadius: responsiveWidth(8),
     borderTopRightRadius: responsiveWidth(8),

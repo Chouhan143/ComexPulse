@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
-  Touchable,
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
@@ -70,7 +69,6 @@ const Login = () => {
         const token = response.data.token;
         await AsyncStorage.setItem('accessToken', token);
         navigation.navigate('DrawerNavigator');
-        navigation.navigate('DrawerNavigator', {screen: 'Home'});
       } else {
         // Registration failed, set the error message
         setError(response.data.message || 'Registration failed');
@@ -145,14 +143,17 @@ const Login = () => {
               paddingRight: responsiveWidth(2.5),
               marginBottom: responsiveHeight(18),
             }}>
-            <Text
-              style={{
-                color: COLORS.secondary,
-                fontWeight: 'bold',
-                fontSize: responsiveFontSize(2),
-              }}>
-              Forgot Password ?
-            </Text>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('ForgotPassword')}>
+              <Text
+                style={{
+                  color: COLORS.secondary,
+                  fontWeight: 'bold',
+                  fontSize: responsiveFontSize(2),
+                }}>
+                Forgot Password ?
+              </Text>
+            </TouchableOpacity>
           </View>
           <Btn
             textColor="white"
@@ -184,7 +185,7 @@ const Login = () => {
             </Text>
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate('MobileRegistration');
+                navigation.navigate('EmailRegistration');
               }}>
               <Text
                 style={{

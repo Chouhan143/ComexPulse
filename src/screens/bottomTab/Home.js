@@ -145,9 +145,9 @@ const Home = () => {
           easing="ease-out-cubic"
           iterationCount="infinite"
           style={styles.topContainerText}>
-          ComexPulse
+          SkyCommodity
         </Animatable.Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('Notification')}>
           <Icon name="notifications" size={25} color="#fff" />
           <View
             style={{

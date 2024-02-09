@@ -7,11 +7,11 @@
 #define TIMEOUT_SECONDS 600
 #define TEXT_TO_LOOK_FOR @"Welcome to React"
 
-@interface ComexPulseTests : XCTestCase
+@interface SkyCommodityTests : XCTestCase
 
 @end
 
-@implementation ComexPulseTests
+@implementation SkyCommodityTests
 
 - (BOOL)findSubviewInView:(UIView *)view matching:(BOOL (^)(UIView *view))test
 {

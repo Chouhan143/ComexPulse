@@ -6,7 +6,9 @@ import {
   TouchableOpacity,
   FlatList,
 } from 'react-native';
-import Reac, {useEffect} from 'react';
+import React, {useEffect} from 'react';
+import Entypo from 'react-native-vector-icons/Entypo';
+
 import {
   responsiveWidth,
   responsiveHeight,
@@ -14,22 +16,20 @@ import {
 } from 'react-native-responsive-dimensions';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/AntDesign';
-import {COLORS} from '../../constants/theme';
-import {getLiveTrade} from '../../redux/market/coinSlice';
+import {COLORS} from '../../../constants/theme';
+import {getHoldingTrade} from '../../../redux/market/coinSlice';
 import {useSelector, useDispatch} from 'react-redux';
 import * as Animatable from 'react-native-animatable';
-const LiveTrade = () => {
-  const navigation = useNavigation();
+
+const HoldingTrade = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
     // Dispatch the getLiveTrade action when the component mounts
-    dispatch(getLiveTrade());
+    dispatch(getHoldingTrade());
   }, [dispatch]);
 
-  const LiveTrade = useSelector(state => state.coin.liveTradedata);
-
-  // Flatlist Ui RenderItem List here
+  const holdingTrade = useSelector(state => state.coin.holdingTradedata);
 
   const RenderUiItems = ({item, index}) => {
     const buySellBgColor = item.trade_mode === 'sell' ? 'red' : 'green';
@@ -80,15 +80,23 @@ const LiveTrade = () => {
           <View
             style={{
               flexDirection: 'row',
-              justifyContent: 'space-between',
+              justifyContent: 'space-around',
               marginTop: responsiveHeight(2),
             }}>
-            <View>
+            <View style={{justifyContent: 'center', alignItems: 'center'}}>
               <Text
                 style={{
                   color: COLORS.black,
                   fontWeight: '700',
                   fontSize: responsiveFontSize(2),
+                }}>
+                Trade Name
+              </Text>
+              <Text
+                style={{
+                  color: COLORS.black,
+                  fontWeight: '500',
+                  fontSize: responsiveFontSize(1.8),
                 }}>
                 {item.trade_name}
               </Text>
@@ -130,49 +138,79 @@ const LiveTrade = () => {
               </Text>
             </View>
           </View>
+
+          {/*  stop loss and lot ui   */}
+
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-around',
+              marginTop: responsiveHeight(2),
+            }}>
+            <View style={{justifyContent: 'center', alignItems: 'center'}}>
+              <Text
+                style={{
+                  color: COLORS.black,
+                  fontWeight: '700',
+                  fontSize: responsiveFontSize(2),
+                }}>
+                Lot
+              </Text>
+              <Text
+                style={{
+                  color: COLORS.dimgray,
+                  fontWeight: '500',
+                  fontSize: responsiveFontSize(1.8),
+                }}>
+                {item.max_lot}
+              </Text>
+            </View>
+            <View style={{justifyContent: 'center', alignItems: 'center'}}>
+              <Text
+                style={{
+                  color: COLORS.black,
+                  fontWeight: '500',
+                  fontSize: responsiveFontSize(1.8),
+                }}>
+                Stop Loss
+              </Text>
+              <Text
+                style={{
+                  color: COLORS.dimgray,
+                  fontWeight: '500',
+                  fontSize: responsiveFontSize(1.8),
+                }}>
+                {item.stop_loss}
+              </Text>
+            </View>
+            <View style={{justifyContent: 'center', alignItems: 'center'}}>
+              <Text
+                style={{
+                  color: COLORS.black,
+                  fontWeight: '500',
+                  fontSize: responsiveFontSize(1.8),
+                }}>
+                Target
+              </Text>
+              <Text
+                style={{
+                  color: COLORS.dimgray,
+                  fontWeight: '500',
+                  fontSize: responsiveFontSize(1.8),
+                }}>
+                {item.target}
+              </Text>
+            </View>
+          </View>
+
+          {/* button ui here */}
         </View>
       </Animatable.View>
     );
   };
 
   return (
-    <View style={{flex: 1}}>
-      <View>
-        <Image
-          source={require('../../../assets/images/topBg.jpg')}
-          style={{
-            width: responsiveWidth(100),
-            height: responsiveHeight(40),
-            position: 'absolute',
-          }}
-        /> 
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <Text
-            style={{
-              color: '#fff',
-              fontSize: responsiveFontSize(3),
-              fontWeight: '700',
-              marginTop: responsiveHeight(2),
-            }}>
-            Live Trade
-          </Text>
-          <Image
-            source={require('../../../assets/images/feed.png')}
-            style={{
-              width: responsiveWidth(5),
-              height: responsiveHeight(5),
-            }}
-            resizeMode="contain"
-          />
-        </View>
-      </View>
-      {/* header End here */}
-
+    <View style={{flex: 1, backgroundColor: COLORS.lightWhite}}>
       <View
         style={{
           flex: 1,
@@ -189,10 +227,10 @@ const LiveTrade = () => {
         }}>
         {/*Rounded  ui started here   */}
 
-        {LiveTrade && LiveTrade.length > 0 ? (
+        {holdingTrade && holdingTrade.length > 0 ? (
           <View style={{marginBottom: responsiveHeight(6)}}>
             <FlatList
-              data={LiveTrade}
+              data={holdingTrade}
               renderItem={RenderUiItems}
               ItemSeparatorComponent={
                 Platform.OS !== 'android' &&
@@ -206,7 +244,7 @@ const LiveTrade = () => {
         ) : (
           <View>
             <Image
-              source={require('../../../assets/images/pendingImageOrder.png')}
+              source={require('../../../../assets/images/pendingImageOrder.png')}
               style={{
                 width: responsiveWidth(90),
                 // height: responsiveHeight(50),
@@ -232,7 +270,7 @@ const LiveTrade = () => {
   );
 };
 
-export default LiveTrade;
+export default HoldingTrade;
 
 const styles = StyleSheet.create({
   backIcon: {
@@ -246,13 +284,12 @@ const styles = StyleSheet.create({
   },
   flatlistContainer: {
     width: responsiveWidth(90),
-    height: responsiveHeight(12),
+    height: responsiveHeight(20),
     backgroundColor: COLORS.lightGray,
     marginVertical: responsiveHeight(1),
     borderRadius: responsiveWidth(3),
     padding: responsiveWidth(2),
   },
-
   BuySellContainer: {
     backgroundColor: COLORS.primary,
     width: responsiveWidth(15),

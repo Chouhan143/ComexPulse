@@ -287,7 +287,7 @@ export default MobileRegistration;
 const styles = StyleSheet.create({
   containerStyle: {
     width: responsiveWidth(90),
-    height: responsiveHeight(9),
+    height: responsiveHeight(10),
     alignSelf: 'center',
     backgroundColor: 'rgba(255, 255,255, 01)',
     marginTop: responsiveHeight(3),

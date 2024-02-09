@@ -1,21 +1,16 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
-import React, { useEffect } from 'react';
+import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
+import React, {useEffect} from 'react';
 import {
   responsiveWidth,
   responsiveHeight,
   responsiveFontSize,
 } from 'react-native-responsive-dimensions';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/AntDesign';
-import { COLORS } from '../../constants/theme';
-import { getPastTrade } from '../../redux/market/coinSlice';
-import { useSelector, useDispatch } from 'react-redux';
-const PendingOrder = () => {
-  const navigation = useNavigation();
-
-  const handleGoBack = () => {
-    navigation.goBack(); // Go back to the previous screen
-  };
+import {COLORS} from '../../../constants/theme';
+import {getPastTrade} from '../../../redux/market/coinSlice';
+import {useSelector, useDispatch} from 'react-redux';
+const PendingTrade = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -23,46 +18,10 @@ const PendingOrder = () => {
     dispatch(getPastTrade());
   }, [dispatch]);
 
-
   const pastTrade = useSelector(state => state.coin.pastTradedata);
 
-  console.log(pastTrade, "dsad")
-
-
-
   return (
-    <View style={{ flex: 1 }}>
-      <View>
-        <Image
-          source={require('../../../assets/images/topBg.jpg')}
-          style={{
-            width: responsiveWidth(100),
-            height: responsiveHeight(40),
-            position: 'absolute',
-          }}
-        />
-        <View style={{ flexDirection: 'row' }}>
-          <TouchableOpacity onPress={handleGoBack} style={styles.backIcon}>
-            <Icon
-              name="left"
-              size={responsiveFontSize(2)}
-              color={COLORS.white}
-            />
-          </TouchableOpacity>
-
-          <Text
-            style={{
-              color: '#fff',
-              fontSize: responsiveFontSize(3),
-              fontWeight: '700',
-              margin: responsiveWidth(4),
-            }}>
-            Pending Trade
-          </Text>
-        </View>
-      </View>
-      {/* header End here */}
-
+    <View style={{flex: 1, backgroundColor: COLORS.lightWhite}}>
       <View
         style={{
           display: 'flex',
@@ -77,7 +36,7 @@ const PendingOrder = () => {
           paddingTop: responsiveHeight(10),
         }}>
         <Image
-          source={require('../../../assets/images/pendingImageOrder.png')}
+          source={require('../../../../assets/images/pendingImageOrder.png')}
           style={{
             width: responsiveWidth(90),
             // height: responsiveHeight(50),
@@ -102,7 +61,7 @@ const PendingOrder = () => {
   );
 };
 
-export default PendingOrder;
+export default PendingTrade;
 
 const styles = StyleSheet.create({
   backIcon: {

@@ -34,6 +34,7 @@ import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import BottomSheetQRcode from './BottomSheetQRcode';
 const Deposit = () => {
   const getBalance = useSelector(state => state.coin.userBalance);
+  console.log('balance', getBalance);
   const [amount, setAmount] = useState('');
   const [visible, setVisible] = React.useState(false);
   const showModal = () => setVisible(true);
@@ -110,7 +111,6 @@ const Deposit = () => {
     //   // setError(errorCatch);
     //   console.log('error deposit', error);
     // }
-    handlePresentModalPress;
   };
 
   useEffect(() => {
@@ -128,7 +128,7 @@ const Deposit = () => {
   const bottomSheetModalRef = useRef(null);
 
   // variables
-  const snapPoints = useMemo(() => ['25%', '50%'], []);
+  const snapPoints = useMemo(() => ['50%']);
 
   // callbacks
   const handlePresentModalPress = useCallback(() => {
@@ -191,24 +191,23 @@ const Deposit = () => {
             end={{x: 1, y: 0}}
             style={{
               position: 'relative',
-              width: responsiveWidth(90),
-              height: responsiveHeight(20),
+              width: responsiveWidth(100),
+              height: responsiveHeight(10),
               backgroundColor: COLORS.white,
-              marginTop: responsiveHeight(2),
+              borderTopLeftRadius: responsiveWidth(8),
+              borderTopRightRadius: responsiveWidth(8),
               marginLeft: 5,
-              borderRadius: responsiveWidth(4),
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
-              marginTop: responsiveHeight(7),
               alignSelf: 'center',
               shadowColor: '#000',
               elevation: 5,
             }}>
             <View
               style={{
-                width: responsiveWidth(25),
-                height: responsiveWidth(25),
+                width: responsiveWidth(15),
+                height: responsiveWidth(15),
                 borderRadius: responsiveWidth(12.5),
                 backgroundColor: '#7CB9E8',
                 position: 'absolute',
@@ -216,9 +215,9 @@ const Deposit = () => {
               }}>
               <View
                 style={{
-                  width: responsiveWidth(20),
-                  height: responsiveWidth(20),
-                  borderRadius: responsiveWidth(10),
+                  width: responsiveWidth(12),
+                  height: responsiveWidth(12),
+                  borderRadius: responsiveWidth(6),
                   backgroundColor: '#0066b2',
                   justifyContent: 'center',
                   alignItems: 'center',
@@ -227,7 +226,7 @@ const Deposit = () => {
                   // position: 'absolute',
                   // top: responsiveHeight(-5.3),
                 }}>
-                <Icon name="wallet" size={35} color={'white'} />
+                <Icon name="wallet" size={30} color={'white'} />
               </View>
             </View>
 
@@ -235,22 +234,20 @@ const Deposit = () => {
               style={{
                 justifyContent: 'center',
                 alignItems: 'center',
-                paddingTop: responsiveHeight(4),
               }}>
               <Text
                 style={{
-                  fontSize: responsiveFontSize(2.5),
-                  color: '#000',
+                  fontSize: responsiveFontSize(2),
+                  color: COLORS.dimgray,
                   fontWeight: '700',
                 }}>
                 Total Balance
               </Text>
               <Text
                 style={{
-                  fontSize: responsiveFontSize(2.2),
-                  color: 'blue',
+                  fontSize: responsiveFontSize(1.6),
+                  color: COLORS.textColorBlue,
                   fontWeight: '700',
-                  paddingTop: responsiveHeight(1),
                 }}>
                 ₹ {getBalance}
               </Text>
@@ -258,25 +255,35 @@ const Deposit = () => {
           </LinearGradient>
           {/* </LinearGradient> */}
 
+          <View style={{marginTop: responsiveHeight(2)}}>
+            <Image
+              source={require('../../../assets/images/QrCode.jpg')}
+              resizeMode="contain"
+              style={{
+                width: responsiveWidth(60),
+                height: responsiveHeight(20),
+                alignSelf: 'center',
+              }}
+            />
+          </View>
+
           <View
             style={{
-              marginHorizontal: responsiveWidth(8),
-              marginVertical: responsiveHeight(3),
+              marginVertical: responsiveHeight(2),
             }}>
             <Text
               style={{
                 color: COLORS.black,
-                fontSize: responsiveFontSize(2.3),
+                fontSize: responsiveFontSize(1.8),
                 fontWeight: '700',
                 letterSpacing: responsiveFontSize(0.1),
+                marginLeft: responsiveWidth(7),
+                marginBottom: responsiveHeight(0.8),
               }}>
               Amount
             </Text>
-          </View>
-          {/* Inpute Ui start here */}
-          <View>
             <TextInput
-              label="Value"
+              label="Amount"
               value={amount}
               onChangeText={text => setAmount(text)}
               placeholder="₹"
@@ -292,6 +299,8 @@ const Deposit = () => {
               mode="outlined"
             />
           </View>
+          {/* Inpute Ui start here */}
+
           {/* Main Box Ui  */}
           <View
             style={{
@@ -299,7 +308,7 @@ const Deposit = () => {
               justifyContent: 'space-around',
               alignItems: 'center',
               marginHorizontal: responsiveWidth(4),
-              marginVertical: responsiveHeight(3),
+              marginBottom: responsiveHeight(3),
             }}>
             <TouchableOpacity onPress={() => handlePredefinedValueClick('100')}>
               <View style={styles.Box1}>
@@ -325,16 +334,17 @@ const Deposit = () => {
           </View>
           {/* Minimum Amount Ui  */}
 
-          <View
+          {/* <View
             style={{
               justifyContent: 'center',
               alignItems: 'center',
+              marginTop: responsiveHeight(1),
             }}>
             <Text
               style={[styles.BoxContent, {fontSize: responsiveFontSize(2)}]}>
               Add Min ₹ 100
             </Text>
-          </View>
+          </View> */}
 
           {/* screnshort uload here  */}
 
@@ -353,8 +363,18 @@ const Deposit = () => {
               Upload Screenshot
             </Text>
           </View> */}
-
-          {/*  <View
+          <Text
+            style={{
+              color: COLORS.black,
+              fontSize: responsiveFontSize(1.8),
+              fontWeight: '700',
+              letterSpacing: responsiveFontSize(0.1),
+              marginLeft: responsiveWidth(7),
+              marginBottom: responsiveHeight(0.8),
+            }}>
+            Upload Payment Screenshot
+          </Text>
+          <View
             style={{
               width: responsiveWidth(90),
               height: responsiveHeight(6),
@@ -403,7 +423,6 @@ const Deposit = () => {
               {doc ? doc.name : ''}
             </Text>
           </View>
-          */}
 
           {/* button Ui  */}
           <TouchableOpacity
@@ -412,7 +431,7 @@ const Deposit = () => {
               bottom: responsiveHeight(2), // Adjust the bottom position as needed
               alignSelf: 'center',
             }}
-            onPress={DepositApi}>
+            onPress={handlePresentModalPress}>
             <LinearGradient
               colors={['#7F7FD5', '#91EAE4']}
               start={{x: 0, y: 1}} // Start point of the gradient
@@ -500,10 +519,12 @@ const Deposit = () => {
             </Modal>
           </Portal>
 
-          <BottomSheetQRcode
+          {/* <BottomSheetQRcode
             modalRef={bottomSheetModalRef}
             snapPoints={snapPoints}
-          />
+            title={'ScanQr and Pay'}
+            QrImage={require('../../../assets/images/PhonePayQr.png')}
+          /> */}
         </View>
       </LinearGradient>
     </PaperProvider>
@@ -514,8 +535,8 @@ export default Deposit;
 
 const styles = StyleSheet.create({
   Box1: {
-    width: responsiveWidth(17),
-    height: responsiveHeight(7),
+    width: responsiveWidth(18),
+    height: responsiveHeight(6),
     borderRadius: responsiveWidth(1),
     backgroundColor: '#E6E6E6',
     justifyContent: 'center',

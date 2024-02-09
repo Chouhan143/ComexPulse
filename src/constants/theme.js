@@ -19,6 +19,8 @@ export const COLORS = {
   dimgray: '#696969',
 
   lightGray: '#E6E6E6',
+
+  lightWhite: '#F9F6EE',
 };
 export const SIZES = {
   // global sizes

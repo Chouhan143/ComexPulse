@@ -1,10 +1,10 @@
 import React from 'react';
-import { View, StyleSheet, Text, Image } from 'react-native';
+import {View, StyleSheet, Text, Image} from 'react-native';
 import Background from '../../constants/Background';
 import Btn from '../../constants/Btn';
-import { darkGreen, green } from '../../constants/ColorConstants';
-import { COLORS } from '../../constants/theme';
-import { useNavigation } from '@react-navigation/native';
+import {darkGreen, green} from '../../constants/ColorConstants';
+import {COLORS} from '../../constants/theme';
+import {useNavigation} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import {
   responsiveFontSize,
@@ -56,11 +56,11 @@ const SlaceScreen = () => {
         <Text
           style={{
             color: COLORS.textColorBlue,
-            fontSize: responsiveFontSize(3.5),
+            fontSize: responsiveFontSize(3),
             fontWeight: '600',
             letterSpacing: responsiveWidth(0.3),
           }}>
-          Welcome to ComexPluse
+          Welcome to SkyCommodity
         </Text>
         <Text
           style={{
