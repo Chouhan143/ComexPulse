@@ -37,7 +37,7 @@ const LiveTrade = () => {
 
   const LiveTrade = useSelector(state => state.coin.liveTradedata);
 
-  console.log('liveTrade here updated', LiveTrade);
+  // console.log('liveTrade here updated', LiveTrade);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -68,19 +68,41 @@ const LiveTrade = () => {
     dispatch(updateLiveTrade());
   }, []);
 
-  const SquareOff = async () => {
+  const squreOffhandle = item => {
+    if (item) {
+      setSelectedItem(item);
+      Alert.alert(
+        'Confirm',
+        'Are you sure you want to Square Off?',
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+          },
+          {
+            text: 'OK',
+            onPress: () => SquareOff(item.id),
+          },
+        ],
+        {cancelable: false},
+      );
+    }
+  };
+
+  const SquareOff = async tradeId => {
     try {
-      const tradeId = selectedItem.id;
-      // console.log(tradeId, 'get tradeId');
       const access_token = await AsyncStorage.getItem('accessToken');
-      console.log(access_token);
-      const headers = {
-        Authorization: `Bearer ${access_token}`, // Replace with your authorization token
+      console.log(access_token, tradeId, 'get accessToken');
+      const config = {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
       };
 
       const response = await axios.post(
-        ` https://app.srninfotech.com/bullsPanel/api/square-off-trade/${tradeId}`,
-        {headers},
+        `https://app.srninfotech.com/bullsPanel/api/square-off-trade/${tradeId}`,
+        null,
+        config,
       );
 
       if (response.data.Status === 200) {
@@ -93,84 +115,12 @@ const LiveTrade = () => {
           text2Style: {fontSize: responsiveFontSize(1.6)},
         });
       }
-
-      console.log('check response ', response);
+      await dispatch(getLiveTrade());
     } catch (error) {
       // Handle error appropriately
-      console.error('Error in SquareOff:', error.response);
+      console.error('Error in SquareOff:', error.response || error);
     }
   };
-
-  const squreOffhandle = () => {
-    // if (selectedItem) {
-    Alert.alert(
-      'Confirm',
-      'Are you sure you want to Square Off?',
-      [
-        {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-        {
-          text: 'OK',
-          onPress: () => {
-            onSaveEdit(); // Call onSaveEdit first
-            SquareOff(); // Call SquareOff after onSaveEdit completes
-          },
-        },
-      ],
-      {cancelable: false},
-    );
-    // }
-  };
-
-  // const toggleModal = tradeId => {
-  //   setIsModalVisible(!isModalVisible);
-  //   setSelectedTradeId(tradeId);
-  // };
-
-  // const onSaveEdit = async () => {
-  //   try {
-  //     if (selectedItem) {
-  //       const tradeId = selectedItem.id;
-
-  //       const payload = {
-  //         stop_loss: los,
-  //         target: target,
-  //       };
-
-  //       console.log(payload, 'fdsf');
-
-  //       const access_token = await AsyncStorage.getItem('accessToken');
-  //       console.log(access_token);
-  //       const headers = {
-  //         Authorization: `Bearer ${access_token}`, // Replace with your authorization token
-  //       };
-
-  //       const response = await axios.post(
-  //         `https://app.srninfotech.com/bullsPanel/api/update-trade/${tradeId}`,
-  //         payload,
-  //         {headers},
-  //       );
-
-  //       if (response.data.Status === 200) {
-  //         const successMsg = response.data.Message;
-  //         Toast.show({
-  //           type: 'success', // Assuming you have a type for error messages
-  //           text1: 'success',
-  //           text2: successMsg,
-  //           text1Style: {fontSize: responsiveFontSize(2)},
-  //           text2Style: {fontSize: responsiveFontSize(1.6)},
-  //         });
-  //       }
-  //     }
-  //     // Perform any necessary actions or state updates after the API call is successful
-  //   } catch (error) {
-  //     console.log('error coming ', error.response.data);
-  //   }
-
-  //   closeModal(); // Close the modal
-  // };
 
   const onSaveEdit = async () => {
     try {
@@ -186,7 +136,7 @@ const LiveTrade = () => {
         dispatch(updateLiveTrade({tradeId, payload}));
 
         // After successfully updating the trade, dispatch the getLiveTrade action
-        dispatch(getLiveTrade());
+        await dispatch(getLiveTrade());
       }
     } catch (error) {
       console.log('error coming ', error.response.data);
@@ -390,7 +340,9 @@ const LiveTrade = () => {
               />
               <Text style={styles.editBtnText}>Edit</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.editBtn} onPress={squreOffhandle}>
+            <TouchableOpacity
+              style={styles.editBtn}
+              onPress={() => squreOffhandle(item)}>
               <Entypo
                 name={'reply-all'}
                 size={responsiveFontSize(1.8)}

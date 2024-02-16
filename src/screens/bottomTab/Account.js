@@ -101,15 +101,15 @@ const Account = () => {
 
         <View
           style={{
-            justifyContent: 'space-between',
+            justifyContent: 'flex-end',
             alignItems: 'center',
             flexDirection: 'row',
           }}>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={{paddingLeft: responsiveWidth(3)}}
             onPress={goBack}>
             <Iconic name="arrow-back" size={25} color={'white'} />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <TouchableOpacity
             style={{
               alignSelf: 'flex-end',
