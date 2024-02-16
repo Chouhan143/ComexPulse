@@ -54,8 +54,9 @@ const UserDetails = () => {
   const [passError, setpassError] = React.useState('');
   const [confirmPass, setConfirmPass] = React.useState('');
   const [confirmPassError, setconfirmPassError] = React.useState('');
-  const [walletpin, setWalletPin] = React.useState('');
-  const [walletpinError, setwalletpinError] = React.useState('');
+  // const [walletpin, setWalletPin] = React.useState('');
+  const [phone, setPhone] = React.useState('');
+  const [mobileError, setmobileError] = React.useState('');
 
   const [otpValue, setOtpValue] = useState('');
 
@@ -120,7 +121,8 @@ const UserDetails = () => {
       userDetailsData.append('last_name', lName);
       userDetailsData.append('password', pass);
       userDetailsData.append('confirm_password', confirmPass);
-      userDetailsData.append('walletPin', walletpin);
+      userDetailsData.append('mobile', phone);
+      // userDetailsData.append('walletPin', walletpin);
 
       if (imageData) {
         // If an image is selected, append it to the FormData object
@@ -150,7 +152,7 @@ const UserDetails = () => {
       setlNameError(error.response.data.errors.last_name);
       setpassError(error.response.data.errors.password);
       setconfirmPassError(error.response.data.errors.confirm_password);
-      setwalletpinError(error.response.data.errors.walletPin);
+      setmobileError(error.response.data.errors.mobile);
     }
   };
 
@@ -268,6 +270,21 @@ const UserDetails = () => {
             </View>
 
             <View>
+              <Text style={styles.tittle}>Phone Number</Text>
+              <TextInput
+                value={phone}
+                maxLength={10}
+                onChangeText={text => setPhone(text)}
+                mode="outlined"
+                activeOutlineColor={COLORS.secondary}
+                style={{width: responsiveWidth(74)}}
+              />
+              <HelperText type="error" visible={!!mobileError}>
+                {mobileError}
+              </HelperText>
+            </View>
+
+            {/* <View>
               <Text style={styles.tittle}>Wallet Pin</Text>
               <TextInput
                 value={walletpin}
@@ -279,7 +296,7 @@ const UserDetails = () => {
               <HelperText type="error" visible={!!walletpinError}>
                 {walletpinError}
               </HelperText>
-            </View>
+            </View> */}
 
             <View
               style={{

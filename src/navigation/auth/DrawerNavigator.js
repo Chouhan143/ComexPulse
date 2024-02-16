@@ -26,7 +26,7 @@ function DrawerNavigator() {
         },
       }}>
       <Drawer.Screen
-        name="Home"
+        name="Main"
         component={BottomTabNavigator}
         options={{
           headerShown: false,

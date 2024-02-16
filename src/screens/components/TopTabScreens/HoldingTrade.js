@@ -284,7 +284,7 @@ const styles = StyleSheet.create({
   },
   flatlistContainer: {
     width: responsiveWidth(90),
-    height: responsiveHeight(20),
+    height: responsiveHeight(20 ),
     backgroundColor: COLORS.lightGray,
     marginVertical: responsiveHeight(1),
     borderRadius: responsiveWidth(3),

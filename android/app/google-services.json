@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "615979374236",
+    "project_id": "skycommodity-78d26",
+    "storage_bucket": "skycommodity-78d26.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:615979374236:android:20b0993cef97b143753f59",
+        "android_client_info": {
+          "package_name": "com.SkyCommodity"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDI0w10MN0F80_E0Gm8SPin_123hA5awxs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -6,7 +6,7 @@ import {
   View,
   TouchableOpacity,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   DrawerContentScrollView,
   DrawerItemList,
@@ -18,9 +18,10 @@ import {
 } from 'react-native-responsive-dimensions';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 const CustomDrawer = props => {
   const navigation = useNavigation();
+  const [userName, setUserName] = useState('');
   const logout = async () => {
     try {
       await AsyncStorage.removeItem('accessToken');
@@ -30,8 +31,17 @@ const CustomDrawer = props => {
     }
   };
 
+  const getUserName = async () => {
+    const user = await AsyncStorage.getItem('userName');
+    setUserName(user);
+  };
+
+  useEffect(() => {
+    getUserName();
+  }, []);
+
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{flex: 1}}>
       <DrawerContentScrollView
         {...props}
         contentContainerStyle={{
@@ -61,7 +71,7 @@ const CustomDrawer = props => {
               letterSpacing: responsiveWidth(0.8),
               paddingTop: responsiveHeight(2),
             }}>
-            Raj Malhotra
+            {userName}
           </Text>
         </ImageBackground>
         <View
@@ -82,7 +92,8 @@ const CustomDrawer = props => {
         <TouchableOpacity
           style={{
             flexDirection: 'row',
-          }} onPress={logout}>
+          }}
+          onPress={logout}>
           <MaterialCommunityIcons name="logout" size={22} color="#333" />
           <Text
             style={{

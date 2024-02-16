@@ -7,7 +7,7 @@ import {
   Image,
   Modal,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   responsiveWidth,
   responsiveHeight,
@@ -24,6 +24,7 @@ import Material from 'react-native-vector-icons/MaterialIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
 import {Divider} from 'react-native-paper';
+import axios from 'axios';
 
 const Account = () => {
   const [showLogoutModal, setShowLogoutModal] = useState(false); // State to control the modal visibility
@@ -48,6 +49,44 @@ const Account = () => {
   const closeLogoutConfirmationModal = () => {
     setShowLogoutModal(false);
   };
+
+  const [ProfileImg, setProfileImg] = useState('');
+
+  const [state, setState] = useState('');
+
+  // edit profile api here
+
+  const getProfileInfo = async () => {
+    try {
+      const access_token = await AsyncStorage.getItem('accessToken');
+      const config = {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      };
+
+      const res = await axios.get(
+        'https://app.srninfotech.com/bullsPanel/api/profile-details',
+        config,
+      );
+
+      const getData = res.data.user_prfile_detail;
+      const fullName = ` ${getData.first_name} ${getData.last_name}`;
+
+      setState(fullName);
+
+      setProfileImg(
+        getData.profile_picture || require('../../../assets/images/user.jpg'),
+      );
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+
+  useEffect(() => {
+    getProfileInfo();
+  }, []); // Add dependencies if needed
+
   return (
     <View style={{flex: 1, backgroundColor: '#fff'}}>
       <View style={styles.top}>
@@ -89,7 +128,7 @@ const Account = () => {
         </View>
 
         <Image
-          source={require('../../../assets/images/user.jpg')}
+          source={ProfileImg}
           style={{
             width: responsiveWidth(50),
             height: responsiveWidth(50),
@@ -114,7 +153,7 @@ const Account = () => {
               fontSize: responsiveFontSize(3),
               fontWeight: '700',
             }}>
-            Johan Singh
+            {state}
           </Text>
         </View>
       </View>
@@ -156,7 +195,7 @@ const Account = () => {
             <TouchableOpacity
               style={styles.item_content}
               onPress={() => navigation.navigate('ProfileEdit')}>
-              <Text style={styles.item_text}>Edit Profile</Text>
+              <Text style={styles.item_text}>Profile</Text>
             </TouchableOpacity>
           </View>
 

@@ -15,6 +15,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {COLORS} from '../../constants/theme';
 
 const ProfileEdit = () => {
   const navigation = useNavigation();
@@ -77,13 +78,14 @@ const ProfileEdit = () => {
         style={{position: 'absolute'}}
         resizeMode="contain"
       />
+
       <View>
         <View style={styles.top}>
           <TouchableOpacity onPress={goBack}>
             <Iconic name="arrow-back" size={25} color={'white'} />
           </TouchableOpacity>
           <View style={styles.top_txt_container}>
-            <Text style={styles.top_txt}>Edit Profile</Text>
+            <Text style={styles.top_txt}>Profile</Text>
           </View>
         </View>
         <View style={styles.bottom_main}>
@@ -94,7 +96,7 @@ const ProfileEdit = () => {
               resizeMode="contain"
               style={styles.bottom_main_top_img}
             />
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={{
                 position: 'absolute',
                 bottom: responsiveHeight(0),
@@ -121,7 +123,7 @@ const ProfileEdit = () => {
                 }}>
                 <FontAwesome name="pencil" size={25} color={'#fff'} />
               </LinearGradient>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             {/* </View> */}
           </View>
           <View style={{padding: responsiveWidth(2)}}>
@@ -232,7 +234,9 @@ const styles = StyleSheet.create({
     width: responsiveWidth(45),
     height: responsiveWidth(45),
     borderRadius: responsiveWidth(22.5),
-    backgroundColor: 'gray',
+    borderWidth: 1,
+    borderColor: COLORS.secondary,
+    backgroundColor: COLORS.primary,
   },
   bottom_lable: {
     fontSize: responsiveFontSize(2),

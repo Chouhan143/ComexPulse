@@ -1,10 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ActivityIndicator,
-} from 'react-native';
+import {View, Text, TouchableOpacity, ActivityIndicator} from 'react-native';
 import Background from '../../constants/Background';
 import Btn from '../../constants/Btn';
 import {darkGreen} from '../../constants/ColorConstants';
@@ -30,11 +25,18 @@ const Login = () => {
   const navigation = useNavigation();
   const [email, setEmail] = useState('test1@gmail.com'); // State variable for email input
   const [password, setPassword] = useState('12345678');
+  const [fcm, setFcm] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
   const SignNavigation = () => {
     navigation.navigate('Signup');
   };
+
+  // get fcm token here
+
+  AsyncStorage.getItem('fcmToken').then(token => setFcm(token));
+
   // Animation code
   const animation = useSharedValue(0);
   const scale = useSharedValue(0);
@@ -55,6 +57,7 @@ const Login = () => {
     const payload = {
       email: email,
       password: password,
+      device_token: fcm,
     };
 
     try {
@@ -67,7 +70,14 @@ const Login = () => {
 
       if (result == true) {
         const token = response.data.token;
+        const userName = response.data.user_name;
+        const userProfileImageName = response.data.user_profile;
+        const userProfileImagePath = response.data.user_profile_image_path;
+        const userProfile = `${userProfileImagePath}${userProfileImageName}`;
+        console.log(userProfile);
         await AsyncStorage.setItem('accessToken', token);
+        await AsyncStorage.setItem('userName', userName);
+        await AsyncStorage.setItem('userProfile', userProfile);
         navigation.navigate('DrawerNavigator');
       } else {
         // Registration failed, set the error message

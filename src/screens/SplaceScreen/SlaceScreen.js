@@ -18,7 +18,7 @@ const SlaceScreen = () => {
     navigation.navigate('Login');
   };
   const signUpHandler = () => {
-    navigation.navigate('MobileRegistration');
+    navigation.navigate('EmailRegistration');
   };
 
   // const signUpHandler = () => {

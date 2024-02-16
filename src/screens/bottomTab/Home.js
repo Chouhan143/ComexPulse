@@ -5,6 +5,7 @@ import {
   Image,
   TouchableOpacity,
   FlatList,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {
@@ -23,6 +24,7 @@ import axios from 'axios';
 const Home = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(true);
   const StocksData = useSelector(state => state.coin.data);
   // const [data,setData]=useState('')
 
@@ -51,10 +53,10 @@ const Home = () => {
     if (!StocksData) {
       dispatch(fetchCoinData());
     }
-
     const interval = setInterval(() => {
       dispatch(fetchCoinData());
-    }, 10000); // 1000 milliseconds = 1 second
+    }, 1000); // 1000 milliseconds = 1 second
+    setIsLoading(false);
     return () => clearInterval(interval); // Cleanup function to clear the interval on unmount
   }, []);
 
@@ -139,29 +141,37 @@ const Home = () => {
 
   return (
     <View style={{flex: 1}}>
-      <View style={styles.topContiner}>
-        <Animatable.Text
-          animation="pulse"
-          easing="ease-out-cubic"
-          iterationCount="infinite"
-          style={styles.topContainerText}>
-          SkyCommodity
-        </Animatable.Text>
-        <TouchableOpacity onPress={() => navigation.navigate('Notification')}>
-          <Icon name="notifications" size={25} color="#fff" />
-          <View
-            style={{
-              width: responsiveWidth(3),
-              height: responsiveWidth(3),
-              backgroundColor: 'red',
-              borderRadius: responsiveWidth(1.5),
-              position: 'absolute',
-              right: responsiveWidth(0),
-              top: responsiveHeight(0),
-            }}></View>
-        </TouchableOpacity>
-      </View>
+      {/* Loader before data comming */}
+      {isLoading && (
+        <View style={styles.loaderContainer}>
+          <ActivityIndicator size="large" color="#3949ab" />
+        </View>
+      )}
 
+      {!isLoading && (
+        <View style={styles.topContiner}>
+          <Animatable.Text
+            animation="pulse"
+            easing="ease-out-cubic"
+            iterationCount="infinite"
+            style={styles.topContainerText}>
+            SkyCommodity
+          </Animatable.Text>
+          <TouchableOpacity onPress={() => navigation.navigate('Notification')}>
+            <Icon name="notifications" size={25} color="#fff" />
+            <View
+              style={{
+                width: responsiveWidth(3),
+                height: responsiveWidth(3),
+                backgroundColor: 'red',
+                borderRadius: responsiveWidth(1.5),
+                position: 'absolute',
+                right: responsiveWidth(0),
+                top: responsiveHeight(0),
+              }}></View>
+          </TouchableOpacity>
+        </View>
+      )}
       {/* Top Container*/}
       <View
         style={{
@@ -245,6 +255,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     flexDirection: 'row',
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   topContainerText: {
     fontSize: responsiveFontSize(2.5),
