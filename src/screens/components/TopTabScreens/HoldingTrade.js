@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   FlatList,
 } from 'react-native';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import Entypo from 'react-native-vector-icons/Entypo';
 
 import {
@@ -23,11 +23,23 @@ import * as Animatable from 'react-native-animatable';
 
 const HoldingTrade = () => {
   const dispatch = useDispatch();
-
+  const [refreshing, setRefreshing] = useState(false);
   useEffect(() => {
     // Dispatch the getLiveTrade action when the component mounts
     dispatch(getHoldingTrade());
   }, [dispatch]);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    try {
+      // Fetch updated data
+      await dispatch(getHoldingTrade());
+    } catch (error) {
+      console.error('Error refreshing data:', error);
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   const holdingTrade = useSelector(state => state.coin.holdingTradedata);
 
@@ -239,6 +251,8 @@ const HoldingTrade = () => {
                 ))
               }
               keyExtractor={item => item.id.toString()}
+              refreshing={refreshing}
+              onRefresh={onRefresh}
             />
           </View>
         ) : (
@@ -284,7 +298,7 @@ const styles = StyleSheet.create({
   },
   flatlistContainer: {
     width: responsiveWidth(90),
-    height: responsiveHeight(20 ),
+    height: responsiveHeight(20),
     backgroundColor: COLORS.lightGray,
     marginVertical: responsiveHeight(1),
     borderRadius: responsiveWidth(3),

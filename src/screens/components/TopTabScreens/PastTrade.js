@@ -33,8 +33,20 @@ const PastTrade = () => {
   const [target, setTarget] = React.useState('');
 
   const [isModalVisible, setModalVisible] = useState(false);
-
+  const [refreshing, setRefreshing] = useState(false);
   const PastTrade = useSelector(state => state.coin.pastTradedata);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    try {
+      // Fetch updated data
+      await dispatch(getPastTrade());
+    } catch (error) {
+      console.error('Error refreshing data:', error);
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   const openModal = item => {
     setSelectedItem(item);
@@ -50,7 +62,7 @@ const PastTrade = () => {
   useEffect(() => {
     // Dispatch the getLiveTrade action when the component mounts
     dispatch(getPastTrade());
-  }, [dispatch]);
+  }, []);
 
   const SquareOff = async () => {
     try {
@@ -387,6 +399,8 @@ const PastTrade = () => {
                 ))
               }
               keyExtractor={item => item.id.toString()}
+              refreshing={refreshing}
+              onRefresh={onRefresh}
             />
           </View>
         ) : (

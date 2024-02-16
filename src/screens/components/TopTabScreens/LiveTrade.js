@@ -32,10 +32,24 @@ const LiveTrade = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [los, setLos] = React.useState('');
   const [target, setTarget] = React.useState('');
-
+  const [refreshing, setRefreshing] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
 
   const LiveTrade = useSelector(state => state.coin.liveTradedata);
+
+  console.log('liveTrade here updated', LiveTrade);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    try {
+      // Fetch updated data
+      await dispatch(getLiveTrade());
+    } catch (error) {
+      console.error('Error refreshing data:', error);
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   const openModal = item => {
     setSelectedItem(item);
@@ -52,12 +66,12 @@ const LiveTrade = () => {
     // Dispatch the getLiveTrade action when the component mounts
     dispatch(getLiveTrade());
     dispatch(updateLiveTrade());
-  }, [dispatch]);
+  }, []);
 
   const SquareOff = async () => {
     try {
       const tradeId = selectedItem.id;
-      console.log(tradeId, 'get tradeId');
+      // console.log(tradeId, 'get tradeId');
       const access_token = await AsyncStorage.getItem('accessToken');
       console.log(access_token);
       const headers = {
@@ -99,7 +113,10 @@ const LiveTrade = () => {
           },
           {
             text: 'OK',
-            onPress: SquareOff, // Remove the parentheses here to pass the function reference
+            onPress: () => {
+              onSaveEdit(); // Call onSaveEdit first
+              SquareOff(); // Call SquareOff after onSaveEdit completes
+            },
           },
         ],
         {cancelable: false},
@@ -425,6 +442,8 @@ const LiveTrade = () => {
                 ))
               }
               keyExtractor={item => item.id.toString()}
+              refreshing={refreshing}
+              onRefresh={onRefresh}
             />
           </View>
         ) : (

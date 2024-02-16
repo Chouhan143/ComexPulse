@@ -16,6 +16,31 @@ export const fetchCoinData = createAsyncThunk('fetchCoin', async () => {
   }
 });
 
+// get Pending trade api here
+
+export const getPrndingTrade = createAsyncThunk('PendingTrade', async () => {
+  try {
+    const token = await AsyncStorage.getItem('accessToken');
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const response = await axios.get(
+      'https://app.srninfotech.com/bullsPanel/api/pending-trades',
+      config,
+    );
+    const Data = response.data.Data; // <-- Corrected property name
+    // console.log('livekkk', Data);
+    return Data;
+  } catch (error) {
+    console.log('error', error);
+  }
+});
+
+// get Live trade here
+
 export const getLiveTrade = createAsyncThunk('LiveTrade', async () => {
   try {
     const token = await AsyncStorage.getItem('accessToken');
@@ -156,6 +181,7 @@ export const coinSlice = createSlice({
     liveTradedata: [],
     pastTradedata: [],
     holdingTradedata: [],
+    pendingTradedata: [],
     userBalance: null,
     isLoggedIn: false,
   },
@@ -176,6 +202,10 @@ export const coinSlice = createSlice({
 
     setLiveTradeData: (state, action) => {
       state.liveTradedata = action.payload;
+    },
+
+    setPendingTradeData: (state, action) => {
+      state.pendingTradedata = action.payload;
     },
 
     setHoldingTradeData: (state, action) => {
@@ -235,6 +265,12 @@ export const coinSlice = createSlice({
 
     builder.addCase(getLiveTrade.fulfilled, (state, action) => {
       state.liveTradedata = action.payload;
+    });
+
+    //  pending Trade data fetch here
+
+    builder.addCase(getPrndingTrade.fulfilled, (state, action) => {
+      state.pendingTradedata = action.payload;
     });
 
     // paast trade data fetch here
