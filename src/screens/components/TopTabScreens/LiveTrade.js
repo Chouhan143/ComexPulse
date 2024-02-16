@@ -102,26 +102,26 @@ const LiveTrade = () => {
   };
 
   const squreOffhandle = () => {
-    if (selectedItem) {
-      Alert.alert(
-        'Confirm',
-        'Are you sure you want to Square Off?',
-        [
-          {
-            text: 'Cancel',
-            style: 'cancel',
+    // if (selectedItem) {
+    Alert.alert(
+      'Confirm',
+      'Are you sure you want to Square Off?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'OK',
+          onPress: () => {
+            onSaveEdit(); // Call onSaveEdit first
+            SquareOff(); // Call SquareOff after onSaveEdit completes
           },
-          {
-            text: 'OK',
-            onPress: () => {
-              onSaveEdit(); // Call onSaveEdit first
-              SquareOff(); // Call SquareOff after onSaveEdit completes
-            },
-          },
-        ],
-        {cancelable: false},
-      );
-    }
+        },
+      ],
+      {cancelable: false},
+    );
+    // }
   };
 
   // const toggleModal = tradeId => {
@@ -398,14 +398,14 @@ const LiveTrade = () => {
               />
               <Text style={styles.editBtnText}>SqureOff</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.editBtn}>
+            {/* <TouchableOpacity style={styles.editBtn}>
               <Entypo
                 name={'sweden'}
                 size={responsiveFontSize(1.8)}
                 color={'#000'}
               />
               <Text style={styles.editBtnText}>Holding</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
         </View>
       </Animatable.View>

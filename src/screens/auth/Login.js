@@ -23,8 +23,8 @@ import {COLORS} from '../../constants/theme';
 import AnimatedLoginSignUpBtn from '../components/AnimatedLoginSignUpBtn';
 const Login = () => {
   const navigation = useNavigation();
-  const [email, setEmail] = useState('test1@gmail.com'); // State variable for email input
-  const [password, setPassword] = useState('12345678');
+  const [email, setEmail] = useState(''); // State variable for email input
+  const [password, setPassword] = useState('');
   const [fcm, setFcm] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);

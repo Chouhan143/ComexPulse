@@ -18,6 +18,7 @@ import Icon3 from 'react-native-vector-icons/AntDesign';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Divider, Switch} from 'react-native-paper';
 import axios from 'axios';
+import {getLiveTrade} from '../../redux/market/coinSlice';
 import {
   responsiveFontSize,
   responsiveHeight,
@@ -39,6 +40,7 @@ import Toast from 'react-native-toast-message';
 const GraphUI = () => {
   const navigation = useNavigation();
   const route = useRoute();
+
   const selectedItem = route.params?.selectedItem;
   const counter = useSelector(state => state.coin.counter);
   const [error, setError] = useState('');
@@ -272,7 +274,7 @@ const GraphUI = () => {
         target: target,
         stop_loss: stopLoss,
         trade_type: 'intraday',
-        market_price: 'SET_TRADE', // Include 'market_price' only for Market order
+        market_price: orderType === 'Market' ? 'SET_TRADE' : '', // Include 'market_price' only for Market order
         limit: orderType === 'Limit' ? buyingPrice : selectedItem.price, // Include 'limit' only for Limit order
       };
 
@@ -295,6 +297,7 @@ const GraphUI = () => {
       console.log('res', res.data.response);
       // showModal();
       if (res.data.response === true) {
+        dispatch(getLiveTrade());
         showModal();
       } else {
         console.log('something wrong');
