@@ -81,36 +81,36 @@ const Deposit = () => {
   };
 
   const DepositApi = async () => {
-    // const payload = new FormData();
-    // payload.append('deposit_amount', amount);
-    // if (doc) {
-    //   // If 'doc' (imageData) is available, append it to the FormData
-    //   payload.append('screenshot_deposit_amount', {
-    //     uri: doc.uri,
-    //     type: doc.type,
-    //     name: doc.name || 'image.jpg',
-    //   });
-    // }
-    // try {
-    //   const access_token = await AsyncStorage.getItem('accessToken');
-    //   const headers = {
-    //     Authorization: `Bearer ${access_token}`, // Replace with your authorization token
-    //   };
-    //   const response = await axios.post(
-    //     'https://app.srninfotech.com/bullsPanel/api/deposit',
-    //     payload,
-    //     {headers},
-    //   );
-    //   const result = response.data.Status;
-    //   if (result === 200) {
-    //     showModal();
-    //   }
-    //   console.log('res', response.data);
-    // } catch (error) {
-    //   // const errorCatch = error.response;
-    //   // setError(errorCatch);
-    //   console.log('error deposit', error);
-    // }
+    const payload = new FormData();
+    payload.append('deposit_amount', amount);
+    if (doc) {
+      // If 'doc' (imageData) is available, append it to the FormData
+      payload.append('screenshot_deposit_amount', {
+        uri: doc.uri,
+        type: doc.type,
+        name: doc.name || 'image.jpg',
+      });
+    }
+    try {
+      const access_token = await AsyncStorage.getItem('accessToken');
+      const headers = {
+        Authorization: `Bearer ${access_token}`, // Replace with your authorization token
+      };
+      const response = await axios.post(
+        'https://app.srninfotech.com/bullsPanel/api/deposit',
+        payload,
+        {headers},
+      );
+      const result = response.data.Status;
+      if (result === 200) {
+        showModal();
+      }
+      console.log('res', response.data);
+    } catch (error) {
+      const errorCatch = error.response;
+      // setError(errorCatch);
+      console.log('error deposit', error);
+    }
   };
 
   useEffect(() => {
@@ -245,7 +245,7 @@ const Deposit = () => {
               </Text>
               <Text
                 style={{
-                  fontSize: responsiveFontSize(1.6),
+                  fontSize: responsiveFontSize(2),
                   color: COLORS.textColorBlue,
                   fontWeight: '700',
                 }}>
@@ -431,7 +431,7 @@ const Deposit = () => {
               bottom: responsiveHeight(2), // Adjust the bottom position as needed
               alignSelf: 'center',
             }}
-            onPress={handlePresentModalPress}>
+            onPress={DepositApi}>
             <LinearGradient
               colors={['#7F7FD5', '#91EAE4']}
               start={{x: 0, y: 1}} // Start point of the gradient

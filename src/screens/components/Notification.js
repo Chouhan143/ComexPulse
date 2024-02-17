@@ -55,7 +55,9 @@ const Notification = () => {
             resizeMode="contain"
             style={{width: responsiveWidth(8)}}
           />
-          <Text style={{paddingLeft: responsiveWidth(2)}}>{item.massage}</Text>
+          <Text style={{paddingLeft: responsiveWidth(2), color: '#000'}}>
+            {item.massage}
+          </Text>
         </View>
       </View>
     );

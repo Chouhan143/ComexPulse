@@ -67,7 +67,7 @@ const Help_Support = () => {
                   padding: responsiveWidth(3.5),
                   marginBottom: responsiveHeight(3),
                   marginTop: responsiveHeight(1),
-                  backgroundColor: '#ffe4e1',
+                  backgroundColor: '#FBFAF2',
                   shadowColor: '#000',
                   elevation: 5,
                   shadowOffset: {
@@ -93,7 +93,7 @@ const Help_Support = () => {
                   padding: responsiveWidth(3.5),
                   marginTop: responsiveHeight(1),
                   marginBottom: responsiveHeight(3),
-                  backgroundColor: '#ffe4e1',
+                  backgroundColor: '#FBFAF2',
                   shadowColor: '#000',
                   elevation: 5,
                   shadowOffset: {
@@ -117,7 +117,7 @@ const Help_Support = () => {
                   height: responsiveHeight(15),
                   marginTop: responsiveHeight(1),
                   marginBottom: responsiveHeight(3),
-                  backgroundColor: '#ffe4e1',
+                  backgroundColor: '#FBFAF2',
                   shadowColor: '#000',
                   elevation: 5,
                   shadowOffset: {

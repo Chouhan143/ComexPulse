@@ -169,13 +169,13 @@ const GraphUI = () => {
   let snapPoints = [];
 
   if (isSwitchOn && isSwitchOnTarget) {
-    snapPoints.push('79%');
+    snapPoints.push('82%');
   } else if (isSwitchOn) {
-    snapPoints.push('74%');
+    snapPoints.push('75%');
   }
 
   if (snapPoints.length === 0) {
-    snapPoints.push('68%'); //  '68%'  default value
+    snapPoints.push('70%'); //  '68%'  default value
   }
 
   const handleBuyPressModal = () => {

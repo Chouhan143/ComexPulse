@@ -12,7 +12,7 @@ import {COLORS} from '../../constants/theme';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const ForgotPassword = ({navigation}) => {
-  const [email, setEmail] = useState('test1@gmail.com');
+  const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
