@@ -286,7 +286,7 @@ const PastTrade = () => {
                   fontWeight: '500',
                   fontSize: responsiveFontSize(1.8),
                 }}>
-                LTP
+                Closed
               </Text>
               <Text
                 style={{
@@ -294,7 +294,7 @@ const PastTrade = () => {
                   fontWeight: '500',
                   fontSize: responsiveFontSize(1.8),
                 }}>
-                {item.limit}
+                {item.square_off_at}
               </Text>
             </View>
           </View>

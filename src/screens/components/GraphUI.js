@@ -40,7 +40,6 @@ import Toast from 'react-native-toast-message';
 const GraphUI = () => {
   const navigation = useNavigation();
   const route = useRoute();
-
   const selectedItem = route.params?.selectedItem;
   const counter = useSelector(state => state.coin.counter);
   const [error, setError] = useState('');

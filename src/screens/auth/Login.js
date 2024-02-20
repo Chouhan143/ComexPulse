@@ -21,6 +21,8 @@ import Animated, {
 } from 'react-native-reanimated';
 import {COLORS} from '../../constants/theme';
 import AnimatedLoginSignUpBtn from '../components/AnimatedLoginSignUpBtn';
+import {useFocusEffect} from '@react-navigation/native';
+import {BackHandler} from 'react-native';
 const Login = () => {
   const navigation = useNavigation();
   const [email, setEmail] = useState(''); // State variable for email input
@@ -28,7 +30,7 @@ const Login = () => {
   const [fcm, setFcm] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-
+  const [token, setToken] = useState('StaticDumyToken');
   const SignNavigation = () => {
     navigation.navigate('Signup');
   };
@@ -91,6 +93,26 @@ const Login = () => {
       setLoading(false);
     }
   };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        if (token) {
+          BackHandler.exitApp();
+          return true;
+        } else {
+          return false;
+        }
+      };
+
+      const subscription = BackHandler.addEventListener(
+        'hardwareBackPress',
+        onBackPress,
+      );
+
+      return () => subscription.remove();
+    }, [token]),
+  );
 
   return (
     <Background>

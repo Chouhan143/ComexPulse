@@ -25,6 +25,7 @@ export default function App() {
   const getDeviceToken = async () => {
     let fcmToken = await messaging().getToken();
     await AsyncStorage.setItem('fcmToken', fcmToken);
+    console.log(fcmToken);
   };
 
   useEffect(() => {

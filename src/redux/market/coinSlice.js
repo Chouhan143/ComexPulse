@@ -8,8 +8,17 @@ export const fetchCoinData = createAsyncThunk('fetchCoin', async () => {
     const response = await axios.get(
       'https://scripts.bulleyetrade.com/api/getMarket',
     );
-    const result = response.data.Data;
-    return result;
+    // const result = response.data.Data;
+    // return result;
+    // Check if the response has a success status code
+    if (response.status === 200) {
+      const result = response.data.Data;
+      return result;
+    } else {
+      // Handle non-200 status codes (e.g., 429 - rate limit exceeded)
+      console.log('Unexpected status code:', response.status);
+      return rejectWithValue('Unexpected status code');
+    }
   } catch (error) {
     console.log('error aaya', error);
     throw error;
@@ -49,7 +58,6 @@ export const getLiveTrade = createAsyncThunk('LiveTrade', async () => {
         Authorization: `Bearer ${token}`,
       },
     };
-
     const response = await axios.get(
       'https://app.srninfotech.com/bullsPanel/api/live-trades',
       config,
@@ -184,6 +192,7 @@ export const coinSlice = createSlice({
     pendingTradedata: [],
     userBalance: null,
     isLoggedIn: false,
+    storedData: null,
   },
   reducers: {
     setIsTradeModalVisible: (state, action) => {
@@ -253,7 +262,10 @@ export const coinSlice = createSlice({
     });
     builder.addCase(fetchCoinData.rejected, (state, action) => {
       state.isLoader = false;
-      state.isError = true;
+      state.isError = action.payload; // This could be 'Unexpected status code'
+      state.storedData = state.data; // Save the current data to storedData
+      state.data = null; // Clear current data to prevent displaying it
+      // state.isError = true;
     });
 
     // watchlist added app refresh data come

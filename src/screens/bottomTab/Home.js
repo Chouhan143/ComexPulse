@@ -20,17 +20,42 @@ import {fetchCoinData} from '../../redux/market/coinSlice';
 import {COLORS} from '../../constants/theme';
 import Icon from 'react-native-vector-icons/Ionicons';
 import * as Animatable from 'react-native-animatable';
+import {useFocusEffect} from '@react-navigation/native';
+import {BackHandler} from 'react-native';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const Home = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(true);
   const StocksData = useSelector(state => state.coin.data);
-  const [price, setPrice] = useState('');
-  const [isBlinking, setIsBlinking] = useState(false);
-  const [blinkMap, setBlinkMap] = useState({});
-  const [blinkedItemId, setBlinkedItemId] = useState(null);
-  const [prevPrices, setPrevPrices] = useState({}); // Add this line
+  const isLoader = useSelector(state => state.coin.isLoader);
+  const [prevPrices, setPrevPrices] = useState({});
+  const [token, setToken] = useState('dgfdgdgh');
+
+  const getToken = async () => {
+    token = await AsyncStorage.getItem('accessToken');
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        if (getToken) {
+          BackHandler.exitApp();
+          return true;
+        } else {
+          return false;
+        }
+      };
+
+      const subscription = BackHandler.addEventListener(
+        'hardwareBackPress',
+        onBackPress,
+      );
+
+      return () => subscription.remove();
+    }, [token]),
+  );
 
   // Data fetch from the redux
 
@@ -49,6 +74,8 @@ const Home = () => {
     return null; // or return a loading indicator
   }
 
+  // const prices = StocksData.map(item => item.price);
+  // console.warn(prices);
   // Breack data ui
 
   const Part1 = StocksData.slice(0, StocksData.length / 4);
@@ -57,6 +84,7 @@ const Home = () => {
     StocksData.length / 2,
     (3 * StocksData.length) / 4,
   );
+
   const part4 = StocksData.slice((3 * StocksData.length) / 4);
 
   // stocksApiDataUi
@@ -65,33 +93,12 @@ const Home = () => {
     navigation.navigate('GraphUI', {selectedItem: item});
   };
 
-  const startBlinking = itemId => {
-    setBlinkedItemId(itemId);
-    setIsBlinking(false);
-    // Set a timeout to stop the blinking after a certain duration (e.g., 1000 milliseconds)
-    setTimeout(() => {
-      setBlinkedItemId(null);
-    }, 5000);
-    setIsBlinking(true);
-  };
-
   const stocksApiDataUi = ({item}) => {
     // const isPriceChanged = prevPrices[item.id] !== item.price;
-    const isPriceChanged = item.price > prevPrices[item.id];
-    console.log('isPriceChanged', isPriceChanged);
 
-    if (isPriceChanged) {
-      startBlinking(item.id);
-      // Update the previous price in the state
-      setPrevPrices(prevPrices => ({
-        ...prevPrices,
-        [item.id]: item.price,
-      }));
-    }
-    const isPriceIncreased = item.price > blinkMap[item.id]?.prevPrice;
-    console.log('in', isPriceIncreased);
-    const isPriceDecreased = item.price < blinkMap[item.id]?.prevPrice;
-    console.log('dec', isPriceDecreased);
+    // useEffect(() => {
+    //   setPrevPrices((prev) => ({ ...prev, [item.id]: item.price }));
+    // }, [item.id, item.price]);
 
     return (
       <TouchableOpacity
@@ -131,11 +138,7 @@ const Home = () => {
               color: COLORS.textColor,
               fontSize: responsiveFontSize(1.4),
               fontWeight: '500',
-              backgroundColor: isBlinking
-                ? isPriceIncreased
-                  ? 'green'
-                  : 'red'
-                : '#3949ab',
+              // backgroundColor: 'green',
             }}>
             {item.price}
           </Text>
