@@ -53,10 +53,13 @@ const GraphUI = () => {
   const [isSwitchOnTarget, setIsSwitchOnTarget] = useState(false);
   const onToggleSwitchTarget = () => setIsSwitchOnTarget(!isSwitchOnTarget);
   const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
+  const [maxLot, setMaxLot] = useState('1');
   const [stopLoss, setStopLoss] = useState('0');
   const [target, setTarget] = useState('0');
   const [orderType, setOrderType] = useState('Market'); // Initially, set to 'Market'
   const [buyingPrice, setBuyingPrice] = useState(selectedItem.price);
+
+  const [status, setStatus] = useState('');
   const containerStyle = {
     backgroundColor: '#fff',
     width: responsiveWidth(90),
@@ -71,6 +74,11 @@ const GraphUI = () => {
   };
 
   const tradeUiNavigate = () => {
+    if (status === 0) {
+      navigation.navigate('Pending');
+    } else {
+      navigation.navigate('LiveTrade');
+    }
     hideModal();
     handleCloseModal();
   };
@@ -169,13 +177,13 @@ const GraphUI = () => {
   let snapPoints = [];
 
   if (isSwitchOn && isSwitchOnTarget) {
-    snapPoints.push('82%');
+    snapPoints.push('90%');
   } else if (isSwitchOn) {
-    snapPoints.push('75%');
+    snapPoints.push('85%');
   }
 
   if (snapPoints.length === 0) {
-    snapPoints.push('70%'); //  '68%'  default value
+    snapPoints.push('80%'); //  '68%'  default value
   }
 
   const handleBuyPressModal = () => {
@@ -270,7 +278,7 @@ const GraphUI = () => {
 
       const payload = {
         select_asset: selectedItem.trade_name,
-        max_lot: counter,
+        max_lot: maxLot,
         target: target,
         stop_loss: stopLoss,
         trade_type: 'intraday',
@@ -294,13 +302,13 @@ const GraphUI = () => {
         payload,
         config,
       );
-      console.log('res', res.data.response);
+      console.log('res', res.data);
+      setStatus(res.data.is_pending);
+
       // showModal();
       if (res.data.response === true) {
         dispatch(getLiveTrade());
         showModal();
-      } else {
-        console.log('something wrong');
       }
     } catch (error) {
       // const AllErrors = error.response.data.errors.limit;
@@ -549,7 +557,7 @@ const GraphUI = () => {
               }}>
               {/* Content of your bottom sheet */}
               <View style={{flex: 1}}>
-                <View style={{flex: 1}}></View>
+                {/* <View style={{flex: 1}}></View> */}
                 <View style={styles.topContentBottomsheet}>
                   <View>
                     <Text
@@ -705,17 +713,44 @@ const GraphUI = () => {
                   {/* ddfd */}
 
                   <View
-                    style={{justifyContent: 'center', alignItems: 'center'}}>
-                    <Text
-                      style={{
-                        color: '#000',
-                        fontSize: responsiveFontSize(1.8),
-                      }}>
-                      Max Lot
-                    </Text>
-                  </View>
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      marginHorizontal: responsiveWidth(2),
+                      marginVertical: responsiveHeight(1),
+                    }}>
+                    <View>
+                      <Text
+                        style={{
+                          color: '#000',
+                          fontSize: responsiveFontSize(2),
+                          fontWeight: '500',
+                        }}>
+                        Max Lot
+                      </Text>
+                    </View>
 
-                  <View
+                    <TextInput
+                      value={maxLot} // Convert the counter value to a string before passing it to the text input
+                      onChangeText={text => setMaxLot(text)} // Parse the value as an integer before passing it to the handleInputChange functionp
+                      keyboardType="numeric"
+                      maxLength={7}
+                      placeholderTextColor={'#000'}
+                      style={{
+                        fontSize: responsiveFontSize(2.5),
+                        color: '#000',
+                        backgroundColor: COLORS.lightGray,
+                        width: responsiveWidth(65),
+                        alignSelf: 'center',
+                        marginLeft: responsiveWidth(5),
+                        borderWidth: 1,
+                        borderColor: COLORS.dimgray,
+                        borderRadius: responsiveWidth(3),
+                        textAlign: 'center',
+                      }}
+                    />
+                  </View>
+                  {/* <View
                     style={{
                       justifyContent: 'space-between',
                       alignItems: 'center',
@@ -762,7 +797,8 @@ const GraphUI = () => {
                       </TouchableOpacity>
                     </View>
                     {/* <Text>{selectedItem ? selectedItem.price : ''} </Text> */}
-                  </View>
+                  {/* </View>  */}
+                  {/* */}
                   <Divider
                     style={{borderColor: `rgba(0,128,0,0.3)`, borderWidth: 1}}
                   />

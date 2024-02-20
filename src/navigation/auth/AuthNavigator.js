@@ -103,7 +103,7 @@ function AuthNavigator() {
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         headerMode: 'float',
       }}>
-      {/* {isLoggedIn ? ( */}
+      {/* {!isLoggedIn ? ( */}
       <>
         <Stack.Screen
           name="DrawerNavigator"

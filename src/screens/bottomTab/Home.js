@@ -7,7 +7,7 @@ import {
   FlatList,
   ActivityIndicator,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   responsiveFontSize,
   responsiveHeight,
@@ -26,26 +26,11 @@ const Home = () => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(true);
   const StocksData = useSelector(state => state.coin.data);
-  // const [data,setData]=useState('')
-
-  //  const commodityData =  async () => {
-  //     try {
-  //       const response = await axios.get(
-  //         'https://scripts.bulleyetrade.com/api/getMarket',
-  //       );
-  //       const result = response.data.Data;
-  //       setData(result)
-  //       console.log("test api",result);
-
-  //     } catch (error) {
-  //       console.log('error test Api', error);
-  //       throw error;
-  //     }
-  //   };
-
-  // useEffect(()=>{
-  //   commodityData();
-  // },[])
+  const [price, setPrice] = useState('');
+  const [isBlinking, setIsBlinking] = useState(false);
+  const [blinkMap, setBlinkMap] = useState({});
+  const [blinkedItemId, setBlinkedItemId] = useState(null);
+  const [prevPrices, setPrevPrices] = useState({}); // Add this line
 
   // Data fetch from the redux
 
@@ -55,7 +40,7 @@ const Home = () => {
     }
     const interval = setInterval(() => {
       dispatch(fetchCoinData());
-    }, 1000); // 1000 milliseconds = 1 second
+    }, 5000); // 1000 milliseconds = 1 second
     setIsLoading(false);
     return () => clearInterval(interval); // Cleanup function to clear the interval on unmount
   }, []);
@@ -74,18 +59,40 @@ const Home = () => {
   );
   const part4 = StocksData.slice((3 * StocksData.length) / 4);
 
-  // const Part1 = data.slice(0,data.length/4);
-  // const part2 = data.slice(data.length / 4, data.length / 2);
-  // const part3 = data.slice(data.length / 2, (3 * data.length) / 4);
-  // const part4 = data.slice((3 * StocksData.length) / 4);
-
   // stocksApiDataUi
 
   const GraphUi = item => {
     navigation.navigate('GraphUI', {selectedItem: item});
   };
 
+  const startBlinking = itemId => {
+    setBlinkedItemId(itemId);
+    setIsBlinking(false);
+    // Set a timeout to stop the blinking after a certain duration (e.g., 1000 milliseconds)
+    setTimeout(() => {
+      setBlinkedItemId(null);
+    }, 5000);
+    setIsBlinking(true);
+  };
+
   const stocksApiDataUi = ({item}) => {
+    // const isPriceChanged = prevPrices[item.id] !== item.price;
+    const isPriceChanged = item.price > prevPrices[item.id];
+    console.log('isPriceChanged', isPriceChanged);
+
+    if (isPriceChanged) {
+      startBlinking(item.id);
+      // Update the previous price in the state
+      setPrevPrices(prevPrices => ({
+        ...prevPrices,
+        [item.id]: item.price,
+      }));
+    }
+    const isPriceIncreased = item.price > blinkMap[item.id]?.prevPrice;
+    console.log('in', isPriceIncreased);
+    const isPriceDecreased = item.price < blinkMap[item.id]?.prevPrice;
+    console.log('dec', isPriceDecreased);
+
     return (
       <TouchableOpacity
         style={[styles.container, styles.searchCommodityBox]}
@@ -124,6 +131,11 @@ const Home = () => {
               color: COLORS.textColor,
               fontSize: responsiveFontSize(1.4),
               fontWeight: '500',
+              backgroundColor: isBlinking
+                ? isPriceIncreased
+                  ? 'green'
+                  : 'red'
+                : '#3949ab',
             }}>
             {item.price}
           </Text>
