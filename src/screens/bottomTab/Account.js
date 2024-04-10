@@ -66,7 +66,7 @@ const Account = () => {
       };
 
       const res = await axios.get(
-        'https://app.srninfotech.com/bullsPanel/api/profile-details',
+        'https://skycommodity.in/bullsPanel/api/profile-details',
         config,
       );
 
@@ -76,7 +76,8 @@ const Account = () => {
       setState(fullName);
 
       setProfileImg(
-        getData.profile_picture || require('../../../assets/images/user.jpg'),
+        getData.profile_picture ||
+          require('../../../assets/images/userImg.png'),
       );
     } catch (error) {
       console.log('error', error);
@@ -130,15 +131,15 @@ const Account = () => {
         <Image
           source={ProfileImg}
           style={{
-            width: responsiveWidth(50),
-            height: responsiveWidth(50),
-            borderRadius: responsiveWidth(25),
-            backgroundColor: 'green',
+            width: responsiveWidth(30),
+            height: responsiveWidth(30),
+            borderRadius: responsiveWidth(15),
+            backgroundColor: 'white',
             justifyContent: 'center',
             alignItems: 'center',
             display: 'flex',
             alignSelf: 'center',
-            marginTop: responsiveHeight(8),
+            marginTop: responsiveHeight(12),
           }}
         />
         <View
@@ -241,7 +242,7 @@ const Account = () => {
             bold
           />
 
-          <View style={styles.item}>
+          {/* <View style={styles.item}>
             <TouchableOpacity
               style={styles.item_icon}
               onPress={() => navigation.navigate('Help_Support')}>
@@ -252,7 +253,7 @@ const Account = () => {
               onPress={() => navigation.navigate('Help_Support')}>
               <Text style={styles.item_text}>Help & Support</Text>
             </TouchableOpacity>
-          </View>
+          </View> */}
           <Divider
             style={{height: 0.5, backgroundColor: 'gray'}}
             horizontalInset={16}

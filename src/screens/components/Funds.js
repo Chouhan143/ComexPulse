@@ -46,7 +46,6 @@ const Funds = () => {
   const [userFund, setUserFund] = useState('');
   const [depositResponse, setDepositeResponse] = useState('');
   const [withdrawResponse, setWithdrawResponse] = useState('');
-
   const [transactionData, setTransactionData] = useState([]);
 
   const StocksData = useSelector(state => state.coin.data);
@@ -129,7 +128,7 @@ const Funds = () => {
       };
 
       const response = await axios.get(
-        'https://app.srninfotech.com/bullsPanel/api/deposits-funds-history',
+        'https://skycommodity.in/bullsPanel/api/deposits-funds-history',
         {headers},
       );
 
@@ -147,7 +146,7 @@ const Funds = () => {
       };
 
       const response = await axios.get(
-        'https://app.srninfotech.com/bullsPanel/api/withdrawl-funds-history',
+        'https://skycommodity.in/bullsPanel/api/withdrawl-funds-history',
         {headers},
       );
       setTransactionData(response.data.Deposits);
@@ -230,8 +229,8 @@ const Funds = () => {
 
   // flatlist ui list render
 
-  const renderUi = ({item, index}) => {
-    const status = item.withdrawl_status;
+  const renderDepositUi = ({item, index}) => {
+    const status = item.deposit_status;
     const date = item.updated_at;
     const newdate = new Date(date);
     const formatedDate = newdate.toLocaleDateString();
@@ -264,6 +263,52 @@ const Funds = () => {
         </View>
       </View>
     );
+  };
+
+  const renderWithdrawUi = ({item, index}) => {
+    const status = item.withdrawl_status;
+    // console.log('status', item);
+    const date = item.updated_at;
+    const newdate = new Date(date);
+    const formatedDate = newdate.toLocaleDateString();
+
+    return (
+      <View style={{flex: 1}}>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            marginHorizontal: responsiveWidth(3),
+            alignItems: 'center',
+            marginTop: responsiveHeight(2),
+            marginBottom: responsiveHeight(2),
+          }}>
+          <View>
+            <Text style={{color: COLORS.dimgray}}>{index + 1}</Text>
+          </View>
+          <View>
+            <Text style={{color: COLORS.dimgray}}>{item.amount}</Text>
+          </View>
+          <View>
+            <Text style={{color: COLORS.dimgray}}>{formatedDate}</Text>
+          </View>
+          <View>
+            <Text style={{color: status == 0 ? 'orange' : 'green'}}>
+              {status == 0 ? 'Pending' : 'Success'}
+            </Text>
+          </View>
+        </View>
+      </View>
+    );
+  };
+
+  const renderUi = ({item, index}) => {
+    // Render UI based on selected tab
+    if (selectedTab === 'deposit') {
+      return renderDepositUi({item, index});
+    } else {
+      return renderWithdrawUi({item, index});
+    }
   };
 
   return (

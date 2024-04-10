@@ -23,10 +23,12 @@ import {COLORS} from '../../constants/theme';
 import AnimatedLoginSignUpBtn from '../components/AnimatedLoginSignUpBtn';
 import {useFocusEffect} from '@react-navigation/native';
 import {BackHandler} from 'react-native';
+import Toast from 'react-native-toast-message';
 const Login = () => {
   const navigation = useNavigation();
   const [email, setEmail] = useState(''); // State variable for email input
   const [password, setPassword] = useState('');
+
   const [fcm, setFcm] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -64,13 +66,13 @@ const Login = () => {
 
     try {
       const response = await axios.post(
-        'https://app.srninfotech.com/bullsPanel/api/login',
+        'https://skycommodity.in/bullsPanel/api/login',
         payload,
       );
       const result = response.data.result;
       console.log('res', response.data);
 
-      if (result == true) {
+      if (result === true) {
         const token = response.data.token;
         const userName = response.data.user_name;
         const userProfileImageName = response.data.user_profile;
@@ -81,14 +83,53 @@ const Login = () => {
         await AsyncStorage.setItem('userName', userName);
         await AsyncStorage.setItem('userProfile', userProfile);
         navigation.navigate('DrawerNavigator');
+        Toast.show({
+          type: 'success',
+          swipeable: true,
+          text1: 'Welcome to SkyCommodity',
+          // text2: 'This is some something 👋',
+        });
+        setLoading(false);
       } else {
         // Registration failed, set the error message
         setError(response.data.message || 'Registration failed');
       }
     } catch (error) {
-      // const errorCatch = error.response;
-      // setError(errorCatch);
-      console.log('error login', error);
+      const errorMsg = error.response.data.message;
+      const errorMsg2 = error.response.data.errors;
+      const errorArr = errorMsg2;
+      const check1 = error.response.data.status;
+      if (check1 === 401) {
+        Toast.show({
+          type: 'error',
+          swipeable: true,
+          text1: error.response.data.message,
+          text2: 'Please Enter valid Credentials',
+        });
+      } else if (check1 === 422 && errorArr && errorArr.email) {
+        // Handle email validation error
+        Toast.show({
+          type: 'error',
+          swipeable: true,
+          text1: 'Email Validation Failed',
+          text2: errorArr.email[0],
+        });
+      } else if (check1 === 422 && errorArr && errorArr.password) {
+        // Handle password validation error
+        Toast.show({
+          type: 'error',
+          text1: 'Password Validation Failed',
+          text2: errorArr.password[0],
+        });
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: errorMsg,
+          text2: errorMsg2,
+        });
+      }
+
+      console.log('error login', error.response.data);
     } finally {
       setLoading(false);
     }

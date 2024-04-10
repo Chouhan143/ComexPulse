@@ -44,7 +44,7 @@ const ProfileEdit = () => {
       };
 
       const res = await axios.get(
-        'https://app.srninfotech.com/bullsPanel/api/profile-details',
+        'https://skycommodity.in/bullsPanel/api/profile-details',
         config,
       );
 
@@ -58,7 +58,8 @@ const ProfileEdit = () => {
       });
 
       setProfileImg(
-        getData.profile_picture || require('../../../assets/images/user.jpg'),
+        getData.profile_picture ||
+          require('../../../assets/images/userImg.png'),
       );
     } catch (error) {
       console.log('error', error.response);
@@ -137,6 +138,8 @@ const ProfileEdit = () => {
                     shadowColor: 'black',
                     elevation: 5,
                     backgroundColor: 'white',
+                    color: '#000',
+                    fontSize: responsiveFontSize(2),
                   }}
                   placeholder="First Name"
                   value={state.fName} // Bind the value from the state
@@ -252,6 +255,8 @@ const styles = StyleSheet.create({
     shadowColor: 'black',
     elevation: 5,
     backgroundColor: 'white',
+    color: '#000',
+    fontSize: responsiveFontSize(2),
   },
   button_container: {
     marginTop: responsiveWidth(14),

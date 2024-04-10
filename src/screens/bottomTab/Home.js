@@ -16,7 +16,7 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import Carousel from '../components/Carousel';
 import {useSelector, useDispatch} from 'react-redux';
-import {fetchCoinData} from '../../redux/market/coinSlice';
+import {fetchCoinData, DataUpdateBlink} from '../../redux/market/coinSlice';
 import {COLORS} from '../../constants/theme';
 import Icon from 'react-native-vector-icons/Ionicons';
 import * as Animatable from 'react-native-animatable';
@@ -24,21 +24,66 @@ import {useFocusEffect} from '@react-navigation/native';
 import {BackHandler} from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
 const Home = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(true);
   const StocksData = useSelector(state => state.coin.data);
+  // console.log('stocks data>>>>', StocksData);
   const isLoader = useSelector(state => state.coin.isLoader);
   const [prevPrices, setPrevPrices] = useState({});
   const [token, setToken] = useState('dgfdgdgh');
+  const [priceTrack, setPriceTrack] = useState('');
+  const [allPrices, setAllPrices] = useState([]);
+  const [priceColor, setPriceColor] = useState('#fff');
+
+  useEffect(() => {
+    // Check if there is a change in price
+    if (
+      prevPrices[priceTrack.id] &&
+      prevPrices[priceTrack.id] !== priceTrack.price
+    ) {
+      // Update color based on price change
+      setPriceColor(
+        priceTrack.price > prevPrices[priceTrack.id] ? 'lightgreen' : 'red',
+      );
+
+      // Reset color after 2 seconds
+      setTimeout(() => {
+        setPriceColor('#fff'); // Reset color to default
+      }, 2000);
+    }
+
+    // Update previous prices
+    setPrevPrices(prev => ({
+      ...prev,
+      [priceTrack.id]: priceTrack.price,
+    }));
+  }, [priceTrack]);
 
   const getToken = async () => {
     token = await AsyncStorage.getItem('accessToken');
   };
 
+  // update data
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          'https://skycommodity.in/bullsPanel/api/update-market',
+        );
+        // console.log('response', response);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+    fetchData();
+  });
+
   useFocusEffect(
     React.useCallback(() => {
+      console.log('1');
       const onBackPress = () => {
         if (getToken) {
           BackHandler.exitApp();
@@ -58,25 +103,23 @@ const Home = () => {
   );
 
   // Data fetch from the redux
-
+  // console.log(StocksData, 'dddd');
   useEffect(() => {
+    console.log('2');
     if (!StocksData) {
       dispatch(fetchCoinData());
+      dispatch(DataUpdateBlink());
     }
     const interval = setInterval(() => {
       dispatch(fetchCoinData());
-    }, 5000); // 1000 milliseconds = 1 second
+    }, 1000); // 1000 milliseconds = 1 second
     setIsLoading(false);
     return () => clearInterval(interval); // Cleanup function to clear the interval on unmount
-  }, []);
+  });
 
   if (!StocksData) {
     return null; // or return a loading indicator
   }
-
-  // const prices = StocksData.map(item => item.price);
-  // console.warn(prices);
-  // Breack data ui
 
   const Part1 = StocksData.slice(0, StocksData.length / 4);
   const part2 = StocksData.slice(StocksData.length / 4, StocksData.length / 2);
@@ -94,11 +137,9 @@ const Home = () => {
   };
 
   const stocksApiDataUi = ({item}) => {
-    // const isPriceChanged = prevPrices[item.id] !== item.price;
+    // Default color
 
-    // useEffect(() => {
-    //   setPrevPrices((prev) => ({ ...prev, [item.id]: item.price }));
-    // }, [item.id, item.price]);
+    setPriceTrack(item);
 
     return (
       <TouchableOpacity
@@ -135,13 +176,17 @@ const Home = () => {
           </Text>
           <Text
             style={{
-              color: COLORS.textColor,
+              color: priceColor,
+
               fontSize: responsiveFontSize(1.4),
               fontWeight: '500',
-              // backgroundColor: 'green',
+              // backgroundColor: isIncrease ? 'green' : 'red',
+              paddingHorizontal: responsiveWidth(1),
+              borderRadius: responsiveWidth(0.5),
             }}>
             {item.price}
           </Text>
+
           <Text
             style={{
               color: item.percent_chg < 1 ? 'red' : 'green',

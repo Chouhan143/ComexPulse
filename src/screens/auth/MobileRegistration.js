@@ -80,7 +80,7 @@ const MobileRegistration = () => {
   const MobileRegistrationApi = async () => {
     try {
       const response = await axios.post(
-        'https://app.srninfotech.com/bullsPanel/api/mobile-register',
+        'https://skycommodity.in/bullsPanel/api/mobile-register',
         {mobile: value},
       );
 

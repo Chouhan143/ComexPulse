@@ -1,36 +1,44 @@
-import React, { useEffect } from 'react';
-import { View, Text, Touchable, TouchableOpacity } from 'react-native';
+import React, {useEffect} from 'react';
+import {View, Text, Touchable, TouchableOpacity} from 'react-native';
 import Background from '../../constants/Background';
 import Btn from '../../constants/Btn';
-import { darkGreen } from '../../constants/ColorConstants';
+import {darkGreen} from '../../constants/ColorConstants';
 import Field from '../../constants/Field';
-import { useNavigation } from '@react-navigation/native';
-import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
-import Animated, { useSharedValue, useAnimatedStyle, withSpring, withTiming } from 'react-native-reanimated';
-import { COLORS } from '../../constants/theme';
+import {useNavigation} from '@react-navigation/native';
+import {
+  responsiveFontSize,
+  responsiveHeight,
+  responsiveWidth,
+} from 'react-native-responsive-dimensions';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+  withTiming,
+} from 'react-native-reanimated';
+import {COLORS} from '../../constants/theme';
 
 const Signup = () => {
   const navigation = useNavigation();
- 
- 
+
   // Animation code
   const animation = useSharedValue(0);
   const scale = useSharedValue(0);
   const animatedStyle = useAnimatedStyle(() => {
     return {
       opacity: animation.value,
-      transform: [{ scale: scale.value }]
-    }
-  })
+      transform: [{scale: scale.value}],
+    };
+  });
 
   useEffect(() => {
-    animation.value = withTiming(1, { duration: 900 })
-    scale.value = withTiming(1, { duration: 900 })
-  }, [])
+    animation.value = withTiming(1, {duration: 900});
+    scale.value = withTiming(1, {duration: 900});
+  }, []);
 
   return (
     <Background>
-      <Animated.View style={[{ alignItems: 'center', }, animatedStyle]}>
+      <Animated.View style={[{alignItems: 'center'}, animatedStyle]}>
         <Text
           style={{
             color: 'white',
@@ -45,7 +53,7 @@ const Signup = () => {
             color: 'white',
             fontSize: responsiveFontSize(2.5),
             fontWeight: 'bold',
-            marginBottom: responsiveHeight(1.5)
+            marginBottom: responsiveHeight(1.5),
           }}>
           Create a new account
         </Text>
@@ -73,27 +81,32 @@ const Signup = () => {
               flexDirection: 'row',
               width: responsiveWidth(78),
               flexWrap: 'wrap',
-              alignItems: 'center'
+              alignItems: 'center',
             }}>
-            <Text style={{ color: 'grey', fontSize: responsiveFontSize(2) }}>
+            <Text style={{color: 'grey', fontSize: responsiveFontSize(2)}}>
               By signing in, you agree to our {''}
             </Text>
-            <Text style={{ color: COLORS.secondary, fontWeight: 'bold', fontSize: responsiveFontSize(2) }}>
+            <Text
+              style={{
+                color: COLORS.secondary,
+                fontWeight: 'bold',
+                fontSize: responsiveFontSize(2),
+              }}>
               Terms & Conditions
             </Text>
           </View>
 
-          <View style={{ marginTop: responsiveHeight(1) }}>
+          <View style={{marginTop: responsiveHeight(1)}}>
             <Btn
               textColor="white"
               bgColor={COLORS.secondary}
               btnLabel="Signup"
               Press={() => {
-                scale.value = withTiming(0, { duration: 900 })
-                animation.value = withTiming(0, { duration: 900 })
-              setTimeout(() => {
-                navigation.navigate('Login');
-              }, 1000)
+                scale.value = withTiming(0, {duration: 900});
+                animation.value = withTiming(0, {duration: 900});
+                setTimeout(() => {
+                  navigation.navigate('Login');
+                }, 1000);
               }}
             />
           </View>
@@ -104,15 +117,24 @@ const Signup = () => {
               flexDirection: 'row',
               justifyContent: 'center',
             }}>
-            <Text style={{ fontSize: responsiveFontSize(2), fontWeight: 'bold',color:COLORS.black }}>
+            <Text
+              style={{
+                fontSize: responsiveFontSize(2),
+                fontWeight: 'bold',
+                color: COLORS.black,
+              }}>
               Already have an account ?{' '}
             </Text>
             <TouchableOpacity
               onPress={() => {
-           navigation.navigate('Login');
+                navigation.navigate('Login');
               }}>
               <Text
-                style={{ color: COLORS.secondary, fontWeight: 'bold', fontSize: responsiveFontSize(2) }}>
+                style={{
+                  color: COLORS.secondary,
+                  fontWeight: 'bold',
+                  fontSize: responsiveFontSize(2),
+                }}>
                 Login
               </Text>
             </TouchableOpacity>

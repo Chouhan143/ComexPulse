@@ -7,7 +7,7 @@ import {
   FlatList,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
-import Entypo from 'react-native-vector-icons/Entypo';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import {
   responsiveWidth,
@@ -20,13 +20,22 @@ import {COLORS} from '../../../constants/theme';
 import {getHoldingTrade} from '../../../redux/market/coinSlice';
 import {useSelector, useDispatch} from 'react-redux';
 import * as Animatable from 'react-native-animatable';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import Toast from 'react-native-toast-message';
 
 const HoldingTrade = () => {
   const dispatch = useDispatch();
   const [refreshing, setRefreshing] = useState(false);
   useEffect(() => {
     // Dispatch the getLiveTrade action when the component mounts
-    dispatch(getHoldingTrade());
+    const Interwal = setInterval(() => {
+      dispatch(getHoldingTrade());
+    }, 5000);
+
+    return () => {
+      clearInterval(Interwal);
+    };
   }, [dispatch]);
 
   const onRefresh = async () => {
@@ -41,6 +50,38 @@ const HoldingTrade = () => {
     }
   };
 
+  const unholdApi = async tradeId => {
+    try {
+      const access_token = await AsyncStorage.getItem('accessToken');
+      console.log(access_token, tradeId, 'get accessToken');
+      const config = {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      };
+
+      const response = await axios.get(
+        `https://skycommodity.in/bullsPanel/api/unhold-trade/${tradeId}`,
+        config,
+      );
+
+      console.log(response.data);
+      if (response.data.status === 200) {
+        const successMsg = response.data.message;
+        Toast.show({
+          type: 'success', // Assuming you have a type for error messages
+          text1: 'success',
+          text2: successMsg,
+          text1Style: {fontSize: responsiveFontSize(2)},
+          text2Style: {fontSize: responsiveFontSize(1.6)},
+        });
+      }
+      await dispatch(getHoldingTrade());
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+
   const holdingTrade = useSelector(state => state.coin.holdingTradedata);
 
   const RenderUiItems = ({item, index}) => {
@@ -51,6 +92,54 @@ const HoldingTrade = () => {
     const tradeModeSlice = item.trade_type;
     const trademodeSliceCapit =
       tradeModeSlice.charAt(0).toUpperCase() + tradeModeSlice.slice(1);
+
+    let actualPrice = item.asset != null ? item.asset.price : 0;
+
+    let profitOrLoss = false;
+    if (item.trade_mode == 'buy') {
+      if (actualPrice > item.limit) {
+        profitOrLoss = true;
+        // dataFound[0].style.color = 'green';
+      } else {
+        // dataFound[0].style.color = 'red';
+      }
+    }
+    if (item.trade_mode == 'sell') {
+      if (actualPrice < item.limit) {
+        profitOrLoss = true;
+        // dataFound[0].style.color = 'green';
+      } else {
+        // dataFound[0].style.color = 'red';
+      }
+    }
+    let profitLossVal = 'Trade is Pending';
+    if (item.is_pending == 0) {
+      profitLossVal =
+        item.trade_mode == 'buy'
+          ? (
+              (actualPrice - item.limit) *
+              item.asset.lot *
+              item.max_lot
+            ).toFixed(2)
+          : (
+              (item.limit - actualPrice) *
+              item.asset.lot *
+              item.max_lot
+            ).toFixed(2);
+    }
+
+    const profitLoss = profitLossVal;
+
+    // }
+
+    let backgroundColor;
+    if (profitLoss > 0) {
+      backgroundColor = 'green';
+    } else if (profitLoss < 0) {
+      backgroundColor = 'red';
+    } else {
+      backgroundColor = COLORS.dimgray;
+    }
 
     // =================================>
     return (
@@ -74,7 +163,44 @@ const HoldingTrade = () => {
                 {trademodeSlice}
               </Text>
             </View>
+
             {/* Second intraday ui  */}
+            <View
+              style={[
+                styles.BuySellContainer,
+                {
+                  backgroundColor: backgroundColor,
+                  width: responsiveWidth(50),
+                },
+              ]}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  // alignSelf: 'flex-start',
+                  justifyContent: 'center',
+                  paddingHorizontal: responsiveWidth(4),
+                }}>
+                <Text
+                  style={{
+                    paddingRight: responsiveWidth(2),
+                    color: COLORS.white,
+                    fontSize: responsiveFontSize(2),
+                    fontWeight: '800',
+                  }}>
+                  P&L
+                </Text>
+                <Text
+                  style={{
+                    color: COLORS.white,
+                    fontSize: responsiveFontSize(2),
+                    fontWeight: '800',
+                  }}>
+                  {profitLoss}
+                </Text>
+              </View>
+            </View>
+
             <View
               style={[styles.BuySellContainer, {width: responsiveWidth(18)}]}>
               <Text
@@ -138,7 +264,7 @@ const HoldingTrade = () => {
                   fontWeight: '500',
                   fontSize: responsiveFontSize(1.8),
                 }}>
-                LTP
+                Opning
               </Text>
               <Text
                 style={{
@@ -214,6 +340,35 @@ const HoldingTrade = () => {
               </Text>
             </View>
           </View>
+          <TouchableOpacity
+            style={{
+              width: responsiveWidth(85),
+              backgroundColor: '#fff',
+              height: responsiveHeight(5),
+              borderRadius: responsiveWidth(10),
+              justifyContent: 'center',
+              alignItems: 'center',
+              flexDirection: 'row',
+              shadowColor: '#000',
+            }}
+            onPress={() => unholdApi(item.id)}>
+            <Image
+              source={require('../../../../assets/images/play-button.png')}
+              style={{
+                marginRight: responsiveWidth(2),
+                width: responsiveWidth(5),
+                height: responsiveWidth(5),
+              }}
+            />
+            <Text
+              style={{
+                color: '#000',
+                fontSize: responsiveFontSize(2),
+                fontWeight: '500',
+              }}>
+              Unhold
+            </Text>
+          </TouchableOpacity>
 
           {/* button ui here */}
         </View>
@@ -298,7 +453,7 @@ const styles = StyleSheet.create({
   },
   flatlistContainer: {
     width: responsiveWidth(90),
-    height: responsiveHeight(20),
+    height: responsiveHeight(25),
     backgroundColor: COLORS.lightGray,
     marginVertical: responsiveHeight(1),
     borderRadius: responsiveWidth(3),

@@ -36,6 +36,8 @@ const PastTrade = () => {
   const [refreshing, setRefreshing] = useState(false);
   const PastTrade = useSelector(state => state.coin.pastTradedata);
 
+  // console.log('past coming ===== ', PastTrade);
+
   const onRefresh = async () => {
     setRefreshing(true);
     try {
@@ -60,8 +62,13 @@ const PastTrade = () => {
   };
 
   useEffect(() => {
-    // Dispatch the getLiveTrade action when the component mounts
-    dispatch(getPastTrade());
+    const Interwal = setInterval(() => {
+      dispatch(getPastTrade());
+    }, 5000);
+
+    return () => {
+      clearInterval(Interwal);
+    };
   }, []);
 
   const SquareOff = async () => {
@@ -69,7 +76,7 @@ const PastTrade = () => {
       const tradeId = selectedItem.id;
       console.log(tradeId, 'get tradeId');
       const response = await axios.post(
-        `https://app.srninfotech.com/bullsPanel/api/squareOff-user-trade/${tradeId}`,
+        `https://skycommodity.in/bullsPanel/api/squareOff-user-trade/${tradeId}`,
       );
 
       if (response.data.Status === 200) {
@@ -473,6 +480,7 @@ const PastTrade = () => {
                     label="Stop Loss"
                     value={los}
                     onChangeText={text => setLos(text)}
+                    textColor="#000"
                     style={{
                       marginTop: responsiveHeight(2),
                       backgroundColor: '#fff',
@@ -484,6 +492,7 @@ const PastTrade = () => {
                     label="Target"
                     value={target}
                     onChangeText={text => setTarget(text)}
+                    textColor="#000"
                     style={{
                       marginTop: responsiveHeight(2),
                       backgroundColor: '#fff',

@@ -12,7 +12,7 @@ const Notification = () => {
   const notificationApi = async () => {
     try {
       const res = await axios.get(
-        'https://app.srninfotech.com/bullsPanel/api/intraday-calls',
+        'https://skycommodity.in/bullsPanel/api/intraday-calls',
       );
       setData(res.data.data);
       console.log(res.data);

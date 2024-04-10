@@ -19,7 +19,7 @@ const ForgotPassword = ({navigation}) => {
   const apiCall = async () => {
     try {
       const res = await axios.post(
-        'https://app.srninfotech.com/bullsPanel/api/forget-password',
+        'https://skycommodity.in/bullsPanel/api/forget-password',
         {email},
       );
       const result = res.data.status;

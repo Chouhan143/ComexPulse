@@ -63,7 +63,7 @@ const EmailOtp = () => {
       };
 
       const response = await axios.post(
-        'https://app.srninfotech.com/bullsPanel/api/verfiy-email-otp',
+        'https://skycommodity.in/bullsPanel/api/verfiy-email-otp',
         {email_otp: emailOtp},
         {headers},
       );

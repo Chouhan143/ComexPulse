@@ -17,7 +17,10 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {COLORS} from '../../../constants/theme';
-import {getLiveTrade, updateLiveTrade} from '../../../redux/market/coinSlice';
+import coinSlice, {
+  getLiveTrade,
+  updateLiveTrade,
+} from '../../../redux/market/coinSlice';
 import {useSelector, useDispatch} from 'react-redux';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -34,10 +37,17 @@ const LiveTrade = () => {
   const [target, setTarget] = React.useState('');
   const [refreshing, setRefreshing] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
+  const [showHolding, setShowHolding] = useState(false);
 
   const LiveTrade = useSelector(state => state.coin.liveTradedata);
 
-  // console.log('liveTrade here updated', LiveTrade);
+  console.log('LiveTrade dfgsdguysygfgdsfuy ===>', LiveTrade);
+
+  const allowSquareOffArray = LiveTrade.map(trade => trade.allow_square_off);
+
+  const allowHoldingArray = LiveTrade.map(trade => trade.allow_to_hold);
+
+  console.log(allowHoldingArray, 'fddf');
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -64,8 +74,14 @@ const LiveTrade = () => {
 
   useEffect(() => {
     // Dispatch the getLiveTrade action when the component mounts
-    dispatch(getLiveTrade());
-    dispatch(updateLiveTrade());
+    const intervalId = setInterval(() => {
+      dispatch(getLiveTrade());
+      dispatch(updateLiveTrade());
+    }, 5000);
+
+    return () => {
+      clearInterval(intervalId);
+    };
   }, []);
 
   const squreOffhandle = item => {
@@ -92,7 +108,8 @@ const LiveTrade = () => {
   const SquareOff = async tradeId => {
     try {
       const access_token = await AsyncStorage.getItem('accessToken');
-      console.log(access_token, tradeId, 'get accessToken');
+
+      // console.log(access_token, tradeId, 'get accessToken');
       const config = {
         headers: {
           Authorization: `Bearer ${access_token}`,
@@ -100,7 +117,7 @@ const LiveTrade = () => {
       };
 
       const response = await axios.post(
-        `https://app.srninfotech.com/bullsPanel/api/square-off-trade/${tradeId}`,
+        `https://skycommodity.in/bullsPanel/api/square-off-trade/${tradeId}`,
         null,
         config,
       );
@@ -145,6 +162,46 @@ const LiveTrade = () => {
     closeModal(); // Close the modal
   };
 
+  const holdTrade = async tradeId => {
+    try {
+      const access_token = await AsyncStorage.getItem('accessToken');
+      const config = {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      };
+      const res = await axios.get(
+        `https://skycommodity.in/bullsPanel/api/hold-trade/${tradeId}`,
+        config,
+      );
+      console.log('response holding', res.data);
+      await dispatch(getLiveTrade());
+    } catch (error) {
+      console.log('error coming', error);
+    }
+  };
+
+  const holdinghandle = item => {
+    if (item) {
+      setSelectedItem(item);
+      Alert.alert(
+        'Confirm',
+        'Are you sure you want to Hold trade?',
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+          },
+          {
+            text: 'OK',
+            onPress: () => holdTrade(item.id),
+          },
+        ],
+        {cancelable: false},
+      );
+    }
+  };
+
   // Flatlist Ui RenderItem List here
   const RenderUiItems = ({item, index}) => {
     const buySellBgColor = item.trade_mode === 'sell' ? 'red' : 'green';
@@ -154,6 +211,54 @@ const LiveTrade = () => {
     const tradeModeSlice = item.trade_type;
     const trademodeSliceCapit =
       tradeModeSlice.charAt(0).toUpperCase() + tradeModeSlice.slice(1);
+
+    let actualPrice = item.asset != null ? item.asset.price : 0;
+
+    let profitOrLoss = false;
+    if (item.trade_mode == 'buy') {
+      if (actualPrice > item.limit) {
+        profitOrLoss = true;
+        // dataFound[0].style.color = 'green';
+      } else {
+        // dataFound[0].style.color = 'red';
+      }
+    }
+    if (item.trade_mode == 'sell') {
+      if (actualPrice < item.limit) {
+        profitOrLoss = true;
+        // dataFound[0].style.color = 'green';
+      } else {
+        // dataFound[0].style.color = 'red';
+      }
+    }
+    let profitLossVal = 'Trade is Pending';
+    if (item.is_pending == 0) {
+      profitLossVal =
+        item.trade_mode == 'buy'
+          ? (
+              (actualPrice - item.limit) *
+              item.asset.lot *
+              item.max_lot
+            ).toFixed(2)
+          : (
+              (item.limit - actualPrice) *
+              item.asset.lot *
+              item.max_lot
+            ).toFixed(2);
+    }
+
+    const profitLoss = profitLossVal;
+
+    // }
+
+    let backgroundColor;
+    if (profitLoss > 0) {
+      backgroundColor = 'green';
+    } else if (profitLoss < 0) {
+      backgroundColor = 'red';
+    } else {
+      backgroundColor = COLORS.dimgray;
+    }
 
     // =================================>
     return (
@@ -178,6 +283,43 @@ const LiveTrade = () => {
               </Text>
             </View>
             {/* Second intraday ui  */}
+
+            <View
+              style={[
+                styles.BuySellContainer,
+                {
+                  backgroundColor: backgroundColor,
+                  width: responsiveWidth(50),
+                },
+              ]}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  // alignSelf: 'flex-start',
+                  justifyContent: 'center',
+                  paddingHorizontal: responsiveWidth(4),
+                }}>
+                <Text
+                  style={{
+                    paddingRight: responsiveWidth(2),
+                    color: COLORS.white,
+                    fontSize: responsiveFontSize(2),
+                    fontWeight: '800',
+                  }}>
+                  P&L
+                </Text>
+                <Text
+                  style={{
+                    color: COLORS.white,
+                    fontSize: responsiveFontSize(2),
+                    fontWeight: '800',
+                  }}>
+                  {profitLoss}
+                </Text>
+              </View>
+            </View>
+
             <View
               style={[styles.BuySellContainer, {width: responsiveWidth(18)}]}>
               <Text
@@ -241,7 +383,7 @@ const LiveTrade = () => {
                   fontWeight: '500',
                   fontSize: responsiveFontSize(1.8),
                 }}>
-                LTP
+                live price
               </Text>
               <Text
                 style={{
@@ -249,7 +391,7 @@ const LiveTrade = () => {
                   fontWeight: '500',
                   fontSize: responsiveFontSize(1.8),
                 }}>
-                {item.limit}
+                {item.asset.price}
               </Text>
             </View>
           </View>
@@ -340,24 +482,32 @@ const LiveTrade = () => {
               />
               <Text style={styles.editBtnText}>Edit</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.editBtn}
-              onPress={() => squreOffhandle(item)}>
-              <Entypo
-                name={'reply-all'}
-                size={responsiveFontSize(1.8)}
-                color={'#000'}
-              />
-              <Text style={styles.editBtnText}>SqureOff</Text>
-            </TouchableOpacity>
-            {/* <TouchableOpacity style={styles.editBtn}>
-              <Entypo
-                name={'sweden'}
-                size={responsiveFontSize(1.8)}
-                color={'#000'}
-              />
-              <Text style={styles.editBtnText}>Holding</Text>
-            </TouchableOpacity> */}
+
+            {allowSquareOffArray[index] == 1 ? (
+              <TouchableOpacity
+                style={styles.editBtn}
+                onPress={() => squreOffhandle(item)}>
+                <Entypo
+                  name={'reply-all'}
+                  size={responsiveFontSize(1.8)}
+                  color={'#000'}
+                />
+                <Text style={styles.editBtnText}>SqureOff</Text>
+              </TouchableOpacity>
+            ) : null}
+
+            {allowHoldingArray[index] ? (
+              <TouchableOpacity
+                style={styles.editBtn}
+                onPress={() => holdinghandle(item)}>
+                <Entypo
+                  name={'sweden'}
+                  size={responsiveFontSize(1.8)}
+                  color={'#000'}
+                />
+                <Text style={styles.editBtnText}>Holding</Text>
+              </TouchableOpacity>
+            ) : null}
           </View>
         </View>
       </Animatable.View>
@@ -468,6 +618,7 @@ const LiveTrade = () => {
                     label="Stop Loss"
                     value={los}
                     onChangeText={text => setLos(text)}
+                    textColor="#000"
                     style={{
                       marginTop: responsiveHeight(2),
                       backgroundColor: '#fff',
@@ -479,10 +630,12 @@ const LiveTrade = () => {
                     label="Target"
                     value={target}
                     onChangeText={text => setTarget(text)}
+                    textColor="#000"
                     style={{
                       marginTop: responsiveHeight(2),
                       backgroundColor: '#fff',
                       marginHorizontal: responsiveWidth(5),
+                      color: '#000',
                     }}
                     mode="outlined"
                   />

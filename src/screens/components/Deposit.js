@@ -8,6 +8,7 @@ import {
   ScrollView,
   ToastAndroid,
   FlatList,
+  ActivityIndicator,
 } from 'react-native';
 import {TextInput, Modal, Portal, PaperProvider} from 'react-native-paper';
 import Iconic from 'react-native-vector-icons/Ionicons';
@@ -36,10 +37,13 @@ const Deposit = () => {
   const getBalance = useSelector(state => state.coin.userBalance);
   console.log('balance', getBalance);
   const [amount, setAmount] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const [visible, setVisible] = React.useState(false);
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
   const [imageData, setImageData] = useState(null);
+  const [QrImg, setQrImg] = useState('');
   const [doc, setDoc] = useState(null);
   const containerStyle = {
     backgroundColor: '#fff',
@@ -58,6 +62,10 @@ const Deposit = () => {
     setAmount(value);
   };
 
+  const nevigateUi = () => {
+    hideModal();
+    navigation.navigate('Funds');
+  };
   const SelectDOC = async () => {
     try {
       const selectedDoc = await DocumentPicker.pickSingle();
@@ -80,36 +88,92 @@ const Deposit = () => {
     }
   };
 
+  // const DepositApi = async () => {
+  //   const payload = new FormData();
+  //   payload.append('deposit_amount', amount);
+  //   if (doc) {
+  //     // If 'doc' (imageData) is available, append it to the FormData
+  //     payload.append('screenshot_deposit_amount', {
+  //       uri: doc.uri,
+  //       type: doc.type,
+  //       name: doc.name || 'image.jpg',
+  //     });
+  //   }
+  //   console.log('payload', payload);
+  //   try {
+  //     const access_token = await AsyncStorage.getItem('accessToken');
+  //     const headers = {
+  //       Authorization: `Bearer ${access_token}`, // Replace with your authorization token
+  //     };
+  //     const response = await axios.post(
+  //       'https://skycommodity.in/bullsPanel/api/deposit',
+  //       payload,
+  //       {headers},
+  //     );
+  //     const result = response.data.Status;
+  //     console.log(result, 'fsdfdsfdf');
+  //     if (result === 200) {
+  //       showModal();
+  //     }
+  //     console.log('res', response.data);
+  //   } catch (error) {
+  //     const errorCatch = error.response;
+  //     // setError(errorCatch);
+  //     console.log('error deposit', error);
+  //   }
+  // };
+
   const DepositApi = async () => {
-    const payload = new FormData();
-    payload.append('deposit_amount', amount);
-    if (doc) {
-      // If 'doc' (imageData) is available, append it to the FormData
-      payload.append('screenshot_deposit_amount', {
-        uri: doc.uri,
-        type: doc.type,
-        name: doc.name || 'image.jpg',
-      });
-    }
     try {
+      setLoading(true);
       const access_token = await AsyncStorage.getItem('accessToken');
       const headers = {
-        Authorization: `Bearer ${access_token}`, // Replace with your authorization token
+        Authorization: `Bearer ${access_token}`,
+        'Content-Type': 'multipart/form-data',
       };
+
+      const payload = new FormData();
+      payload.append('deposit_amount', amount);
+      if (doc) {
+        payload.append('screenshot_deposit_amount', {
+          uri: doc.uri,
+          type: doc.type,
+          name: doc.name || 'image.jpg',
+        });
+      }
       const response = await axios.post(
-        'https://app.srninfotech.com/bullsPanel/api/deposit',
+        'https://skycommodity.in/bullsPanel/api/deposit',
         payload,
         {headers},
       );
       const result = response.data.Status;
       if (result === 200) {
         showModal();
+        setError('');
+        setAmount('');
+        setDoc(null);
+        setLoading(false);
+        // navigation.navigate('Funds');
       }
-      console.log('res', response.data);
     } catch (error) {
-      const errorCatch = error.response;
-      // setError(errorCatch);
-      console.log('error deposit', error);
+      console.log('Error in deposit:', error.response.data.errors);
+      if (error.response && error.response.data && error.response.data.errors) {
+        const depositErrors = error.response.data.errors;
+        if (depositErrors.deposit_amount) {
+          console.error('Please enter a deposit amount.');
+          setError(depositErrors.deposit_amount);
+          // Display this error message to the user
+        }
+        if (depositErrors.screenshot_deposit_amount) {
+          console.error('Please provide a screenshot of the deposit amount.');
+          // Display this error message to the user
+          setError(depositErrors.screenshot_deposit_amount);
+        }
+      } else {
+        console.error('An unexpected error occurred. Please try again later.');
+        // Display a generic error message to the user
+      }
+      setLoading(false);
     }
   };
 
@@ -139,6 +203,31 @@ const Deposit = () => {
     console.log('handleSheetChanges', index);
   }, []);
 
+  // Qr Image get by api
+
+  const getQrImage = async () => {
+    try {
+      const access_token = await AsyncStorage.getItem('accessToken');
+      const headers = {
+        Authorization: `Bearer ${access_token}`, // Replace with your authorization token
+      };
+      const res = await axios.get(
+        'https://skycommodity.in/bullsPanel/api/get-qr',
+        {headers},
+      );
+
+      const imageData = res.data.data[0];
+      const imageUrl = `${res.data.imagePath}${imageData.image}`;
+      setQrImg(imageUrl);
+    } catch (error) {
+      console.log('error Qr ', error);
+    }
+  };
+
+  useEffect(() => {
+    getQrImage();
+  }, []);
+
   return (
     <PaperProvider>
       <LinearGradient
@@ -164,6 +253,7 @@ const Deposit = () => {
           <TouchableOpacity onPress={goBack}>
             <Iconic name="arrow-back" size={25} color={'white'} />
           </TouchableOpacity>
+
           <Text
             style={{
               fontSize: responsiveFontSize(3),
@@ -257,7 +347,7 @@ const Deposit = () => {
 
           <View style={{marginTop: responsiveHeight(2)}}>
             <Image
-              source={require('../../../assets/images/QrCode.jpg')}
+              source={{uri: QrImg}}
               resizeMode="contain"
               style={{
                 width: responsiveWidth(60),
@@ -425,6 +515,17 @@ const Deposit = () => {
           </View>
 
           {/* button Ui  */}
+          <View style={{marginHorizontal: responsiveWidth(5)}}>
+            <Text
+              style={{
+                fontSize: responsiveFontSize(1.8),
+                color: 'red',
+                fontWeight: '500',
+              }}>
+              {error}
+            </Text>
+          </View>
+
           <TouchableOpacity
             style={{
               position: 'absolute', // Position the button at the bottom
@@ -445,10 +546,17 @@ const Deposit = () => {
                 alignItems: 'center',
                 alignSelf: 'center',
               }}>
-              <Text
-                style={[styles.BoxContent, {color: '#fff', fontWeight: '700'}]}>
-                Deposit
-              </Text>
+              {loading ? (
+                <ActivityIndicator color="#fff" size="large" />
+              ) : (
+                <Text
+                  style={[
+                    styles.BoxContent,
+                    {color: '#fff', fontWeight: '700'},
+                  ]}>
+                  Deposit
+                </Text>
+              )}
             </LinearGradient>
           </TouchableOpacity>
 
@@ -502,7 +610,7 @@ const Deposit = () => {
                     alignItems: 'center',
                     alignSelf: 'center',
                   }}
-                  onPress={hideModal}>
+                  onPress={nevigateUi}>
                   <Text
                     style={[
                       styles.BoxContent,

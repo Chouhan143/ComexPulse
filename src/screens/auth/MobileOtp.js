@@ -71,7 +71,7 @@ const MobileOtp = () => {
         Authorization: `Bearer ${access_token}`, // Replace with your authorization token
       };
       const response = await axios.post(
-        'https://app.srninfotech.com/bullsPanel/api/verify-mobile-otp',
+        'https://skycommodity.in/bullsPanel/api/verify-mobile-otp',
         {mobile_otp: otpValue},
         {headers},
       );

@@ -22,6 +22,8 @@ AppRegistry.registerComponent(appName, () => App);
 //   setupDefaultFlipperReporter();
 // }
 
+
+
 if (__DEV__) {
   import('./ReactotronConfig').then(() => console.log('Reactotron Configured'));
 }

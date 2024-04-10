@@ -131,7 +131,7 @@ const UserDetails = () => {
       console.log('userDetailsData', userDetailsData);
 
       const response = await axios.post(
-        'https://app.srninfotech.com/bullsPanel/api/create-profile',
+        'https://skycommodity.in/bullsPanel/api/create-profile',
         userDetailsData,
         {headers},
       );

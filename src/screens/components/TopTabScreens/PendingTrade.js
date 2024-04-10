@@ -22,8 +22,13 @@ const PendingTrade = () => {
   const dispatch = useDispatch();
   const [refreshing, setRefreshing] = useState(false);
   useEffect(() => {
-    // Dispatch the getLiveTrade action when the component mounts
-    dispatch(getPrndingTrade());
+    const Interval = setInterval(() => {
+      dispatch(getPrndingTrade());
+    }, 2000);
+
+    return () => {
+      clearInterval(Interval);
+    };
   }, [dispatch]);
   const onRefresh = async () => {
     setRefreshing(true);
@@ -134,7 +139,7 @@ const PendingTrade = () => {
                   fontWeight: '500',
                   fontSize: responsiveFontSize(1.8),
                 }}>
-                LTP
+                Opning
               </Text>
               <Text
                 style={{

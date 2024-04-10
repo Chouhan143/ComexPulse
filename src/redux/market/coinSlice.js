@@ -6,7 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export const fetchCoinData = createAsyncThunk('fetchCoin', async () => {
   try {
     const response = await axios.get(
-      'https://scripts.bulleyetrade.com/api/getMarket',
+      'https://skycommodity.in/bullsPanel/api/get-market',
     );
     // const result = response.data.Data;
     // return result;
@@ -37,7 +37,7 @@ export const getPrndingTrade = createAsyncThunk('PendingTrade', async () => {
     };
 
     const response = await axios.get(
-      'https://app.srninfotech.com/bullsPanel/api/pending-trades',
+      'https://skycommodity.in/bullsPanel/api/pending-trades',
       config,
     );
     const Data = response.data.Data; // <-- Corrected property name
@@ -59,11 +59,11 @@ export const getLiveTrade = createAsyncThunk('LiveTrade', async () => {
       },
     };
     const response = await axios.get(
-      'https://app.srninfotech.com/bullsPanel/api/live-trades',
+      'https://skycommodity.in/bullsPanel/api/live-trades',
       config,
     );
     const Data = response.data.Data; // <-- Corrected property name
-    // console.log('livekkk', Data);
+    // console.log('Live data', Data);
     return Data;
   } catch (error) {
     console.log('error', error);
@@ -82,7 +82,7 @@ export const getHoldingTrade = createAsyncThunk('HoldingTrade', async () => {
     };
 
     const response = await axios.get(
-      'https://app.srninfotech.com/bullsPanel/api/holding-trades',
+      'https://skycommodity.in/bullsPanel/api/holding-trades',
       config,
     );
     const Data = response.data.Data; // <-- Corrected property name
@@ -105,7 +105,7 @@ export const updateLiveTrade = createAsyncThunk(
       };
 
       const response = await axios.post(
-        `https://app.srninfotech.com/bullsPanel/api/update-trade/${tradeId}`,
+        `https://skycommodity.in/bullsPanel/api/update-trade/${tradeId}`,
         payload,
         config,
       );
@@ -132,7 +132,7 @@ export const userBalance = createAsyncThunk('UserBalance', async () => {
     };
 
     const response = await axios.get(
-      'https://app.srninfotech.com/bullsPanel/api/user-balance',
+      'https://skycommodity.in/bullsPanel/api/user-balance',
       config,
     );
     const Balance = response.data.Balance; // <-- Corrected property name
@@ -152,12 +152,27 @@ export const getPastTrade = createAsyncThunk('PastTrade', async () => {
     };
 
     const response = await axios.get(
-      'https://app.srninfotech.com/bullsPanel/api/past-trades',
+      'https://skycommodity.in/bullsPanel/api/past-trades',
       config,
     );
     const Data = response.data.Data; // <-- Corrected property name
-    console.log('past Trade', Data);
+    // console.log('past Trade', Data);
     return Data;
+  } catch (error) {
+    console.log('error', error);
+  }
+});
+
+// update data for blinking api
+
+export const DataUpdateBlink = createAsyncThunk('DataUpdateBlink', async () => {
+  try {
+    const response = await axios.get(
+      'https://skycommodity.in/bullsPanel/api/update-market',
+    );
+    const Data = response.data.status; // <-- Corrected property name
+    // console.log('Updated Data', Data);
+    // return Data;
   } catch (error) {
     console.log('error', error);
   }
@@ -193,6 +208,7 @@ export const coinSlice = createSlice({
     userBalance: null,
     isLoggedIn: false,
     storedData: null,
+    updatedData: null,
   },
   reducers: {
     setIsTradeModalVisible: (state, action) => {
@@ -203,6 +219,9 @@ export const coinSlice = createSlice({
     },
     decrementCounter: (state, action) => {
       state.counter -= 1;
+    },
+    setUpdatedData: (state, action) => {
+      state.updatedData = action.payload;
     },
 
     setLoggedInStatus: (state, action) => {

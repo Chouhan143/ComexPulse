@@ -8,6 +8,7 @@ import {
   ScrollView,
   ToastAndroid,
   FlatList,
+  ActivityIndicator,
 } from 'react-native';
 import {TextInput, Modal, Portal, PaperProvider} from 'react-native-paper';
 import Iconic from 'react-native-vector-icons/Ionicons';
@@ -34,6 +35,7 @@ import {useSelector} from 'react-redux';
 const Withdraw = () => {
   const [amount, setAmount] = useState('');
   const [visible, setVisible] = React.useState(false);
+  const [loading, setLoading] = useState(false);
   const getBalance = useSelector(state => state.coin.userBalance);
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
@@ -54,14 +56,20 @@ const Withdraw = () => {
     setAmount(value);
   };
 
+  const nevigateUi = () => {
+    hideModal();
+    navigation.navigate('Funds');
+  };
+
   const WithdrawApi = async () => {
     try {
+      setLoading(true);
       const access_token = await AsyncStorage.getItem('accessToken');
       const headers = {
         Authorization: `Bearer ${access_token}`, // Replace with your authorization token
       };
       const response = await axios.post(
-        'https://app.srninfotech.com/bullsPanel/api/withdrawl',
+        'https://skycommodity.in/bullsPanel/api/withdrawl',
         {withdrawl_amount: amount},
         {headers},
       );
@@ -69,12 +77,14 @@ const Withdraw = () => {
       const result = response.data.Status;
       if (result === 200) {
         showModal();
+        setLoading(false);
       }
       console.log('res', response.data);
     } catch (error) {
       // const errorCatch = error.response;
       // setError(errorCatch);
       console.log('error login', error.response.data);
+      setLoading(false);
     }
   };
 
@@ -305,10 +315,17 @@ const Withdraw = () => {
                 alignItems: 'center',
                 alignSelf: 'center',
               }}>
-              <Text
-                style={[styles.BoxContent, {color: '#fff', fontWeight: '700'}]}>
-                Withdraw
-              </Text>
+              {loading ? (
+                <ActivityIndicator color="#fff" size="large" />
+              ) : (
+                <Text
+                  style={[
+                    styles.BoxContent,
+                    {color: '#fff', fontWeight: '700'},
+                  ]}>
+                  Withdraw
+                </Text>
+              )}
             </LinearGradient>
           </TouchableOpacity>
           {/* Modal Ui  */}
@@ -360,7 +377,7 @@ const Withdraw = () => {
                     alignItems: 'center',
                     alignSelf: 'center',
                   }}
-                  onPress={hideModal}>
+                  onPress={nevigateUi}>
                   <Text
                     style={[
                       styles.BoxContent,

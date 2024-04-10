@@ -140,7 +140,7 @@ const DocsUpload = () => {
       console.log('payload', formData);
       setLoading(true);
       const response = await axios.post(
-        'https://app.srninfotech.com/bullsPanel/api/upload-documents',
+        'https://skycommodity.in/bullsPanel/api/upload-documents',
         formData,
         {
           headers: {

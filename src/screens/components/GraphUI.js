@@ -8,8 +8,9 @@ import {
   Image,
   TextInput,
   ImageBackground,
+  ActivityIndicator,
 } from 'react-native';
-import React, {useRef, useState} from 'react';
+import React, {useRef, useState, useEffect} from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {COLORS} from '../../constants/theme';
 import Icon from 'react-native-vector-icons/AntDesign';
@@ -36,6 +37,7 @@ import {fetchCoinData} from '../../redux/market/coinSlice';
 import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import {Modal, Portal, PaperProvider} from 'react-native-paper';
 import Toast from 'react-native-toast-message';
+import {opacity} from 'react-native-reanimated/lib/typescript/reanimated2/Colors';
 
 const GraphUI = () => {
   const navigation = useNavigation();
@@ -57,7 +59,7 @@ const GraphUI = () => {
   const [target, setTarget] = useState('0');
   const [orderType, setOrderType] = useState('Market'); // Initially, set to 'Market'
   const [buyingPrice, setBuyingPrice] = useState(selectedItem.price);
-
+  const [loader, setLoader] = useState(false);
   const [status, setStatus] = useState('');
   const containerStyle = {
     backgroundColor: '#fff',
@@ -81,6 +83,21 @@ const GraphUI = () => {
     hideModal();
     handleCloseModal();
   };
+
+  // update data
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          'https://skycommodity.in/bullsPanel/api/update-market',
+        );
+        // console.log('response', response);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+    fetchData();
+  });
 
   const customDataPoint = () => {
     return (
@@ -268,6 +285,7 @@ const GraphUI = () => {
 
   const BuySellapi = async () => {
     try {
+      setLoader(true);
       const access_token = await AsyncStorage.getItem('accessToken');
       const config = {
         headers: {
@@ -297,7 +315,7 @@ const GraphUI = () => {
 
       console.log('payload', payload);
       const res = await axios.post(
-        'https://app.srninfotech.com/bullsPanel/api/add-trade',
+        'https://skycommodity.in/bullsPanel/api/add-trade',
         payload,
         config,
       );
@@ -309,6 +327,7 @@ const GraphUI = () => {
         dispatch(getLiveTrade());
         showModal();
       }
+      setLoader(false);
     } catch (error) {
       // const AllErrors = error.response.data.errors.limit;
       const AllErrors = error.response.data.errors;
@@ -317,6 +336,7 @@ const GraphUI = () => {
       const errorCatch = errorBuySell.map(e => e[0]);
 
       showToast(errorCatch.join(' ,'));
+      setLoader(false);
     }
   };
 
@@ -875,7 +895,7 @@ const GraphUI = () => {
 
                     <View>
                       <TextInput
-                        editable
+                        editable={orderType !== 'Market'}
                         maxLength={40}
                         value={buyingPrice.toString()}
                         onChangeText={text => setBuyingPrice(text)}
@@ -884,15 +904,21 @@ const GraphUI = () => {
                             ? 'Market Price'
                             : 'Enter Price'
                         }
-                        style={{
-                          borderColor: 'gray',
-                          borderWidth: 1,
-                          width: responsiveWidth(25),
-                          height: responsiveHeight(5),
-                          borderRadius: responsiveWidth(1),
-                          fontSize: responsiveFontSize(2),
-                          color: '#000',
-                        }}
+                        style={[
+                          {
+                            borderColor: 'gray',
+                            borderWidth: 1,
+                            width: responsiveWidth(25),
+                            height: responsiveHeight(5),
+                            borderRadius: responsiveWidth(1),
+                            fontSize: responsiveFontSize(2),
+                            color: '#000',
+                            backgroundColor:
+                              orderType === 'Market'
+                                ? '#f0f0f0'
+                                : 'transparent',
+                          },
+                        ]}
                       />
                     </View>
                   </View>
@@ -1032,15 +1058,19 @@ const GraphUI = () => {
                       borderRadius: responsiveWidth(1),
                     }}
                     onPress={BuySellapi}>
-                    <Text
-                      style={{
-                        color: '#fff',
-                        fontSize: responsiveFontSize(2),
-                        fontWeight: '500',
-                      }}>
-                      {isSellActive ? 'Sell' : 'Buy'} {buyingPrice}
-                      {/* {isSellActive ? 'Sell' : 'Buy'} {selectedItem.price} */}
-                    </Text>
+                    {loader ? (
+                      <ActivityIndicator color="#fff" size="large" />
+                    ) : (
+                      <Text
+                        style={{
+                          color: '#fff',
+                          fontSize: responsiveFontSize(2),
+                          fontWeight: '500',
+                        }}>
+                        {isSellActive ? 'Sell' : 'Buy'} {buyingPrice}
+                        {/* {isSellActive ? 'Sell' : 'Buy'} {selectedItem.price} */}
+                      </Text>
+                    )}
                   </TouchableOpacity>
                 </View>
               </View>

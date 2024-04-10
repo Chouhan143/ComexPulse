@@ -38,7 +38,7 @@ const ForgotPasswordOtp = () => {
 
       console.log(payload);
       const res = await axios.post(
-        'https://app.srninfotech.com/bullsPanel/api/reset-password',
+        'https://skycommodity.in/bullsPanel/api/reset-password',
         payload,
       );
 

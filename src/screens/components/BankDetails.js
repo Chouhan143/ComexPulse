@@ -38,7 +38,7 @@ const BankDetails = () => {
         },
       };
       const res = await axios.get(
-        'https://app.srninfotech.com/bullsPanel/api/profile-details',
+        'https://skycommodity.in/bullsPanel/api/profile-details',
         config,
       );
       const getData = res.data.user_prfile_detail;
@@ -121,7 +121,8 @@ const BankDetails = () => {
               <View
                 style={{
                   width: responsiveWidth(90),
-                  height: responsiveHeight(15),
+                  height: 'auto',
+                  paddingVertical: responsiveHeight(3),
                   borderRadius: responsiveWidth(2),
                   paddingLeft: responsiveWidth(5),
                   shadowColor: 'black',
@@ -129,7 +130,9 @@ const BankDetails = () => {
                   backgroundColor: 'white',
                   marginTop: responsiveHeight(2),
                 }}>
-                <Text>{state.BranchAddress}</Text>
+                <Text style={{color: '#000', fontSize: responsiveFontSize(2)}}>
+                  {state.BranchAddress}
+                </Text>
               </View>
             </View>
           </View>
@@ -189,8 +192,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'gray',
   },
   bottom_lable: {
-    fontSize: responsiveFontSize(1.8),
-    color: 'black',
+    color: '#000',
+    fontSize: responsiveFontSize(2),
   },
   input_view: {
     paddingTop: responsiveWidth(2),
@@ -202,6 +205,8 @@ const styles = StyleSheet.create({
     shadowColor: 'black',
     elevation: 5,
     backgroundColor: 'white',
+    color: '#000',
+    fontSize: responsiveFontSize(2),
   },
   button_container: {
     marginTop: responsiveHeight(5),

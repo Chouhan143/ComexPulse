@@ -62,7 +62,7 @@ const BottomSheetQRcode = ({
       };
 
       const res = await axios.post(
-        'https://app.srninfotech.com/bullsPanel/api/reset-old-password',
+        'https://skycommodity.in/bullsPanel/api/reset-old-password',
         payload,
         config,
       );

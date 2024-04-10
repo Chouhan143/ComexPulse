@@ -58,7 +58,7 @@ const EmailRegistration = () => {
     try {
       console.log(email, 'fdffdfg');
       const response = await axios.post(
-        'https://app.srninfotech.com/bullsPanel/api/email-register',
+        'https://skycommodity.in/bullsPanel/api/email-register',
         {email: email},
       );
       const result = response.data.status;
